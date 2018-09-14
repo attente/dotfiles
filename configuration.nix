@@ -21,14 +21,14 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Select internationalisation properties.
-  # i18n = {
-  #   consoleFont = "Lat2-Terminus16";
-  #   consoleKeyMap = "us";
-  #   defaultLocale = "en_US.UTF-8";
-  # };
+  i18n = {
+    consoleFont = "Lat2-Terminus16";
+    consoleKeyMap = "us";
+    defaultLocale = "en_CA.UTF-8";
+  };
 
   # Set your time zone.
-  # time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "America/Toronto";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
