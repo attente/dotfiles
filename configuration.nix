@@ -44,6 +44,9 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   environment.shellInit = ''
     export EDITOR=nvim
     export VISUAL=nvim
+
+    gpg-connect-agent /bye
+    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
   '';
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -64,6 +67,13 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   };
 
   programs.sway.enable = true;
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+
+  programs.ssh.startAgent = false;
 
   # List services that you want to enable:
 
@@ -94,6 +104,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # Enable the KDE Desktop Environment.
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
+
+  services.pcscd.enable = true;
 
   users.mutableUsers = false;
 
