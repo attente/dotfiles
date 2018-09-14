@@ -11,6 +11,8 @@
   programs.git.userEmail = "william@attente.ca";
 
   home.packages = with pkgs; [
+    gnupg
     nix-index
+    pass
   ];
 }
