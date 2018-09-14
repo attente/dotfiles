@@ -63,6 +63,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     };
   };
 
+  programs.sway.enable = true;
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
@@ -106,6 +108,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     isNormalUser = true;
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
+      "sway"
       "wheel"
     ];
   };
