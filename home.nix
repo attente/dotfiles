@@ -12,6 +12,7 @@
 
   home.packages = with pkgs; [
     firefox
+    gcc
     gnumake
     gnupg
     nix-index
