@@ -95,6 +95,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   users.defaultUserShell = pkgs.zsh;
 
+  users.users.root.hashedPassword = secrets.users.root.hashedPassword;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   # users.extraUsers.guest = {
   #   isNormalUser = true;
