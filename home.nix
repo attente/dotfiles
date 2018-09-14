@@ -11,6 +11,7 @@
   programs.git.userEmail = "william@attente.ca";
 
   home.packages = with pkgs; [
+    firefox
     gnupg
     nix-index
     pass
