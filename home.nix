@@ -15,5 +15,6 @@
     gnupg
     nix-index
     pass
+    yarn
   ];
 }
