@@ -15,6 +15,7 @@
     gnupg
     nix-index
     pass
+    unzip
     yarn
   ];
 }
