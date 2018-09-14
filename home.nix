@@ -15,6 +15,8 @@
     gnupg
     nix-index
     pass
+    python
+    python3
     unzip
     yarn
   ];
