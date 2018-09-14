@@ -93,11 +93,23 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
 
+  users.mutableUsers = false;
+
   users.defaultUserShell = pkgs.zsh;
 
   users.users.root.hashedPassword = secrets.users.root.hashedPassword;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.william = {
+    uid = 1000;
+    description = "William Hua";
+    isNormalUser = true;
+    hashedPassword = secrets.users.william.hashedPassword;
+    extraGroups = [
+      "wheel"
+    ];
+  };
+
   # users.extraUsers.guest = {
   #   isNormalUser = true;
   #   uid = 1000;
