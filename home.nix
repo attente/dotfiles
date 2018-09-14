@@ -9,4 +9,8 @@
   programs.git.enable = true;
   programs.git.userName = "William Hua";
   programs.git.userEmail = "william@attente.ca";
+
+  home.packages = with pkgs; [
+    nix-index
+  ];
 }
