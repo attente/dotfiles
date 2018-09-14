@@ -33,9 +33,18 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  # environment.systemPackages = with pkgs; [
-  #   wget vim
-  # ];
+  environment.systemPackages = with pkgs; [
+    neovim
+  ];
+
+  environment.shellAliases = {
+    vi = "nvim";
+  };
+
+  environment.shellInit = ''
+    export EDITOR=nvim
+    export VISUAL=nvim
+  '';
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
