@@ -107,6 +107,38 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   services.pcscd.enable = true;
 
+  services.openvpn.servers = {
+    toronto = {
+      autoStart = false;
+      updateResolvConf = true;
+      config = ''
+        client
+        dev tun
+        proto udp
+        remote ca-toronto.privateinternetaccess.com 1197
+        resolv-retry infinite
+        nobind
+        persist-key
+        persist-tun
+        cipher aes-256-cbc
+        auth sha256
+        tls-client
+        remote-cert-tls server
+
+        auth-user-pass
+        comp-lzo no
+        verb 1
+        reneg-sec 0
+        crl-verify /home/william/.william/vpn/crl.rsa.4096.pem
+        ca /home/william/.william/vpn/ca.rsa.4096.crt
+        disable-occ
+      '';
+      authUserPass = {
+        inherit (secrets.vpn) username password;
+      };
+    };
+  };
+
   users.mutableUsers = false;
 
   users.defaultUserShell = pkgs.zsh;
