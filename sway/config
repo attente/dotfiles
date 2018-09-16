@@ -211,6 +211,9 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10%
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10%
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
+bindsym XF86MonBrightnessDown exec light -U 24
+bindsym XF86MonBrightnessUp exec light -A 25
+
 #
 # Status Bar:
 #

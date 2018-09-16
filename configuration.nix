@@ -75,6 +75,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   programs.ssh.startAgent = false;
 
+  programs.light.enable = true;
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
