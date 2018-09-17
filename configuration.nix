@@ -43,6 +43,17 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # programs.mtr.enable = true;
   # programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
 
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    ohMyZsh = {
+      enable = true;
+      theme = "robbyrussell";
+    };
+  };
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
@@ -72,6 +83,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # Enable the KDE Desktop Environment.
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
+
+  users.defaultUserShell = pkgs.zsh;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   # users.extraUsers.guest = {
