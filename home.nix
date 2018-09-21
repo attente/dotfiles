@@ -18,6 +18,12 @@
       set ts=8
       syn on
     '';
+
+    packages.myVimPackage = with pkgs.vimPlugins; {
+      start = [
+        typescript-vim
+      ];
+    };
   };
 
   programs.git.enable = true;
