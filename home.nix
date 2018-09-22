@@ -32,6 +32,7 @@
 
   home.packages = with pkgs; [
     binutils-unwrapped
+    fdupes
     firefox
     gcc
     gnumake
