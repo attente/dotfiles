@@ -37,6 +37,7 @@
     gcc
     gnumake
     gnupg
+    imagemagick
     nix-index
     pass
     python
