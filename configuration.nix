@@ -28,6 +28,12 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     defaultLocale = "en_CA.UTF-8";
   };
 
+  fonts.fonts = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+  ];
+
   # Set your time zone.
   time.timeZone = "America/Toronto";
 
