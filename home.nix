@@ -37,6 +37,7 @@
     gcc
     gnumake
     gnupg
+    go
     imagemagick
     nix-index
     pass
