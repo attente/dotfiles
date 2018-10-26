@@ -44,6 +44,7 @@
     python
     python3
     unzip
+    weechat
     wget
     yarn
   ];
