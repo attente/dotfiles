@@ -147,6 +147,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     };
   };
 
+  virtualisation.docker.enable = true;
+
   users.mutableUsers = false;
 
   users.defaultUserShell = pkgs.zsh;
@@ -160,6 +162,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     isNormalUser = true;
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
+      "docker"
       "sway"
       "wheel"
     ];
