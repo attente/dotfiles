@@ -147,6 +147,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     };
   };
 
+  services.flatpak.enable = true;
+
   virtualisation = {
     docker.enable = true;
   };
