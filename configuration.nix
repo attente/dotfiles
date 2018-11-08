@@ -151,6 +151,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   virtualisation = {
     docker.enable = true;
+    lxd.enable = true;
   };
 
   users.mutableUsers = false;
@@ -167,6 +168,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
       "docker"
+      "lxd"
       "sway"
       "wheel"
     ];
