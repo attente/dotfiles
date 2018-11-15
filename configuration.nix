@@ -117,6 +117,11 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   services.pcscd.enable = true;
 
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
+
   services.openvpn.servers = {
     toronto = {
       autoStart = false;
