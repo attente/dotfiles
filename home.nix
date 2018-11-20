@@ -41,6 +41,7 @@
     gnupg
     go
     imagemagick
+    ldns
     nix-index
     pass
     python
