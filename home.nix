@@ -33,6 +33,7 @@
   home.packages = with pkgs; [
     binutils-unwrapped
     bubblewrap
+    evince
     fdupes
     firefox
     gcc
