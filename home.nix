@@ -48,6 +48,7 @@
     python
     python3
     rustup
+    tree
     unzip
     weechat
     wget
