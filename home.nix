@@ -47,6 +47,7 @@
     pass
     python
     python3
+    rustup
     unzip
     weechat
     wget
