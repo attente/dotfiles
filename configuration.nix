@@ -85,6 +85,10 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
 
   # List services that you want to enable:
 
+  services.logind.extraConfig = ''
+    RuntimeDirectorySize=25%
+  '';
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
