@@ -51,6 +51,7 @@
     rustup
     tree
     unzip
+    wabt
     weechat
     wget
     yarn
