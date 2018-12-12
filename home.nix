@@ -45,6 +45,7 @@
     imagemagick
     ldns
     nix-index
+    nixops
     pass
     python
     python3
