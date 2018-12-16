@@ -44,6 +44,7 @@
     go
     imagemagick
     ldns
+    manpages
     nix-index
     nixops
     pass
