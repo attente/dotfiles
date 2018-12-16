@@ -1,0 +1,48 @@
+#!/bin/sh
+
+while true ; do
+  if systemctl status openvpn-toronto.service | grep 'Active: active' > /dev/null ; then
+    VPN=" 🕵️ "
+  else
+    unset VPN
+  fi
+
+  VOLUME=`pactl list sinks | grep '	Volume:' | grep -o '[0-9]\+%' | cut -d % -f 1 | head -n 1`
+
+  if pactl list sinks | grep 'Active Port: analog-output-headphones' > /dev/null ; then
+    AUDIO=🎧
+
+    if pactl list sinks | grep 'Mute: yes' > /dev/null ; then
+      AUDIO="$AUDIO 🔇"
+    fi
+
+  elif pactl list sinks | grep 'Mute: yes' > /dev/null ; then
+    AUDIO=🔇
+  elif [[ $VOLUME -le 0 ]] ; then
+    AUDIO=🔈
+  elif [[ $VOLUME -lt 50 ]] ; then
+    AUDIO=🔉
+  else
+    AUDIO=🔊
+  fi
+
+  AUDIO="$AUDIO $VOLUME%"
+
+  if [[ `cat /sys/class/power_supply/BAT0/status` = Discharging ]] ; then
+    POWER=🔋
+  else
+    POWER=🔌
+  fi
+
+  POWER="$POWER `cat /sys/class/power_supply/BAT0/capacity`%"
+
+  DATE=`date '+%a %b %d %Y %-I:%M:%S %p'`
+
+  echo \
+    "<span background=\"darkred\">$VPN</span>" \
+    "<span background=\"darkblue\"> $AUDIO </span>" \
+    "<span background=\"darkgreen\"> $POWER </span>" \
+    "<span> $DATE </span>"
+
+  sleep 1
+done
