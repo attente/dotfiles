@@ -224,10 +224,11 @@ bindsym XF86MonBrightnessUp exec light -A 25
 # Read `man 5 sway-bar` for more information about this section.
 bar {
     position top
+    pango_markup enabled
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    status_command /home/william/.william/etc/sway/status
 
     colors {
         statusline #ffffff
