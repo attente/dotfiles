@@ -22,7 +22,7 @@ set $menu dmenu_run
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /home/william/.sway/share/backgrounds/sway/)
-output * bg /home/william/.sway/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /home/william/.william/wallpapers/default.png fill
 #
 # Example configuration:
 #
