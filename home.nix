@@ -38,6 +38,7 @@
     fdupes
     firefox
     gcc
+    glib
     gnome3.nautilus
     gnumake
     gnupg
