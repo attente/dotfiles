@@ -33,8 +33,8 @@ output * bg /home/william/.william/wallpapers/default.png fill
 # output eDP-1 scale 1.5 resolution 2560x1440 position 0,0
 # output DP-2 scale 1.5 resolution 3840x2160 position -427,-1440
 
-output eDP-1 scale 2 resolution 2560x1440 position 0,0
-output DP-2 scale 1 resolution 2560x1440 position -640,-1440
+output eDP-1 scale 2 resolution 2560x1440 position 640,1440
+output DP-2 scale 1 resolution 2560x1440 position 0,0
 
 ### Idle configuration
 #
