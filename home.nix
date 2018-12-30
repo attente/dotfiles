@@ -45,6 +45,7 @@
     go
     imagemagick
     ldns
+    lm_sensors
     manpages
     nix-index
     nixops
