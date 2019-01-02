@@ -1,11 +1,17 @@
 #!/bin/sh
 
 while true ; do
+  NETWORK=📶
+
   if systemctl status openvpn-toronto.service | grep 'Active: active' > /dev/null ; then
-    VPN=" 🕵️ "
+    NETWORK_COLOUR='darkred'
+    NETWORK="$NETWORK 🕵️"
   else
-    unset VPN
+    NETWORK_COLOUR='indigo'
   fi
+
+  NETWORK="$NETWORK `nmcli -t -f GENERAL.CONNECTION device show wlp2s0 | cut -d : -f 2-`"
+  NETWORK="$NETWORK (`nmcli -t -f IP4.ADDRESS device show wlp2s0 | grep -o '\([0-9]\+\.\)\{3\}[0-9]\+'`)"
 
   VOLUME=`pactl list sinks | grep '	Volume:' | grep -o '[0-9]\+%' | cut -d % -f 1 | head -n 1`
 
@@ -39,7 +45,7 @@ while true ; do
   DATE=`date '+%a %b %d %Y %-I:%M:%S %p'`
 
   echo \
-    "<span background=\"darkred\">$VPN</span>" \
+    "<span background=\"$NETWORK_COLOUR\"> $NETWORK </span>" \
     "<span background=\"darkblue\"> $AUDIO </span>" \
     "<span background=\"darkgreen\"> $POWER </span>" \
     "<span> $DATE </span>"
