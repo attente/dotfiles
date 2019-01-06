@@ -39,6 +39,7 @@
     firefox
     gcc
     glib
+    gnome3.eog
     gnome3.nautilus
     gnumake
     gnupg
