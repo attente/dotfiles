@@ -36,6 +36,7 @@
     chromium
     evince
     fdupes
+    file
     firefox
     gcc
     glib
