@@ -49,6 +49,7 @@
     ldns
     lm_sensors
     manpages
+    mercurial
     nix-index
     nixops
     pass
