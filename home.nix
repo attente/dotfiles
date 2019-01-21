@@ -61,6 +61,5 @@
     wabt
     weechat
     wget
-    yarn
   ];
 }
