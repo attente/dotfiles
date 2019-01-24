@@ -16,7 +16,13 @@
       set sts=2
       set sw=2
       set ts=8
+
       syn on
+      highlight spaces ctermbg=red guibg=red
+      autocmd syntax * syn match spaces / \+\ze\t\|\s\+$/
+
+      set list
+      set lcs=tab:↹·
     '';
 
     packages.myVimPackage = with pkgs.vimPlugins; {
