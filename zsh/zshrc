@@ -3,3 +3,4 @@
 export PATH="/home/william/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin:$PATH:/home/william/.node/bin:/home/william/.cargo/bin:/home/william/go/bin"
 export LD_LIBRARY_PATH="/nix/store/4zd34747fz0ggzzasy4icgn3lmy89pra-gcc-7.3.0-lib/lib:$LD_LIBRARY_PATH"
 export GOPATH="/home/william/go"
+export RUSTC_WRAPPER=`which sccache`
