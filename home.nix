@@ -1,6 +1,23 @@
+let mozilla = import (builtins.fetchGit {
+  url = "https://github.com/mozilla/nixpkgs-mozilla.git";
+  ref = "master";
+  rev = "507efc7f62427ded829b770a06dd0e30db0a24fe";
+}); in
+
 { pkgs, ... }:
 
 {
+  nixpkgs.overlays = [
+    mozilla
+    (self: super: {
+      latest.rustChannels.stable.rust = super.latest.rustChannels.stable.rust.override {
+        targets = [
+          "wasm32-unknown-unknown"
+        ];
+      };
+    })
+  ];
+
   programs.home-manager.enable = true;
 
   programs.termite.enable = true;
@@ -36,14 +53,12 @@
   programs.git.userEmail = "william@attente.ca";
 
   home.packages = with pkgs; [
-    binutils-unwrapped
     bubblewrap
     chromium
     evince
     fdupes
     file
     firefox
-    gcc
     glib
     gnome3.eog
     gnome3.nautilus
@@ -51,6 +66,7 @@
     gnupg
     go
     imagemagick
+    latest.rustChannels.stable.rust
     ldns
     lm_sensors
     manpages
@@ -60,7 +76,6 @@
     pass
     python
     python3
-    rustup
     tree
     unzip
     wabt
