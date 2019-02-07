@@ -237,4 +237,4 @@ bar {
     }
 }
 
-include /home/william/.sway/etc/sway/config.d/*
+include /home/william/.prefix/sway/etc/sway/config.d/*
