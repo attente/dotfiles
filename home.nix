@@ -7,13 +7,19 @@ let mozilla = import (builtins.fetchGit {
 { pkgs, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
   nixpkgs.overlays = [
     mozilla
     (self: super: {
-      latest.rustChannels.nightly.rust = super.latest.rustChannels.nightly.rust.override {
-        targets = [
-          "wasm32-unknown-unknown"
-        ];
+      latest = {
+        firefox-nightly-bin = super.latest.firefox-nightly-bin;
+
+        rustChannels.nightly.rust = super.latest.rustChannels.nightly.rust.override {
+          targets = [
+            "wasm32-unknown-unknown"
+          ];
+        };
       };
     })
   ];
@@ -58,7 +64,6 @@ let mozilla = import (builtins.fetchGit {
     evince
     fdupes
     file
-    firefox
     glib
     gnome3.eog
     gnome3.nautilus
@@ -66,6 +71,7 @@ let mozilla = import (builtins.fetchGit {
     gnupg
     go
     imagemagick
+    latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
     ldns
     lm_sensors
