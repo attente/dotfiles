@@ -56,6 +56,7 @@ let mozilla = import (builtins.fetchGit {
   home.packages = with pkgs; [
     bubblewrap
     chromium
+    d-spy
     evince
     fdupes
     file
