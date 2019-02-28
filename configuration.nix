@@ -186,6 +186,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
       "lxd"
       "sway"
       "wheel"
+      "video"
     ];
   };
 
