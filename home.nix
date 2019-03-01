@@ -14,6 +14,10 @@ let mozilla = import (builtins.fetchGit {
         targets = [
           "wasm32-unknown-unknown"
         ];
+
+        extensions = [
+          "rustfmt-preview"
+        ];
       };
     })
   ];
