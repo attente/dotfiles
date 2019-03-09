@@ -71,6 +71,7 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
+    htop
     imagemagick
     latest.rustChannels.stable.rust
     ldns
