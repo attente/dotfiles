@@ -74,6 +74,7 @@ let mozilla = import (builtins.fetchGit {
     imagemagick
     latest.rustChannels.stable.rust
     ldns
+    libreoffice
     lm_sensors
     manpages
     mercurial
