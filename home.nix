@@ -80,6 +80,7 @@ let mozilla = import (builtins.fetchGit {
     latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
     ldns
+    libreoffice
     lm_sensors
     manpages
     mercurial
