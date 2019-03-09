@@ -76,6 +76,7 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
+    htop
     imagemagick
     latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
