@@ -95,5 +95,6 @@ let mozilla = import (builtins.fetchGit {
     wabt
     weechat
     wget
+    wl-clipboard
   ];
 }
