@@ -215,6 +215,8 @@ bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessDown exec light -U 24
 bindsym XF86MonBrightnessUp exec light -A 25
 
+bindsym XF86Favorites exec GDK_BACKEND=wayland firefox
+
 #
 # Status Bar:
 #
