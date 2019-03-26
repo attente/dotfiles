@@ -219,6 +219,9 @@ bindsym XF86Tools reload
 
 bindsym XF86Favorites exec GDK_BACKEND=wayland firefox
 
+bindsym Prior nop
+bindsym Next nop
+
 #
 # Status Bar:
 #
