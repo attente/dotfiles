@@ -70,6 +70,7 @@ let mozilla = import (builtins.fetchGit {
     evince
     fdupes
     file
+    git-lfs
     glib
     gnome3.eog
     gnome3.nautilus
