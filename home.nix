@@ -85,6 +85,7 @@ let mozilla = import (builtins.fetchGit {
     pass
     python
     python3
+    sage
     tree
     unzip
     wabt
