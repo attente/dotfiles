@@ -13,12 +13,7 @@ let mozilla = import (builtins.fetchGit {
     mozilla
     (self: super: {
       latest = {
-        firefox-nightly-bin = super.lib.firefoxOverlay.firefoxVersion {
-          name = "Firefox Nightly";
-          version = "68.0a1";
-          release = false;
-          timestamp = "2019-04-01-21-56-51";
-        };
+        firefox-nightly-bin = super.latest.firefox-nightly-bin;
 
         rustChannels.nightly.rust = super.latest.rustChannels.nightly.rust.override {
           targets = [
