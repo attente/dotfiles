@@ -37,6 +37,7 @@ let mozilla = import (builtins.fetchGit {
   programs.neovim.vimAlias = true;
   programs.neovim.configure = {
     customRC = ''
+      set nu
       set et
       set si
       set sts=2
