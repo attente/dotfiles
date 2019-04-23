@@ -209,6 +209,9 @@ bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessDown exec light -U 24
 bindsym XF86MonBrightnessUp exec light -A 25
 
+bindsym Print exec grim "/home/william/`date --rfc-3339=seconds`.png"
+bindsym Shift+Print exec grim -g "`slurp`" "/home/william/`date --rfc-3339=seconds`.png"
+
 bindsym XF86Tools reload
 
 bindsym XF86Favorites exec GDK_BACKEND=wayland firefox
