@@ -65,6 +65,7 @@ let mozilla = import (builtins.fetchGit {
   programs.git.userEmail = "william@attente.ca";
 
   home.packages = with pkgs; [
+    binaryen
     bubblewrap
     chromium
     dfeet
