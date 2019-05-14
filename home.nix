@@ -84,6 +84,7 @@ let mozilla = import (builtins.fetchGit {
     mercurial
     nix-index
     nixops
+    nodejs-12_x
     pass
     python
     python3
