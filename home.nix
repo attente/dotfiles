@@ -77,6 +77,7 @@ let mozilla = import (builtins.fetchGit {
     go
     htop
     imagemagick
+    inotifyTools
     latest.rustChannels.stable.rust
     ldns
     libreoffice
