@@ -90,6 +90,7 @@ let mozilla = import (builtins.fetchGit {
     nixops
     nodejs-12_x
     pass
+    poppler_utils
     python
     python3
     sage
