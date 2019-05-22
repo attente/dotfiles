@@ -78,6 +78,7 @@ let mozilla = import (builtins.fetchGit {
     go
     htop
     imagemagick
+    inkscape
     inotifyTools
     latest.rustChannels.stable.rust
     ldns
