@@ -101,5 +101,6 @@ let mozilla = import (builtins.fetchGit {
     wget
     wireshark
     wl-clipboard
+    zip
   ];
 }
