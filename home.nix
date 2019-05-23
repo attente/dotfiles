@@ -1,7 +1,7 @@
 let mozilla = import (builtins.fetchGit {
   url = "https://github.com/mozilla/nixpkgs-mozilla.git";
   ref = "master";
-  rev = "507efc7f62427ded829b770a06dd0e30db0a24fe";
+  rev = "9f35c4b09fd44a77227e79ff0c1b4b6a69dff533";
 }); in
 
 { pkgs, ... }:
