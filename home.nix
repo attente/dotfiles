@@ -76,6 +76,7 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
+    gotop
     htop
     imagemagick
     inkscape
