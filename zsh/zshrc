@@ -1,5 +1,5 @@
 # Created by newuser for 5.6.1
 
-export PATH="$PATH:/home/william/.cargo/bin:/home/william/go/bin:/home/william/.node/bin"
+export PATH="$PATH:/home/william/.cargo/bin:/home/william/go/bin:/home/william/.npm/bin"
 export GOPATH="/home/william/go"
 export RUSTC_WRAPPER=`which sccache`
