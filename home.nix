@@ -50,6 +50,7 @@ let mozilla = import (builtins.fetchGit {
 
     packages.myVimPackage = with pkgs.vimPlugins; {
       start = [
+        gitgutter
         rust-vim
         typescript-vim
         vimwiki
