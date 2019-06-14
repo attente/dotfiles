@@ -46,6 +46,8 @@ let mozilla = import (builtins.fetchGit {
 
       set list
       set lcs=tab:↹·
+
+      set ut=100
     '';
 
     packages.myVimPackage = with pkgs.vimPlugins; {
