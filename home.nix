@@ -58,6 +58,7 @@ let mozilla = import (builtins.fetchGit {
 
     packages.myVimPackage = with pkgs.vimPlugins; {
       start = [
+        coc-nvim
         gitgutter
         rust-vim
         typescript-vim
