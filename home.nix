@@ -22,6 +22,7 @@ let mozilla = import (builtins.fetchGit {
 
           extensions = [
             "clippy-preview"
+            "rust-src"
             "rustfmt-preview"
           ];
         };
