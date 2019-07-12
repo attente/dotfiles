@@ -7,7 +7,7 @@ while true ; do
 
   NETWORK=📶
 
-  if systemctl status openvpn-toronto.service | grep 'Active: active' > /dev/null ; then
+  if systemctl status openvpn-canada.service | grep 'Active: active' > /dev/null ; then
     NETWORK_COLOUR='darkred'
     NETWORK="$NETWORK 🕵️"
   else
