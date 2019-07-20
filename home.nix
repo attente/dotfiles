@@ -87,6 +87,7 @@ let mozilla = import (builtins.fetchGit {
     imagemagick
     inkscape
     inotifyTools
+    kdeconnect
     latest.rustChannels.stable.rust
     ldns
     libreoffice
