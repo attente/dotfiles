@@ -343,6 +343,17 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     RuntimeDirectorySize=25%
   '';
 
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    publish = {
+      enable = true;
+      userServices = true;
+      addresses = true;
+      domain = true;
+    };
+  };
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
