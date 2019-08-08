@@ -14,7 +14,10 @@ let mozilla = import (builtins.fetchGit {
       latest = {
         firefox-nightly-bin = super.latest.firefox-nightly-bin;
 
-        rustChannels.nightly.rust = super.latest.rustChannels.nightly.rust.override {
+        rustChannels.nightly.rust = (super.rustChannelOf {
+          channel = "nightly";
+          date = "2019-08-01";
+        }).rust.override {
           targets = [
             "wasm32-unknown-unknown"
           ];
