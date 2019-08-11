@@ -214,7 +214,7 @@ bindsym Shift+Print exec grim -g "`slurp`" "/home/william/`date --rfc-3339=secon
 
 bindsym XF86Tools reload
 
-bindsym XF86Favorites exec GDK_BACKEND=wayland firefox
+bindsym XF86Favorites exec firefox
 
 bindsym Prior nop
 bindsym Next nop
@@ -237,6 +237,8 @@ bar {
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
+
+exec mako
 
 exec redshift
 

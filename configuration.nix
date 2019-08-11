@@ -326,7 +326,35 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     };
   };
 
-  programs.sway.enable = true;
+  programs.sway = {
+    enable = true;
+
+    extraPackages = with pkgs; [
+      dmenu
+      grim
+      mako
+      (redshift.overrideAttrs (oldAttrs: {
+        src = fetchFromGitHub {
+          owner = "minus7";
+          repo = "redshift";
+          rev = "eecbfedac48f827e96ad5e151de8f41f6cd3af66";
+          sha256 = "0rs9bxxrw4wscf4a8yl776a8g880m5gcm75q06yx2cn3lw2b7v22";
+          fetchSubmodules = true;
+        };
+      }))
+      slurp
+      swaybg
+      swayidle
+      swaylock
+      wf-recorder
+      wl-clipboard
+      xwayland
+    ];
+
+    extraSessionCommands = ''
+      export GDK_BACKEND=wayland
+    '';
+  };
 
   programs.gnupg.agent = {
     enable = true;
