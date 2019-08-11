@@ -17,7 +17,7 @@ set $right l
 set $term termite
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-set $menu dmenu_run
+set $menu j4-dmenu-desktop --dmenu='bemenu -ip "" --fn mono' --display-binary --usage-log=/home/william/.cache/j4-dmenu-desktop
 
 ### Output configuration
 #
