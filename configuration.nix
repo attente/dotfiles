@@ -330,8 +330,9 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     enable = true;
 
     extraPackages = with pkgs; [
-      dmenu
+      bemenu
       grim
+      j4-dmenu-desktop
       mako
       (redshift.overrideAttrs (oldAttrs: {
         src = fetchFromGitHub {
