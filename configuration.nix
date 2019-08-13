@@ -40,6 +40,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     agave
     aileron
     akkadian
+    amiri
     andagii
     andika
     ankacoder
@@ -51,11 +52,13 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     assyrian
     aurulent-sans
     b612
+    babelstone-han
     baekmuk-ttf
     bakoma_ttf
     behdad-fonts
     cabin
     caladea
+    # camingo-code
     cantarell-fonts
     carlito
     charis-sil
@@ -67,6 +70,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     comic-neue
     comic-relief
     cooper-hewitt
+    # corefonts
     creep
     crimson
     culmus
@@ -95,21 +99,27 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     fira-mono
     fixedsys-excelsior
     font-awesome-ttf
+    font-awesome_4
+    fontconfig-penultimate
     freefont_ttf
     gandom-fonts
     gentium
     gentium-book-basic
+    go-font
     gohufont
-    guitarix
+    google-fonts
     gyre-fonts
     hack-font
     hanazono
     hasklig
+    # helvetica-neue-lt-std
     hermit
     hyperscrypt-font
+    ia-writer-duospace
     ibm-plex
     inconsolata
     inconsolata-lgc
+    # input-fonts
     inriafonts
     inter
     inter-ui
@@ -117,16 +127,19 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     iosevka-bin
     ipaexfont
     ipafont
+    # ir-standard-fonts
     iwona
     jost
     junicode
     kanji-stroke-order-font
     kawkab-mono-font
     kochi-substitute
+    # kochi-substitute-naga10
     lalezar-fonts
     latinmodern-math
     lato
     league-of-moveable-type
+    liberastika
     liberation_ttf_v1_from_source
     liberation_ttf_v2_from_source
     liberationsansnarrow
@@ -140,6 +153,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     libreoffice-still-unwrapped
     lmmath
     lmodern
+    # lobster-two
     lohit-fonts.assamese
     lohit-fonts.bengali
     lohit-fonts.devanagari
@@ -179,6 +193,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     nahid-fonts
     nanum-gothic-coding
     national-park-typeface
+    nerdfonts
     nika-fonts
     norwester-font
     noto-fonts
@@ -214,6 +229,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     quilter
     raleway
     redhat-official-fonts
+    # ricty
     rictydiminished-with-firacode
     roboto
     roboto-mono
@@ -259,9 +275,18 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     tex-gyre-pagella-math
     tex-gyre-schola-math
     tex-gyre-termes-math
-    textfonts
+    tex-gyre.adventor
+    tex-gyre.bonum
+    tex-gyre.chorus
+    tex-gyre.cursor
+    tex-gyre.heros
+    tex-gyre.pagella
+    tex-gyre.schola
+    tex-gyre.termes
     theano
+    tipa
     tlwg
+    # ttf-envy-code-r
     ttf_bitstream_vera
     twemoji-color-font
     ubuntu_font_family
@@ -276,11 +301,15 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
     vazir-fonts
     vdrsymbols
     vegur
+    victor-mono
+    # vistafonts
+    # vistafonts-chs
     weather-icons
-    wineWowPackages.fonts
+    winePackages.fonts
     wqy_microhei
     wqy_zenhei
     xits-math
+    # xkcd-font
     xlibs.encodings
     xlibs.fontalias
     xlibs.fontutil
