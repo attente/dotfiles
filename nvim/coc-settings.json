@@ -1,5 +1,10 @@
 {
   "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "filetypes": ["go"],
+      "rootPatterns": ["go.mod"]
+    },
     "rust": {
       "command": "ra_lsp_server",
       "filetypes": ["rust"],
