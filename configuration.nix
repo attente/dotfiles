@@ -376,6 +376,9 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
       swaybg
       swayidle
       swaylock
+      (waybar.override {
+        pulseSupport = true;
+      })
       wf-recorder
       wl-clipboard
       xwayland
