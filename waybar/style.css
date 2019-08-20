@@ -6,6 +6,11 @@
     min-height: 0;
 }
 
+#window {
+    margin: 0 4px;
+    color: #ffffff;
+}
+
 window#waybar {
     background-color: rgba(43, 48, 59, 0.5);
     border-bottom: 3px solid rgba(100, 114, 125, 0.5);
@@ -69,6 +74,7 @@ window#waybar.chromium {
 #cpu,
 #memory,
 #temperature,
+#custom-fan,
 #backlight,
 #network,
 #pulseaudio,
@@ -167,6 +173,10 @@ label:focus {
 
 #temperature.critical {
     background-color: #eb4d4b;
+}
+
+#custom-fan {
+    background-color: #87ceeb;
 }
 
 #tray {
