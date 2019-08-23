@@ -440,7 +440,7 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
 
-  services.gnome3.gvfs.enable = true;
+  services.gvfs.enable = true;
 
   services.pcscd.enable = true;
 
