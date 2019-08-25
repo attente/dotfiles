@@ -219,6 +219,8 @@ bindsym XF86Favorites exec firefox
 bindsym Prior nop
 bindsym Next nop
 
+default_border pixel
+
 #
 # Status Bar:
 #
