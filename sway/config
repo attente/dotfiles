@@ -230,5 +230,3 @@ bar {
 exec mako
 
 exec redshift
-
-include /home/william/.prefix/sway/etc/sway/config.d/*
