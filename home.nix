@@ -96,7 +96,15 @@ let mozilla = import (builtins.fetchGit {
     nix-index
     nixops
     nodejs-12_x
-    pass
+    (pass.overrideAttrs (oldAttrs: {
+      src = fetchGit {
+        url = "https://git.zx2c4.com/password-store";
+        rev = "e93e03705fb5b81f3af85f04c07ad0ee2190b6aa";
+      };
+      patches = [
+        pass/set-correct-program-name-for-sleep.patch
+      ];
+    }))
     poppler_utils
     python
     python3
