@@ -64,6 +64,13 @@ let mozilla = import (builtins.fetchGit {
   programs.git.enable = true;
   programs.git.userName = "William Hua";
   programs.git.userEmail = "william@attente.ca";
+  programs.git.extraConfig = {
+    url = {
+      "ssh://git@github.com/horizon-games" = {
+        insteadOf = "https://github.com/horizon-games";
+      };
+    };
+  };
 
   home.packages = with pkgs; [
     binaryen
