@@ -72,6 +72,8 @@ let mozilla = import (builtins.fetchGit {
     };
   };
 
+  programs.git.lfs.enable = true;
+
   home.packages = with pkgs; [
     binaryen
     bubblewrap
@@ -81,7 +83,6 @@ let mozilla = import (builtins.fetchGit {
     fdupes
     file
     firefox
-    git-lfs
     glib
     gnome3.eog
     gnome3.nautilus
