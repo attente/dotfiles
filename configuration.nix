@@ -367,8 +367,8 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
         src = fetchFromGitHub {
           owner = "minus7";
           repo = "redshift";
-          rev = "eecbfedac48f827e96ad5e151de8f41f6cd3af66";
-          sha256 = "0rs9bxxrw4wscf4a8yl776a8g880m5gcm75q06yx2cn3lw2b7v22";
+          rev = "7da875d34854a6a34612d5ce4bd8718c32bec804";
+          sha256 = "0nbkcw3avmzjg1jr1g9yfpm80kzisy55idl09b6wvzv2sz27n957";
           fetchSubmodules = true;
         };
       }))
