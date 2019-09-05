@@ -31,35 +31,30 @@ let mozilla = import (builtins.fetchGit {
   programs.neovim.enable = true;
   programs.neovim.viAlias = true;
   programs.neovim.vimAlias = true;
-  programs.neovim.configure = {
-    customRC = ''
-      set nu
-      set et
-      set si
-      set sts=2
-      set sw=2
-      set ts=8
+  programs.neovim.plugins = with pkgs.vimPlugins; [
+    coc-nvim
+    gitgutter
+    rust-vim
+    typescript-vim
+    vimwiki
+  ];
+  programs.neovim.extraConfig = ''
+    set nu
+    set et
+    set si
+    set sts=2
+    set sw=2
+    set ts=8
 
-      syn on
-      highlight spaces ctermbg=red guibg=red
-      autocmd syntax * syn match spaces / \+\ze\t\|\s\+$/
+    syn on
+    highlight spaces ctermbg=red guibg=red
+    autocmd syntax * syn match spaces / \+\ze\t\|\s\+$/
 
-      set list
-      set lcs=tab:↹·
+    set list
+    set lcs=tab:↹·
 
-      set ut=100
-    '';
-
-    packages.myVimPackage = with pkgs.vimPlugins; {
-      start = [
-        coc-nvim
-        gitgutter
-        rust-vim
-        typescript-vim
-        vimwiki
-      ];
-    };
-  };
+    set ut=100
+  '';
 
   programs.git.enable = true;
   programs.git.userName = "William Hua";
