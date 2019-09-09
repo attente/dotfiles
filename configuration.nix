@@ -416,7 +416,10 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   };
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -446,11 +449,6 @@ let secrets = import /home/william/.william/etc/secrets.nix; in
   services.gvfs.enable = true;
 
   services.pcscd.enable = true;
-
-  services.openssh = {
-    enable = true;
-    passwordAuthentication = false;
-  };
 
   services.openvpn.servers = {
     canada = {
