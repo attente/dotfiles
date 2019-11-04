@@ -37,7 +37,7 @@ let secrets = import /etc/nixos/secrets.nix; in
   '';
   boot.kernelParams = [ "console=ttyS0,19200n8" ];
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "hydrogen"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.usePredictableInterfaceNames = false;
 
