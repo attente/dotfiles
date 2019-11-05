@@ -85,6 +85,13 @@ let secrets = import /etc/nixos/secrets.nix; in
     permitRootLogin = "no";
   };
 
+  services.znc = {
+    enable = true;
+    openFirewall = true;
+    useLegacyConfig = false;
+    config.User = secrets.znc.users;
+  };
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
