@@ -109,6 +109,8 @@ let secrets = import /etc/nixos/secrets.nix; in
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
 
+  virtualisation.docker.enable = true;
+
   users.mutableUsers = false;
 
   users.users.root.hashedPassword = secrets.users.root.hashedPassword;
@@ -118,7 +120,10 @@ let secrets = import /etc/nixos/secrets.nix; in
     uid = 1000;
     isNormalUser = true;
     hashedPassword = secrets.users.william.hashedPassword;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "docker"
+      "wheel"
+    ];
   };
 
   # This value determines the NixOS release with which your system is to be
