@@ -89,7 +89,10 @@ let secrets = import /etc/nixos/secrets.nix; in
     enable = true;
     openFirewall = true;
     useLegacyConfig = false;
-    config.User = secrets.znc.users;
+    config = {
+      LoadModule = [ "route_replies" ];
+      User = secrets.znc.users;
+    };
   };
 
   # Open ports in the firewall.
