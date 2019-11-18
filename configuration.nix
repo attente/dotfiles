@@ -32,6 +32,15 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
     defaultLocale = "en_CA.UTF-8";
+
+    inputMethod = {
+      enabled = "fcitx";
+
+      fcitx.engines = with pkgs.fcitx-engines; [
+        libpinyin
+        mozc
+      ];
+    };
   };
 
   fonts.fonts = with pkgs; [

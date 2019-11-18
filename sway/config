@@ -232,3 +232,5 @@ bar {
 exec mako
 
 exec redshift
+
+exec fcitx
