@@ -85,7 +85,7 @@
         "interval": 1
     },
     "custom/fan": {
-        "exec": "cat /sys/class/hwmon/hwmon2/fan1_input",
+        "exec": "cat /sys/class/hwmon/hwmon*/fan*_input",
         "format": "{} RPM {icon}",
         "format-icons": ["💨"],
         "interval": 1
