@@ -102,7 +102,7 @@ let mozilla = import (builtins.fetchGit {
     (pass.overrideAttrs (oldAttrs: {
       src = fetchGit {
         url = "https://git.zx2c4.com/password-store";
-        rev = "e93e03705fb5b81f3af85f04c07ad0ee2190b6aa";
+        rev = "b830119762416fa8706e479e9b01f2453d6f6ad6";
       };
       patches = [
         pass/set-correct-program-name-for-sleep.patch
