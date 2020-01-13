@@ -22,7 +22,7 @@ set $menu j4-dmenu-desktop --dmenu='bemenu -ip "" --fn mono' --display-binary --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /home/william/.sway/share/backgrounds/sway/)
-output * bg /home/william/.william/wallpapers/default.png fill
+output * bg /home/william/.william/wallpapers/default.jpg fill
 #
 # Example configuration:
 #
