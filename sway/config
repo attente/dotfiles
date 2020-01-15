@@ -229,7 +229,7 @@ bar {
     swaybar_command waybar
 }
 
-exec mako
+exec mako --default-timeout 3000
 
 exec redshift
 
