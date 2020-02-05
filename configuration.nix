@@ -142,6 +142,8 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
 
   # List services that you want to enable:
 
+  services.fwupd.enable = true;
+
   services.logind.extraConfig = ''
     RuntimeDirectorySize=25%
   '';
