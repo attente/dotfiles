@@ -83,6 +83,7 @@ let mozilla = import (builtins.fetchGit {
     bubblewrap
     chromium
     dfeet
+    docker-compose
     evince
     fdupes
     file
