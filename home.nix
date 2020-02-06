@@ -74,6 +74,7 @@ let mozilla = import (builtins.fetchGit {
     bubblewrap
     chromium
     d-spy
+    docker-compose
     evince
     fdupes
     file
