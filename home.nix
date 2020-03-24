@@ -90,6 +90,7 @@ let mozilla = import (builtins.fetchGit {
     imagemagick
     inkscape
     inotifyTools
+    jq
     kdeconnect
     latest.rustChannels.stable.rust
     ldns
