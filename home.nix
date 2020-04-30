@@ -70,6 +70,7 @@ let mozilla = import (builtins.fetchGit {
   programs.git.lfs.enable = true;
 
   home.packages = with pkgs; [
+    alacritty
     binaryen
     bubblewrap
     chromium
