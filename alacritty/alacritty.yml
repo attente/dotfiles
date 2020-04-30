@@ -88,16 +88,16 @@
   #multiplier: 3
 
 # Font configuration
-#font:
+font:
   # Normal (roman) font face
-  #normal:
+  normal:
     # Font family
     #
     # Default:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    #family: monospace
+    family: Noto Sans Mono
 
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -314,10 +314,12 @@
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-#shell:
-#  program: /bin/bash
-#  args:
-#    - --login
+shell:
+  program: nix-shell
+  args:
+    - -p
+    - --command
+    - zsh
 
 # Startup directory
 #
