@@ -25,9 +25,6 @@ let mozilla = import (builtins.fetchGit {
 
   programs.home-manager.enable = true;
 
-  programs.termite.enable = true;
-  programs.termite.scrollbackLines = -1;
-
   programs.neovim.enable = true;
   programs.neovim.viAlias = true;
   programs.neovim.vimAlias = true;
