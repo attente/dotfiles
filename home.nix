@@ -60,6 +60,9 @@ let mozilla = import (builtins.fetchGit {
     set lcs=tab:↹·
 
     set ut=100
+
+    set sb
+    set spr
   '';
 
   programs.git.enable = true;
