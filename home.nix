@@ -77,6 +77,7 @@ let mozilla = import (builtins.fetchGit {
     d-spy
     docker-compose
     evince
+    exa
     fdupes
     file
     firefox
