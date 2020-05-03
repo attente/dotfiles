@@ -86,6 +86,7 @@ let mozilla = import (builtins.fetchGit {
     dfeet
     docker-compose
     evince
+    exa
     fdupes
     file
     glib
