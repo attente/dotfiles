@@ -103,6 +103,7 @@ let mozilla = import (builtins.fetchGit {
     nix-index
     nixops
     nodejs-12_x
+    openssl
     (pass.overrideAttrs (oldAttrs: {
       src = fetchGit {
         url = "https://git.zx2c4.com/password-store";
