@@ -112,6 +112,7 @@ let mozilla = import (builtins.fetchGit {
         pass/set-correct-program-name-for-sleep.patch
       ];
     }))
+    pkg-config
     poppler_utils
     python
     python3
