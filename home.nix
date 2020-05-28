@@ -120,6 +120,7 @@ let mozilla = import (builtins.fetchGit {
     ripgrep
     tree
     unzip
+    vscodium
     wabt
     weechat
     wget
