@@ -101,9 +101,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
     enable = true;
 
     extraPackages = with pkgs; [
-      bemenu
       grim
-      j4-dmenu-desktop
       mako
       (redshift.overrideAttrs (oldAttrs: {
         src = fetchFromGitHub {
@@ -123,6 +121,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
       })
       wf-recorder
       wl-clipboard
+      wofi
       xwayland
     ];
 

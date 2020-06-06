@@ -17,7 +17,7 @@ set $right l
 set $term alacritty --config-file /home/william/.william/etc/alacritty/alacritty.yml
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-set $menu j4-dmenu-desktop --dmenu='bemenu -ip "" --fn mono' --display-binary --usage-log=/home/william/.cache/j4-dmenu-desktop
+set $menu wofi -S drun -l top
 
 ### Output configuration
 #
