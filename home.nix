@@ -97,6 +97,7 @@ let mozilla = import (builtins.fetchGit {
     latest.rustChannels.stable.rust
     ldns
     libreoffice
+    lldb
     lm_sensors
     manpages
     mercurial
