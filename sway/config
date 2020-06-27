@@ -232,6 +232,7 @@ bindsym Shift+Print exec grim -g "`slurp`" "/home/william/`date --rfc-3339=secon
 bindsym XF86Tools reload
 
 bindsym XF86Favorites exec firefox
+bindsym XF86HomePage exec firefox
 
 default_border pixel
 
