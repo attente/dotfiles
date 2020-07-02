@@ -60,6 +60,10 @@ let mozilla = import (builtins.fetchGit {
   programs.git.userName = "William Hua";
   programs.git.userEmail = "william@attente.ca";
   programs.git.extraConfig = {
+    pull = {
+      rebase = true;
+    };
+
     url = {
       "ssh://git@github.com/horizon-games" = {
         insteadOf = "https://github.com/horizon-games";
