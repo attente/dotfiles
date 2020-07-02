@@ -67,6 +67,7 @@ let mozilla = import (builtins.fetchGit {
     };
   };
 
+  programs.git.delta.enable = true;
   programs.git.lfs.enable = true;
 
   home.packages = with pkgs; [
