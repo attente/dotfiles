@@ -16,7 +16,7 @@ let mozilla = import (builtins.fetchGit {
 
         rustChannels.nightly.rust = (super.rustChannelOf {
           channel = "nightly";
-          date = "2020-06-01";
+          date = "2020-07-12";
         }).rust.override {
           targets = [
             "wasm32-unknown-unknown"
