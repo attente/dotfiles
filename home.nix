@@ -107,6 +107,7 @@ let mozilla = import (builtins.fetchGit {
     inotifyTools
     jq
     kdeconnect
+    keepassxc
     latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
     ldns
