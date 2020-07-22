@@ -99,6 +99,7 @@ let mozilla = import (builtins.fetchGit {
     inotifyTools
     jq
     kdeconnect
+    keepassxc
     latest.rustChannels.stable.rust
     ldns
     libreoffice
