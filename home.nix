@@ -64,6 +64,11 @@ let mozilla = import (builtins.fetchGit {
       rebase = true;
     };
 
+    rebase = {
+      autoSquash = true;
+      autoStash = true;
+    };
+
     url = {
       "ssh://git@github.com/horizon-games" = {
         insteadOf = "https://github.com/horizon-games";
