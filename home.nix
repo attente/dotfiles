@@ -90,13 +90,17 @@ let mozilla = import (builtins.fetchGit {
 
   home.packages = with pkgs; [
     alacritty
+    bandwhich
+    bat
     binaryen
     bubblewrap
     chromium
     dfeet
     docker-compose
+    du-dust
     evince
     exa
+    fd
     fdupes
     file
     glib
@@ -105,8 +109,6 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
-    gotop
-    htop
     imagemagick
     inkscape
     inotifyTools
@@ -119,12 +121,14 @@ let mozilla = import (builtins.fetchGit {
     libreoffice
     lldb
     lm_sensors
+    lsd
     manpages
     mercurial
     nix-index
     nixops
     nodejs-12_x
     openssl
+    procs
     (pass.overrideAttrs (oldAttrs: {
       src = fetchGit {
         url = "https://git.zx2c4.com/password-store";
@@ -139,6 +143,8 @@ let mozilla = import (builtins.fetchGit {
     python
     python3
     ripgrep
+    sd
+    tealdeer
     tree
     unzip
     vscodium
@@ -146,6 +152,7 @@ let mozilla = import (builtins.fetchGit {
     weechat
     wget
     wireshark
+    ytop
     zip
   ];
 
