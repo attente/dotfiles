@@ -81,13 +81,17 @@ let mozilla = import (builtins.fetchGit {
 
   home.packages = with pkgs; [
     alacritty
+    bandwhich
+    bat
     binaryen
     bubblewrap
     chromium
     d-spy
     docker-compose
+    du-dust
     evince
     exa
+    fd
     fdupes
     file
     firefox
@@ -97,8 +101,6 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
-    gotop
-    htop
     imagemagick
     inkscape
     inotifyTools
@@ -110,6 +112,7 @@ let mozilla = import (builtins.fetchGit {
     libreoffice
     lldb
     lm_sensors
+    lsd
     manpages
     mercurial
     nix-index
@@ -127,9 +130,12 @@ let mozilla = import (builtins.fetchGit {
     }))
     pkg-config
     poppler_utils
+    procs
     python
     python3
     ripgrep
+    sd
+    tealdeer
     tree
     unzip
     vscodium
@@ -137,6 +143,7 @@ let mozilla = import (builtins.fetchGit {
     weechat
     wget
     wireshark
+    ytop
     zip
   ];
 
