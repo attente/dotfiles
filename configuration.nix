@@ -51,6 +51,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
 
     fonts = with pkgs; [
       cantarell-fonts
+      nerdfonts
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
