@@ -104,6 +104,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
     extraPackages = with pkgs; [
       grim
       mako
+      qt5.qtwayland
       (redshift.overrideAttrs (oldAttrs: {
         src = fetchFromGitHub {
           owner = "minus7";
@@ -128,6 +129,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
 
     extraSessionCommands = ''
       export GDK_BACKEND=wayland
+      export QT_QPA_PLATFORM=wayland
     '';
   };
 
@@ -141,6 +143,17 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
   programs.light.enable = true;
 
   # List services that you want to enable:
+
+  services.tlp = {
+    enable = true;
+
+    extraConfig = ''
+      CPU_SCALING_GOVERNOR_ON_AC=powersave
+      CPU_SCALING_GOVERNOR_ON_BAT=powersave
+      START_CHARGE_THRESH_BAT0=40
+      STOP_CHARGE_THRESH_BAT0=50
+    '';
+  };
 
   services.fwupd.enable = true;
 
