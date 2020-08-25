@@ -133,6 +133,7 @@ let mozilla = import (builtins.fetchGit {
     procs
     python
     python3
+    rclone
     ripgrep
     sd
     tealdeer
