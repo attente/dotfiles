@@ -142,6 +142,7 @@ let mozilla = import (builtins.fetchGit {
     poppler_utils
     python
     python3
+    rclone
     ripgrep
     sd
     tealdeer
