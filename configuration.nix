@@ -147,12 +147,12 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
   services.tlp = {
     enable = true;
 
-    extraConfig = ''
-      CPU_SCALING_GOVERNOR_ON_AC=powersave
-      CPU_SCALING_GOVERNOR_ON_BAT=powersave
-      START_CHARGE_THRESH_BAT0=40
-      STOP_CHARGE_THRESH_BAT0=50
-    '';
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      START_CHARGE_THRESH_BAT0 = 40;
+      STOP_CHARGE_THRESH_BAT0 = 50;
+    };
   };
 
   services.fwupd.enable = true;
