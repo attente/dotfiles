@@ -148,6 +148,7 @@ let mozilla = import (builtins.fetchGit {
     tealdeer
     tree
     unzip
+    vlc
     vscodium
     wabt
     weechat
