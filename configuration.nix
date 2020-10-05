@@ -128,6 +128,8 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
     ];
 
     extraSessionCommands = ''
+      export XDG_CURRENT_DESKTOP=sway
+      export XDG_SESSION_TYPE=wayland
       export GDK_BACKEND=wayland
       export QT_QPA_PLATFORM=wayland
     '';
@@ -337,8 +339,17 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
     };
   };
 
+  xdg.portal = {
+    enable = true;
+    gtkUsePortal = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-wlr
+    ];
+  };
+
   services.flatpak.enable = true;
-  xdg.portal.enable = true;
+  services.pipewire.enable = true;
 
   virtualisation = {
     docker.enable = true;
