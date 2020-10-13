@@ -6,7 +6,7 @@
       "rootPatterns": ["go.mod"]
     },
     "rust": {
-      "command": "rust-analyzer",
+      "command": "/home/william/.cargo/bin/rust-analyzer",
       "filetypes": ["rust"],
       "rootPatterns": ["Cargo.toml"]
     }
