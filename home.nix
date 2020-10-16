@@ -55,6 +55,8 @@ let mozilla = import (builtins.fetchGit {
     set sb
     set spr
 
+    autocmd TermOpen * startinsert
+
     nmap <silent> [g <Plug>(coc-diagnostic-prev)
     nmap <silent> ]g <Plug>(coc-diagnostic-next)
     nmap <silent> gd <Plug>(coc-definition)
