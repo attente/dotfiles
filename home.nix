@@ -102,6 +102,7 @@ let mozilla = import (builtins.fetchGit {
     bandwhich
     bat
     binaryen
+    bottom
     bubblewrap
     chromium
     dfeet
@@ -163,7 +164,6 @@ let mozilla = import (builtins.fetchGit {
     weechat
     wget
     wireshark
-    ytop
     zip
   ];
 
