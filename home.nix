@@ -127,7 +127,7 @@ let mozilla = import (builtins.fetchGit {
     mercurial
     nix-index
     nixops
-    nodejs-12_x
+    nodejs_latest
     openssl
     (pass.overrideAttrs (oldAttrs: {
       src = fetchGit {
@@ -155,6 +155,9 @@ let mozilla = import (builtins.fetchGit {
     weechat
     wget
     wireshark
+    (yarn.override {
+      nodejs = nodejs_latest;
+    })
     zip
   ];
 
