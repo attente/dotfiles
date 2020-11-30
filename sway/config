@@ -50,10 +50,10 @@ output * bg /home/william/.william/wallpapers/default.jpg fill
 #     -------------
 
 output eDP-1 scale 2 resolution 2560x1440 position 0,600
-output HDMI-A-1 scale 2 resolution 3840x2160 position 1280,0
-output HDMI-A-1 transform 270
-output DP-2 scale 2 resolution 3840x2160 position 2360,0
+output DP-2 scale 2 resolution 3840x2160 position 1280,0
 output DP-2 transform 270
+output HDMI-A-1 scale 2 resolution 3840x2160 position 2360,0
+output HDMI-A-1 transform 270
 
 ### Idle configuration
 #
