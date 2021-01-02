@@ -224,6 +224,8 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 bindsym $mod+Escape exec swaylock -i :`ls /home/william/.william/wallpapers/swaylock/* | xargs shuf -en 1`
+bindsym $mod+Shift+Escape exec systemctl suspend
+bindsym Control+Alt+Delete exec reboot
 
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 20%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10%
