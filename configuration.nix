@@ -76,6 +76,7 @@ let secrets = import /home/william/.william/secrets.helium.nix; in
   ];
 
   environment.shellAliases = {
+    nix-shell = "nix-shell --command zsh";
     vi = "nvim";
   };
 
