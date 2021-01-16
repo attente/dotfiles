@@ -126,7 +126,6 @@ let mozilla = import (builtins.fetchGit {
     manpages
     mercurial
     nix-index
-    nixops
     nodejs_latest
     openssl
     (pass.overrideAttrs (oldAttrs: {
