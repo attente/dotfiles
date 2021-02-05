@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  reverse-proxy:
+    image: traefik
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    environment:
+      LINODE_TOKEN: redacted
+    volumes:
+      - ./etc/traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  gitea:
+    image: gitea/gitea
+    ports:
+      - "2222:22"
+    labels:
+      - traefik.http.routers.gitea.rule=Host(`git.attente.ca`)
+      - traefik.http.services.gitea.loadbalancer.server.port=3000
+      - traefik.http.routers.gitea.tls.certResolver=gitea
+      - traefik.http.routers.gitea.tls.domains[0].main=git.attente.ca
+    volumes:
+      - ./gitea/data:/data
+
+  chishower:
+    image: ghost
+    labels:
+      - traefik.http.routers.chishower.rule=Host(`chishower.com`, `www.chishower.com`)
+      - traefik.http.routers.chishower.tls.certResolver=chishower
+      - traefik.http.routers.chishower.tls.domains[0].main=chishower.com
+      - traefik.http.routers.chishower.tls.domains[0].sans=*.chishower.com
+    environment:
+      url: https://chishower.com
+    volumes:
+      - ./chishower/var/lib/ghost/content:/var/lib/ghost/content
