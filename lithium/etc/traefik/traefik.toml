@@ -1,0 +1,27 @@
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+
+    [entrypoints.http.http.redirections.entrypoint]
+    to = "https"
+    scheme = "https"
+
+  [entryPoints.https]
+    address = ":443"
+
+[certificatesResolvers]
+  [certificatesResolvers.gitea.acme]
+    email = "william@attente.ca"
+    storage = "/etc/traefik/gitea/acme.json"
+
+    [certificatesResolvers.gitea.acme.dnsChallenge]
+      provider = "linode"
+
+  [certificatesResolvers.chishower.acme]
+    email = "william@attente.ca"
+    storage = "/etc/traefik/chishower/acme.json"
+
+    [certificatesResolvers.chishower.acme.dnsChallenge]
+      provider = "linode"
+
+[providers.docker]
