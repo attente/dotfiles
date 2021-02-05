@@ -350,7 +350,6 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
     enable = true;
     gtkUsePortal = true;
     extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
       xdg-desktop-portal-wlr
     ];
   };
