@@ -21,6 +21,10 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 65536;
+  };
+
   networking.hostName = "helium"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
