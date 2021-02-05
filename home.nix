@@ -95,7 +95,6 @@ let mozilla = import (builtins.fetchGit {
     binaryen
     bottom
     bubblewrap
-    chromium
     d-spy
     docker-compose
     du-dust
@@ -147,6 +146,7 @@ let mozilla = import (builtins.fetchGit {
     sd
     tealdeer
     tree
+    ungoogled-chromium
     unzip
     vlc
     vscodium
