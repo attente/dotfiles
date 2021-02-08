@@ -25,6 +25,8 @@ let mozilla = import (builtins.fetchGit {
 
   programs.home-manager.enable = true;
 
+  services.syncthing.enable = true;
+
   programs.neovim.enable = true;
   programs.neovim.viAlias = true;
   programs.neovim.vimAlias = true;
