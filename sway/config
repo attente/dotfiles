@@ -18,6 +18,7 @@ set $term alacritty --config-file /home/william/.william/etc/alacritty/alacritty
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
 set $menu wofi -S drun -l top
+set $browser chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --disable-gpu-memory-buffer-video-frames
 
 ### Output configuration
 #
@@ -240,8 +241,8 @@ bindsym Shift+Print exec grim -g "`slurp`" "/home/william/`date --rfc-3339=secon
 
 bindsym XF86Tools reload
 
-bindsym XF86Favorites exec firefox
-bindsym XF86HomePage exec firefox
+bindsym XF86Favorites exec $browser
+bindsym XF86HomePage exec $browser
 
 default_border pixel
 
