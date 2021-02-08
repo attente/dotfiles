@@ -36,3 +36,4 @@ services:
       - 8080:6667/tcp
     volumes:
       - ./znc/data:/znc-data
+    restart: unless-stopped
