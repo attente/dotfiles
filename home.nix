@@ -152,7 +152,6 @@ let mozilla = import (builtins.fetchGit {
     poppler_utils
     python
     python3
-    sageWithDoc
     rclone
     ripgrep
     sd
