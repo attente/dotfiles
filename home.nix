@@ -32,6 +32,7 @@ let mozilla = import (builtins.fetchGit {
   programs.neovim.vimAlias = true;
   programs.neovim.plugins = with pkgs.vimPlugins; [
     coc-nvim
+    fzf-vim
     gitgutter
     rust-vim
     typescript-vim
@@ -89,6 +90,12 @@ let mozilla = import (builtins.fetchGit {
 
   programs.git.delta.enable = true;
   programs.git.lfs.enable = true;
+
+  programs.fzf.enable = true;
+  programs.fzf.enableZshIntegration = true;
+  programs.fzf.defaultCommand = "fd -L 2>/dev/null";
+  programs.fzf.changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
+  programs.fzf.fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
 
   home.packages = with pkgs; [
     alacritty
