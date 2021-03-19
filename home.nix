@@ -126,6 +126,7 @@ let mozilla = import (builtins.fetchGit {
     kdeconnect
     keepassxc
     latest.rustChannels.stable.rust
+    lazydocker
     ldns
     libreoffice
     lldb
