@@ -378,7 +378,6 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
       "docker"
-      "lxd"
       "sway"
       "wheel"
       "video"
