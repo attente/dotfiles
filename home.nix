@@ -135,6 +135,7 @@ let mozilla = import (builtins.fetchGit {
     keepassxc
     latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
+    lazydocker
     ldns
     libreoffice
     lldb
