@@ -157,6 +157,7 @@ let mozilla = import (builtins.fetchGit {
     }))
     pkg-config
     poppler_utils
+    postgresql
     python
     python3
     rclone
