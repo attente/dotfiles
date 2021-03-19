@@ -147,6 +147,7 @@ let mozilla = import (builtins.fetchGit {
     }))
     pkg-config
     poppler_utils
+    postgresql
     procs
     python
     python3
