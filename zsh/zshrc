@@ -15,5 +15,5 @@ if [ -n "${commands[fzf-share]}" ]; then
   bindkey "^J" fzf-completion
 fi
 
-export PATH="$PATH:/home/william/.cargo/bin:/home/william/go/bin:/home/william/.npm/bin"
+export PATH="/home/william/.william/etc/bin:/home/william/.cargo/bin:/home/william/go/bin:/home/william/.npm/bin:$PATH"
 export GOPATH="/home/william/go"
