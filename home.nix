@@ -99,6 +99,7 @@ let mozilla = import (builtins.fetchGit {
 
   home.packages = with pkgs; [
     alacritty
+    ansifilter
     bandwhich
     bat
     binaryen
