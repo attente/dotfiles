@@ -1,10 +1,5 @@
 {
   "languageserver": {
-    "golang": {
-      "command": "gopls",
-      "filetypes": ["go"],
-      "rootPatterns": ["go.mod"]
-    },
     "rust": {
       "command": "/home/william/.cargo/bin/rust-analyzer",
       "filetypes": ["rust"],
