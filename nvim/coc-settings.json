@@ -1,9 +1,0 @@
-{
-  "languageserver": {
-    "rust": {
-      "command": "/home/william/.cargo/bin/rust-analyzer",
-      "filetypes": ["rust"],
-      "rootPatterns": ["Cargo.toml"]
-    }
-  }
-}
