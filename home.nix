@@ -164,6 +164,7 @@ let mozilla = import (builtins.fetchGit {
     python3
     rclone
     ripgrep
+    sage
     sd
     tealdeer
     tree
