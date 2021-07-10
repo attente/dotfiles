@@ -166,6 +166,7 @@ let mozilla = import (builtins.fetchGit {
     weechat
     wget
     wireshark
+    xdg-utils
     (yarn.override {
       nodejs = nodejs_latest;
     })
