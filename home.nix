@@ -1,6 +1,7 @@
 let mozilla = import (builtins.fetchGit {
-  url = "https://github.com/mozilla/nixpkgs-mozilla.git";
-  ref = "master";
+  url = "https://github.com/andersk/nixpkgs-mozilla.git";
+  ref = "stdenv.lib";
+  rev = "3499e085fb6ae1a846bcf425fa9c98a3b77480da";
 }); in
 
 { pkgs, ... }:
@@ -122,6 +123,7 @@ let mozilla = import (builtins.fetchGit {
     fd
     fdupes
     file
+    firefox
     glib
     gnome3.eog
     gnome3.nautilus
@@ -134,7 +136,6 @@ let mozilla = import (builtins.fetchGit {
     jq
     kdeconnect
     keepassxc
-    latest.firefox-nightly-bin
     latest.rustChannels.nightly.rust
     lazydocker
     ldns
