@@ -171,6 +171,7 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
   services.fwupd.enable = true;
 
   services.logind.extraConfig = ''
+    RuntimeDirectoryInodesMax=1000000000
     RuntimeDirectorySize=25%
   '';
 
