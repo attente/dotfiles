@@ -139,7 +139,7 @@ let mozilla = import (builtins.fetchGit {
     manpages
     mercurial
     nix-index
-    nodejs_latest
+    nodejs
     openssl
     (pass.overrideAttrs (oldAttrs: {
       src = fetchGit {
@@ -171,7 +171,7 @@ let mozilla = import (builtins.fetchGit {
     wireshark
     xdg-utils
     (yarn.override {
-      nodejs = nodejs_latest;
+      nodejs = nodejs;
     })
     zip
   ];
