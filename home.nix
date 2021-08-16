@@ -82,6 +82,9 @@ let mozilla = import (builtins.fetchGit {
     };
 
     url = {
+      "ssh://git@github.com/0xsequence" = {
+        insteadOf = "https://github.com/0xsequence";
+      };
       "ssh://git@github.com/horizon-games" = {
         insteadOf = "https://github.com/horizon-games";
       };
