@@ -87,9 +87,6 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
   environment.shellInit = ''
     export EDITOR=nvim
     export VISUAL=nvim
-
-    gpg-connect-agent /bye
-    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
   '';
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -146,12 +143,7 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
     '';
   };
 
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
-  programs.ssh.startAgent = false;
+  programs.ssh.startAgent = true;
 
   programs.light.enable = true;
 
