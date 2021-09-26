@@ -154,6 +154,7 @@ let mozilla = import (builtins.fetchGit {
     poppler_utils
     postgresql
     procs
+    pulseaudio
     python
     python3
     rclone
