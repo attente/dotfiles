@@ -148,7 +148,7 @@ let mozilla = import (builtins.fetchGit {
     lldb
     lm_sensors
     lsd
-    manpages
+    man-pages
     mercurial
     nix-index
     nodejs
