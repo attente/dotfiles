@@ -116,6 +116,7 @@ let mozilla = import (builtins.fetchGit {
     alacritty
     ansifilter
     bandwhich
+    baobab
     bat
     binaryen
     bottom
