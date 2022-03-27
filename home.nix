@@ -165,6 +165,7 @@ let mozilla = import (builtins.fetchGit {
         pass/set-correct-program-name-for-sleep.patch
       ];
     }))
+    pavucontrol
     pkg-config
     poppler_utils
     postgresql
