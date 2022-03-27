@@ -171,6 +171,7 @@ let mozilla = import (builtins.fetchGit {
     postgresql
     procs
     pulseaudio
+    pulumi-bin
     python
     python3
     rclone
