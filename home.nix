@@ -177,6 +177,7 @@ let mozilla = import (builtins.fetchGit {
     rclone
     ripgrep
     sd
+    shellcheck
     tealdeer
     tree
     ungoogled-chromium
