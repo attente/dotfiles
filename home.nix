@@ -137,6 +137,7 @@ let mozilla = import (builtins.fetchGit {
     gnumake
     gnupg
     go
+    google-cloud-sdk
     imagemagick
     inkscape
     inotifyTools
