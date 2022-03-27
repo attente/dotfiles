@@ -130,6 +130,7 @@ let mozilla = import (builtins.fetchGit {
     fdupes
     file
     firefox
+    gitg
     glib
     gnome3.eog
     gnome3.nautilus
