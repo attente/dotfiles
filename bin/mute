@@ -1,0 +1,4 @@
+#!/bin/sh
+
+pactl set-source-mute @DEFAULT_SOURCE@ toggle
+pactl set-source-volume @DEFAULT_SOURCE@ 60%
