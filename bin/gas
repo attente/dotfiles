@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl -s -X POST -H 'Content-Type: application/json' --data "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"latest\",true],\"id\":1}" https://dev-nodes.sequence.app/polygon | jq ".result.transactions[].gasPrice" | sd '"(.*)"' 'print($1 / 1e9)' | python
