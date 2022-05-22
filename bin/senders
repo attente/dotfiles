@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for sender in $(curl -s 'https://polygon-relayer.sequence.app/status' | jq -r '.senders[].address') ; do
+  echo -n "$sender "
+  python -c "print($(curl -s -X POST -H 'Content-Type: application/json' --data "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"$sender\",\"latest\"],\"id\":1}" https://dev-nodes.sequence.app/polygon | jq -r .result) / 1e18)"
+done
