@@ -589,16 +589,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       zip
     ];
 
-    imports = [
-      "${fetchTarball "https://github.com/msteen/nixos-vsliveshare/tarball/a54bfc74c5e7ae056f61abdb970c6cd6e8fb5e53"}/modules/vsliveshare/home.nix"
-    ];
-
-    services.vsliveshare = {
-      enable = false;
-      extensionsDir = "$HOME/.vscode-oss/extensions";
-      nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/61cc1f0dc07c2f786e0acfd07444548486f4153b";
-    };
-
     home.stateVersion = "18.09";
   };
 
