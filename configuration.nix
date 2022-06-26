@@ -481,6 +481,16 @@ let secrets = import /etc/nixos/secrets.nix; in
         rebase = true;
       };
 
+      push = {
+        useForceIfIncludes = true;
+      };
+
+      merge = {
+        autoStash = true;
+        conflictStyle = "zdiff3";
+        tool = "nvimdiff";
+      };
+
       rebase = {
         autoSquash = true;
         autoStash = true;
