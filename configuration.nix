@@ -25,7 +25,7 @@ let secrets = import /home/william/.william/helium/secrets.nix; in
     "fs.inotify.max_user_watches" = 65536;
   };
 
-  networking.hostName = "helium"; # Define your hostname.
+  networking.hostName = "oxygen"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
