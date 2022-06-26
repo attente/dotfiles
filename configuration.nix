@@ -10,8 +10,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-
-      <nixos-hardware/lenovo/thinkpad/x1/6th-gen>
     ];
 
   # Use the systemd-boot EFI boot loader.
