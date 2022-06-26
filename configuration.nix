@@ -395,8 +395,6 @@ let secrets = import /etc/nixos/secrets.nix; in
     url = "https://github.com/mozilla/nixpkgs-mozilla.git";
     ref = "master";
   }); in { pkgs, ... }: {
-    nixpkgs.config.allowUnfree = true;
-
     nixpkgs.overlays = [
       mozilla
       (self: super: {
