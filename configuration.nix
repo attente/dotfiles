@@ -535,7 +535,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       gnome3.nautilus
       gnumake
       gnupg
-      go
+      go_1_18
       google-cloud-sdk
       imagemagick
       inkscape
