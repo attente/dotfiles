@@ -553,7 +553,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       man-pages
       mercurial
       nix-index
-      nodejs
+      nodejs_latest
       openssl
       pavucontrol
       pkg-config
@@ -581,7 +581,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       wireshark
       xdg-utils
       (yarn.override {
-        nodejs = nodejs;
+        nodejs = nodejs_latest;
       })
       zip
     ];
