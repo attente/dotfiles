@@ -572,6 +572,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       shellcheck
       sqlite
       tealdeer
+      tmate
       tree
       ungoogled-chromium
       unzip
