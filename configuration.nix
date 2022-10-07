@@ -533,8 +533,8 @@ let secrets = import /etc/nixos/secrets.nix; in
       firefox
       gitg
       glib
-      gnome3.eog
-      gnome3.nautilus
+      gnome.eog
+      gnome.nautilus
       gnumake
       gnupg
       go_1_18
