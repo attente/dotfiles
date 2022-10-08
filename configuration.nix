@@ -541,7 +541,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       inkscape
       inotifyTools
       jq
-      kdeconnect
       keepassxc
       latest.rustChannels.stable.rust
       lazydocker
@@ -557,6 +556,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       openssl
       pavucontrol
       pkg-config
+      plasma5Packages.kdeconnect-kde
       poppler_utils
       postgresql
       procs
