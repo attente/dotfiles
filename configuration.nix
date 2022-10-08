@@ -539,7 +539,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       google-cloud-sdk
       imagemagick
       inkscape
-      inotifyTools
+      inotify-tools
       jq
       keepassxc
       latest.rustChannels.stable.rust
