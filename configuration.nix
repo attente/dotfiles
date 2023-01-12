@@ -234,7 +234,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       updateResolvConf = true;
       config = ''
         # ==============================================================================
-        # Copyright (c) 2016-2017 ProtonVPN A.G. (Switzerland)
+        # Copyright (c) 2016-2020 Proton Technologies AG (Switzerland)
         # Email: contact@protonvpn.com
         #
         # The MIT License (MIT)
@@ -258,24 +258,90 @@ let secrets = import /etc/nixos/secrets.nix; in
         # IN THE SOFTWARE.
         # ==============================================================================
 
+        # If you are a paying user you can also enable the ProtonVPN ad blocker (NetShield) or Moderate NAT:
+        # Use: "v4vP8JZKxL4OXJMjcFISwwaj+f1" as username to enable anti-malware filtering
+        # Use: "v4vP8JZKxL4OXJMjcFISwwaj+f2" as username to additionally enable ad-blocking filtering
+        # Use: "v4vP8JZKxL4OXJMjcFISwwaj+nr" as username to enable Moderate NAT
+        # Note that you can combine the "+nr" suffix with other suffixes.
+
         client
         dev tun
         proto udp
 
-        remote ca.protonvpn.com 80
-        remote ca.protonvpn.com 443
-        remote ca.protonvpn.com 4569
-        remote ca.protonvpn.com 1194
-        remote ca.protonvpn.com 5060
+        remote 169.150.204.44 5060
+        remote 178.249.214.65 80
+        remote 169.150.204.44 80
+        remote 169.150.204.44 1194
+        remote 37.120.237.178 51820
+        remote 37.120.205.82 51820
+        remote 172.83.40.66 80
+        remote 172.83.40.66 4569
+        remote 66.115.146.162 51820
+        remote 178.249.214.65 5060
+        remote 37.120.237.178 1194
+        remote 86.106.90.98 1194
+        remote 86.106.90.98 80
+        remote 178.249.214.65 51820
+        remote 37.120.205.82 1194
+        remote 66.115.146.162 80
+        remote 86.106.90.98 51820
+        remote 37.120.237.170 5060
+        remote 37.120.237.170 4569
+        remote 66.115.146.162 5060
+        remote 169.150.204.44 5060
+        remote 37.120.205.82 5060
+        remote 66.115.146.162 51820
+        remote 178.249.214.65 1194
+        remote 178.249.214.65 80
+        remote 172.83.40.66 1194
+        remote 169.150.204.44 51820
+        remote 178.249.214.65 4569
+        remote 178.249.214.65 4569
+        remote 37.120.205.82 4569
+        remote 66.115.146.162 1194
+        remote 37.120.237.170 80
+        remote 66.115.146.162 4569
+        remote 169.150.204.44 80
+        remote 169.150.204.44 4569
+        remote 169.150.204.44 1194
+        remote 178.249.214.65 51820
+        remote 66.115.146.162 4569
+        remote 178.249.214.65 5060
+        remote 86.106.90.98 5060
+        remote 66.115.146.162 80
+        remote 37.120.237.178 5060
+        remote 37.120.237.170 1194
+        remote 178.249.214.65 80
+        remote 66.115.146.162 1194
+        remote 178.249.214.65 4569
+        remote 172.83.40.66 51820
+        remote 37.120.237.178 4569
+        remote 178.249.214.65 5060
+        remote 178.249.214.65 1194
+        remote 37.120.205.82 80
+        remote 169.150.204.44 51820
+        remote 169.150.204.44 4569
+        remote 178.249.214.65 51820
+        remote 66.115.146.162 5060
+        remote 178.249.214.65 1194
+        remote 37.120.237.178 80
+        remote 172.83.40.66 5060
+        remote 86.106.90.98 4569
+        remote 37.120.237.170 51820
+        server-poll-timeout 20
 
         remote-random
         resolv-retry infinite
         nobind
+
+        # The following setting is only needed for old OpenVPN clients compatibility. New clients
+        # automatically negotiate the optimal cipher.
         cipher AES-256-CBC
+
         auth SHA512
-        comp-lzo no
         verb 3
 
+        setenv CLIENT_CERT 0
         tun-mtu 1500
         tun-mtu-extra 32
         mssfix 1450
