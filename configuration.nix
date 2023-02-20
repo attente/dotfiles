@@ -604,7 +604,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       gnumake
       gnupg
       go_1_18
-      google-cloud-sdk
+      (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       imagemagick
       inkscape
       inotify-tools
