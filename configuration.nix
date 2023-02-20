@@ -620,6 +620,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       man-pages
       mercurial
       nix-index
+      nodePackages_latest.pnpm
       nodejs_latest
       openssl
       pavucontrol
