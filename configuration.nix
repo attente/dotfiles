@@ -488,54 +488,21 @@ let secrets = import /etc/nixos/secrets.nix; in
     programs.neovim.viAlias = true;
     programs.neovim.vimAlias = true;
     programs.neovim.plugins = with pkgs.vimPlugins; [
-      coc-nvim
+      cmp-buffer
+      cmp-nvim-lsp
+      cmp-nvim-lsp-signature-help
+      cmp-path
+      cmp_luasnip
       fzf-vim
       gitgutter
+      luasnip
+      nvim-cmp
+      nvim-lspconfig
+      nvim-treesitter.withAllGrammars
       rust-vim
       typescript-vim
       vimwiki
     ];
-    programs.neovim.extraConfig = ''
-      set nu
-      set et
-      set si
-      set sts=2
-      set sw=2
-      set ts=8
-
-      syn on
-      highlight spaces ctermbg=red guibg=red
-      autocmd syntax * syn match spaces / \+\ze\t\|\s\+$/
-
-      set list
-      set lcs=tab:↹·
-
-      set ut=100
-
-      set sb
-      set spr
-
-      autocmd TermOpen * startinsert
-
-      nmap <silent> [g <Plug>(coc-diagnostic-prev)
-      nmap <silent> ]g <Plug>(coc-diagnostic-next)
-      nmap <silent> gd <Plug>(coc-definition)
-      nmap <silent> gy <Plug>(coc-type-definition)
-      nmap <silent> gi <Plug>(coc-implementation)
-      nmap <silent> gr <Plug>(coc-references)
-      nmap <leader>rn <Plug>(coc-rename)
-      nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-      function! s:show_documentation()
-        if (index(['vim','help'], &filetype) >= 0)
-          execute 'h '.expand('<cword>')
-        elseif (coc#rpc#ready())
-          call CocActionAsync('doHover')
-        else
-          execute '!' . &keywordprg . " " . expand('<cword>')
-        endif
-      endfunction
-    '';
 
     programs.git.enable = true;
     programs.git.userName = "William Hua";
@@ -605,6 +572,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       gnupg
       go_1_18
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
+      gopls
       imagemagick
       inkscape
       inotify-tools
@@ -621,6 +589,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       mercurial
       nix-index
       nodePackages_latest.pnpm
+      nodePackages_latest.typescript-language-server
       nodejs_latest
       openssl
       pavucontrol
@@ -641,6 +610,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       tealdeer
       tmate
       tree
+      tree-sitter
       ungoogled-chromium
       unzip
       vlc
