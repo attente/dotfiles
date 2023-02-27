@@ -600,7 +600,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       procs
       pulseaudio
       pulumi-bin
-      python
       python3
       rclone
       ripgrep
