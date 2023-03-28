@@ -426,13 +426,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     };
   };
 
-  xdg.portal = {
-    enable = true;
-    gtkUsePortal = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr
-    ];
-  };
+  xdg.portal.wlr.enable = true;
 
   services.flatpak.enable = true;
 
