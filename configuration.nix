@@ -149,6 +149,8 @@ let secrets = import /etc/nixos/secrets.nix; in
     '';
   };
 
+  programs.hyprland.enable = true;
+
   programs.ssh.startAgent = true;
 
   programs.light.enable = true;
