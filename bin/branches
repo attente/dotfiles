@@ -1,0 +1,13 @@
+#!/bin/sh
+
+for i in `git branch -r | cut -c 2- | rg -v '\->'` ; do
+  echo $i
+  git log --pretty='author:    %an <%ae> (%ad)%ncommitter: %cn <%ce> (%cd)' $i^..$i
+  echo
+done
+
+for i in `git branch | cut -c 2- | rg -v '\->'` ; do
+  echo $i
+  git log --pretty='author:    %an <%ae> (%ad)%ncommitter: %cn <%ce> (%cd)' $i^..$i
+  echo
+done
