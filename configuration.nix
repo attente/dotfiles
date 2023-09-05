@@ -57,9 +57,9 @@ let secrets = import /etc/nixos/secrets.nix; in
   i18n.defaultLocale = "en_CA.UTF-8";
 
   fonts = {
-    enableDefaultFonts = true;
+    enableDefaultPackages = true;
 
-    fonts = with pkgs; [
+    packages = with pkgs; [
       cantarell-fonts
       nerd-fonts.noto
       noto-fonts
