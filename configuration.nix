@@ -100,6 +100,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     enableCompletion = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
+    shellInit = "DISABLE_MAGIC_FUNCTIONS=true";
     ohMyZsh = {
       enable = true;
       theme = "robbyrussell";
