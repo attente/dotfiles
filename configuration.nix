@@ -148,6 +148,8 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   programs.light.enable = true;
 
+  programs.adb.enable = true;
+
   # List services that you want to enable:
 
   services.tlp = {
@@ -436,6 +438,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     isNormalUser = true;
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
+      "adbusers"
       "docker"
       "sway"
       "video"
