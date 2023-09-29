@@ -548,7 +548,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       docker-compose
       du-dust
       evince
-      exa
       fd
       fdupes
       file
