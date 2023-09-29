@@ -7,6 +7,8 @@ let secrets = import /etc/nixos/secrets.nix; in
 { config, pkgs, ... }:
 
 {
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
