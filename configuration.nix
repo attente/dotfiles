@@ -553,6 +553,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       docker-compose
       du-dust
       evince
+      eww-wayland
       fd
       fdupes
       file
