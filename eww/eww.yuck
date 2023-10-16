@@ -1,0 +1,124 @@
+(defpoll time-zone
+  :initial "America/Toronto"
+  :interval "1m"
+  :run-while false
+  `timedatectl -p Timezone show | cut -d = -f 2`)
+
+(defpoll battery-capacity
+  :interval "1s"
+  `cat /sys/class/power_supply/*/capacity | head -n 1`)
+
+(defpoll battery-status
+  :interval "1s"
+  `cat /sys/class/power_supply/*/status | head -n 1`)
+
+(deflisten volume-level "sh ~/.config/eww/scripts/volume.sh")
+(deflisten workspace-list "bun ~/.config/eww/scripts/workspaces.ts")
+
+(defwindow status-0
+  :monitor 0
+  :geometry
+    (geometry
+      :width "100%"
+      :anchor "top center")
+  :exclusive true
+  (status
+    :monitor 0))
+
+(defwindow status-1
+  :monitor 1
+  :geometry
+    (geometry
+      :width "100%"
+      :anchor "top center")
+  :exclusive true
+  (status
+    :monitor 1))
+
+(defwidget status [monitor]
+  (centerbox
+    :class "status"
+    :orientation "horizontal"
+    (workspaces
+      :monitor monitor)
+    (title
+      :monitor monitor)
+    (box
+      :halign "end"
+      :space-evenly false
+      (volume)
+      (battery)
+      (clock))))
+
+(defwidget workspaces [monitor]
+  (box
+    :halign "start"
+    :space-evenly true
+    (for item in "${jq(workspace-list, ".workspaces")}"
+      (workspace
+        :monitor monitor
+        :item item))))
+
+(defwidget workspace [monitor item]
+  (button
+    :class
+      {item.monitor == monitor ?
+        (item.active ? "workspace-active" : "workspace-inactive") :
+        (item.monitor != "null" ?
+          (item.active ? "workspace-active-other" : "workspace-inactive-other") :
+          "workspace-empty")}
+    :valign "center"
+    :width 30
+    :height 30
+    :onclick "hyprctl --batch 'dispatch moveworkspacetomonitor ${item.id} ${monitor} ; dispatch workspace ${item.id}'"
+    {item.id}))
+
+(defwidget title [monitor]
+  (label
+    :class "title"
+    :text "${replace("${jq(workspace-list, ".workspaces[${jq(workspace-list, ".monitors[${monitor}]")-1}].lastwindowtitle")}", "^\"|\"$", "")}"))
+
+(defwidget volume []
+  (box
+    :space-evenly false
+    (eventbox
+      :onscroll "echo {} | sed -e 's/down/-10%/' -e 's/up/+10%/' | xargs pactl set-sink-volume @DEFAULT_SINK@"
+      (button
+        :class "sink-volume"
+        :halign "end"
+        :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
+        {jq(volume-level, ".sink.muted") ? "🔈🔇" :
+          "${jq(volume-level, ".sink.volume") <= 10 ? "🔈" :
+             jq(volume-level, ".sink.volume") <= 50 ? "🔉" :
+                                                      "🔊"} ${jq(volume-level, ".sink.volume")}%"}))
+    (eventbox
+      :onscroll "echo {} | sed -e 's/down/-10%/' -e 's/up/+10%/' | xargs pactl set-source-volume @DEFAULT_SOURCE@"
+      (button
+        :class "source-volume"
+        :halign "end"
+        :onclick "pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl set-source-volume @DEFAULT_SOURCE@ 60%"
+        "🎤 ${jq(volume-level, ".source.muted") ? "🔇" : "${jq(volume-level, ".source.volume")}%"}"))))
+
+(defwidget battery []
+  (label
+    :class "battery"
+    :text "${battery-status == "Discharging" ? "🔋" : "🔌"} ${battery-capacity}%"))
+
+(defwidget clock []
+  (box
+    :space-evenly false
+    (label
+      :class "clock-date"
+      :halign "end"
+      :justify "right"
+      :text "${formattime(EWW_TIME, "%a %b %-d", time-zone)}")
+    (label
+      :class "clock-time"
+      :halign "end"
+      :justify "right"
+      :text "${formattime(EWW_TIME, "%-I:%M:%S %p", time-zone)}")
+    (label
+      :class "clock-time"
+      :halign "end"
+      :justify "right"
+      :text "(${formattime(EWW_TIME, "%H:%M:%S", "UTC")} UTC)")))
