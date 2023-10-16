@@ -1,0 +1,77 @@
+* {
+  all: unset;
+}
+
+.status {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 4px 16px;
+}
+
+.title {
+  font-weight: bolder;
+}
+
+.clock-date {
+  margin-left: 16px;
+  font-weight: bolder;
+}
+
+.clock-time {
+  margin-left: 8px;
+  font-weight: bolder;
+}
+
+.battery {
+  margin-left: 16px;
+  font-weight: bolder;
+}
+
+.sink-volume {
+  margin-left: 16px;
+  font-weight: bolder;
+}
+
+.source-volume {
+  margin-left: 8px;
+  font-weight: bolder;
+}
+
+.workspace-active {
+  background-color: #20c0e0;
+  margin: 2px;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-size: x-small;
+  font-weight: bolder;
+}
+
+.workspace-inactive {
+  background-color: #20c0e0;
+  margin: 2px;
+  border-radius: 8px;
+  font-size: x-small;
+  font-weight: bolder;
+}
+
+.workspace-active-other {
+  margin: 2px;
+  border: 2px solid #a0a0a0;
+  border-radius: 8px;
+  font-size: x-small;
+  color: #a0a0a0;
+}
+
+.workspace-inactive-other {
+  background-color: #20c0e0;
+  margin: 2px;
+  border-radius: 8px;
+  font-size: x-small;
+  font-weight: bolder;
+}
+
+.workspace-empty {
+  margin: 2px;
+  border-radius: 8px;
+  font-size: x-small;
+  color: #a0a0a0;
+}
