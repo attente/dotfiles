@@ -548,6 +548,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       binaryen
       bottom
       bubblewrap
+      bun
       d-spy
       docker-compose
       du-dust
