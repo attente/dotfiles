@@ -427,7 +427,6 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   virtualisation = {
     docker.enable = true;
-    lxd.enable = true;
   };
 
   users.mutableUsers = false;
