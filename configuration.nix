@@ -426,7 +426,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   services.flatpak.enable = true;
 
   virtualisation.docker.enable = true;
-  virtualisation.lxd.enable = true;
 
   users.mutableUsers = false;
 
