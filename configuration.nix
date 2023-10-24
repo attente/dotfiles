@@ -596,6 +596,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       sd
       shellcheck
       sqlite
+      swww
       tealdeer
       tmate
       tree
