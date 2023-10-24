@@ -423,8 +423,6 @@ let secrets = import /etc/nixos/secrets.nix; in
     };
   };
 
-  xdg.portal.wlr.enable = true;
-
   services.flatpak.enable = true;
 
   virtualisation = {
