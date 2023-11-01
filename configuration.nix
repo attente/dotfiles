@@ -591,7 +591,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       postgresql
       procs
       pulseaudio
-      pulumi-bin
       python3
       rclone
       ripgrep
