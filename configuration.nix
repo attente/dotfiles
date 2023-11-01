@@ -619,6 +619,13 @@ let secrets = import /etc/nixos/secrets.nix; in
       zip
     ];
 
+    xdg.desktopEntries = {
+      youtube-music = {
+        name = "YouTube Music";
+        exec = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --user-data-dir=/home/william/.config/youtube-music --app=https://music.youtube.com";
+      };
+    };
+
     home.stateVersion = "18.09";
   };
 
