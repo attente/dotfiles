@@ -15,6 +15,7 @@ local cmp_nvim_lsp = require 'cmp_nvim_lsp'
 local lspconfig = require 'lspconfig'
 local luasnip = require 'luasnip'
 local nvim_treesitter = require 'nvim-treesitter.configs'
+local telescope = require 'telescope.builtin'
 
 -- nvim-cmp is a completion plugin
 -- cmp-nvim-lsp is an nvim-cmp source for neovim's native lsp client
@@ -22,6 +23,7 @@ local nvim_treesitter = require 'nvim-treesitter.configs'
 -- luasnip is a snippet plugin
 -- nvim-lspconfig is a repo of predefined lsp configs
 -- nvim-treesitter is an interface to the tree-sitter parser
+-- telescope is a fuzzy finder over lists
 
 cmp.setup {
   mapping = cmp.mapping.preset.insert {
@@ -50,13 +52,16 @@ local capabilities = cmp_nvim_lsp.default_capabilities()
 local options = { noremap = true, silent = true }
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, options)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, options)
+vim.keymap.set('n', '<space>fd', telescope.diagnostics, options)
+vim.keymap.set('n', '<space>ff', telescope.find_files, options)
+vim.keymap.set('n', '<space>fg', telescope.live_grep, options)
 
 local on_attach = function (client, buffer)
   local options = { noremap = true, silent = true, buffer = buffer }
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, options)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, options)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, options)
-  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, options)
+  vim.keymap.set('n', 'gd', telescope.lsp_definitions, options)
+  vim.keymap.set('n', 'gr', telescope.lsp_references, options)
+  vim.keymap.set('n', '<space>D', telescope.lsp_type_definitions, options)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, options)
   vim.keymap.set('n', '<space>f', function () vim.lsp.buf.format { async = true } end, options)
 end
