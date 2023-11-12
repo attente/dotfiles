@@ -491,6 +491,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       nvim-lspconfig
       nvim-treesitter.withAllGrammars
       rust-vim
+      telescope-nvim
       typescript-vim
       vimwiki
     ];
