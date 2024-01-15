@@ -5,10 +5,6 @@ foreground = "#ffffff"
 [font.normal]
 family = "Noto Sans Mono"
 
-[mouse.hints.launcher]
-args = ["--enable-features=UseOzonePlatform", "--ozone-platform=wayland", "--disable-gpu-memory-buffer-video-frames"]
-program = "chromium"
-
 [scrolling]
 history = 100000
 
