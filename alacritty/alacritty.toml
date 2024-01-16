@@ -2,6 +2,9 @@
 background = "#000000"
 foreground = "#ffffff"
 
+[font]
+size = 11
+
 [font.normal]
 family = "Noto Sans Mono"
 
