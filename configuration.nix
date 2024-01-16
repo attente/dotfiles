@@ -59,7 +59,18 @@ let secrets = import /etc/nixos/secrets.nix; in
   };
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_CA.UTF-8";
+  i18n = {
+    defaultLocale = "en_CA.UTF-8";
+
+    inputMethod = {
+      enabled = "fcitx5";
+
+      fcitx5.addons = with pkgs; [
+        fcitx5-gtk
+        fcitx5-mozc
+      ];
+    };
+  };
 
   fonts = {
     enableDefaultPackages = true;
