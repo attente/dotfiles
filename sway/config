@@ -267,8 +267,6 @@ bar {
     swaybar_command waybar
 }
 
-exec mako --default-timeout 3000
-
 exec redshift
 
 exec fcitx

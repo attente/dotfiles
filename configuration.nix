@@ -128,7 +128,6 @@ let secrets = import /etc/nixos/secrets.nix; in
 
     extraPackages = with pkgs; [
       grim
-      mako
       qt5.qtwayland
       (redshift.overrideAttrs (oldAttrs: {
         src = fetchFromGitHub {
