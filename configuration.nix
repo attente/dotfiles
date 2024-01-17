@@ -563,6 +563,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       d-spy
       docker-compose
       du-dust
+      dunst
       evince
       eww-wayland
       fd
