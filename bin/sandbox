@@ -1,0 +1,15 @@
+#!/bin/sh
+
+SANDBOXES="$HOME/.william/sandboxes"
+SANDBOX=$(realpath --relative-to="$HOME" "$PWD")
+
+mkdir -p "$SANDBOXES/$SANDBOX"
+
+bwrap \
+  --ro-bind / / \
+  --dev-bind /dev /dev \
+  --tmpfs /tmp \
+  --bind "$SANDBOXES/$SANDBOX" "$HOME" \
+  --ro-bind "$HOME/.nix-profile" "$HOME/.nix-profile" \
+  --bind "$PWD" "$PWD" \
+  zsh
