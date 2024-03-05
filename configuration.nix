@@ -237,7 +237,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       du-dust
       dunst
       evince
-      eww-wayland
+      eww
       fd
       fdupes
       file
