@@ -105,8 +105,15 @@
     :text "${battery-status == "Discharging" ? "🔋" : "🔌"} ${battery-capacity}%"))
 
 (defwidget clock []
-  (label
-    :class "clock"
-    :halign "end"
-    :justify "right"
-    :text "${formattime(EWW_TIME, "%a %b %-d %-I:%M:%S %p", time-zone)}"))
+  (box
+    :space-evenly false
+    (label
+      :class "clock-date"
+      :halign "end"
+      :justify "right"
+      :text "${formattime(EWW_TIME, "%a %b %-d", time-zone)}")
+    (label
+      :class "clock-time"
+      :halign "end"
+      :justify "right"
+      :text "${formattime(EWW_TIME, "%-I:%M:%S %p", time-zone)}")))
