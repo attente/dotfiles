@@ -19,7 +19,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       <home-manager/nixos>
     ];
 
-  # Use the systemd-boot EFI boot loader.
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.editor = false;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -43,6 +43,12 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   networking.hostName = "oxygen"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
   networking.networkmanager.enable = true;
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
@@ -53,23 +59,42 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   hardware.bluetooth.enable = true;
 
+  # Set your time zone.
+  time.timeZone = "America/Toronto";
+
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
 
   # Select internationalisation properties.
-  i18n = {
-    defaultLocale = "en_CA.UTF-8";
+  i18n.defaultLocale = "en_CA.UTF-8";
 
-    inputMethod = {
-      enabled = "fcitx5";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_CA.UTF-8";
+    LC_IDENTIFICATION = "en_CA.UTF-8";
+    LC_MEASUREMENT = "en_CA.UTF-8";
+    LC_MONETARY = "en_CA.UTF-8";
+    LC_NAME = "en_CA.UTF-8";
+    LC_NUMERIC = "en_CA.UTF-8";
+    LC_PAPER = "en_CA.UTF-8";
+    LC_TELEPHONE = "en_CA.UTF-8";
+    LC_TIME = "en_CA.UTF-8";
+  };
 
-      fcitx5.addons = with pkgs; [
-        fcitx5-gtk
-        fcitx5-mozc
-      ];
-    };
+  i18n.inputMethod = {
+    enabled = "fcitx5";
+
+    fcitx5.addons = with pkgs; [
+      fcitx5-gtk
+      fcitx5-mozc
+    ];
+  };
+
+  # Configure keymap in X11
+  services.xserver = {
+    layout = "us";
+    xkbVariant = "";
   };
 
   fonts = {
@@ -86,12 +111,218 @@ let secrets = import /etc/nixos/secrets.nix; in
     ];
   };
 
-  # Set your time zone.
-  time.timeZone = "America/Toronto";
+  users.mutableUsers = false;
+
+  users.defaultUserShell = pkgs.zsh;
+
+  users.users.root.hashedPassword = secrets.users.root.hashedPassword;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.william = {
+    uid = 1000;
+    isNormalUser = true;
+    description = "William Hua";
+    hashedPassword = secrets.users.william.hashedPassword;
+    extraGroups = [
+      "adbusers"
+      "docker"
+      "networkmanager"
+      "sway"
+      "video"
+      "wheel"
+    ];
+    packages = with pkgs; [];
+  };
+
+  home-manager.users.william = let mozilla = import (builtins.fetchGit {
+    url = "https://github.com/mozilla/nixpkgs-mozilla.git";
+    ref = "master";
+  }); in { pkgs, ... }: {
+    nixpkgs.overlays = [
+      mozilla
+      (self: super: {
+        latest.rustChannels.stable.rust = super.latest.rustChannels.stable.rust.override {
+          targets = [
+            "wasm32-unknown-unknown"
+          ];
+
+          extensions = [
+            "clippy-preview"
+            "rust-src"
+            "rustfmt-preview"
+          ];
+        };
+      })
+    ];
+
+    programs.home-manager.enable = true;
+
+    services.syncthing.enable = true;
+
+    programs.neovim.enable = true;
+    programs.neovim.viAlias = true;
+    programs.neovim.vimAlias = true;
+    programs.neovim.plugins = with pkgs.vimPlugins; [
+      cmp-buffer
+      cmp-nvim-lsp
+      cmp-nvim-lsp-signature-help
+      cmp-path
+      cmp_luasnip
+      fzf-vim
+      gitgutter
+      luasnip
+      nvim-cmp
+      nvim-lspconfig
+      nvim-treesitter.withAllGrammars
+      rust-vim
+      telescope-nvim
+      typescript-vim
+      vimwiki
+    ];
+
+    programs.git.enable = true;
+    programs.git.userName = "William Hua";
+    programs.git.userEmail = "william@attente.ca";
+    programs.git.extraConfig = {
+      pull = {
+        rebase = true;
+      };
+
+      push = {
+        useForceIfIncludes = true;
+      };
+
+      merge = {
+        autoStash = true;
+        conflictStyle = "zdiff3";
+        tool = "nvimdiff";
+      };
+
+      rebase = {
+        autoSquash = true;
+        autoStash = true;
+      };
+
+      url = {
+        "ssh://git@github.com/0xsequence" = {
+          insteadOf = "https://github.com/0xsequence";
+        };
+        "ssh://git@github.com/horizon-games" = {
+          insteadOf = "https://github.com/horizon-games";
+        };
+      };
+    };
+
+    programs.git.delta.enable = true;
+    programs.git.lfs.enable = true;
+
+    programs.fzf.enable = true;
+    programs.fzf.enableZshIntegration = true;
+    programs.fzf.defaultCommand = "fd -L 2>/dev/null";
+    programs.fzf.changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
+    programs.fzf.fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
+
+    home.packages = with pkgs; [
+      alacritty
+      ansifilter
+      bandwhich
+      baobab
+      bat
+      binaryen
+      bottom
+      bubblewrap
+      bun
+      d-spy
+      docker-compose
+      du-dust
+      dunst
+      evince
+      eww-wayland
+      fd
+      fdupes
+      file
+      firefox
+      gitg
+      glib
+      gnome.eog
+      gnome.nautilus
+      gnumake
+      gnupg
+      go
+      (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
+      gopls
+      imagemagick
+      inkscape
+      inotify-tools
+      jq
+      keepassxc
+      latest.rustChannels.stable.rust
+      lazydocker
+      ldns
+      libreoffice
+      lldb
+      lm_sensors
+      lsd
+      man-pages
+      mercurial
+      nix-index
+      nodePackages_latest.pnpm
+      nodePackages_latest.typescript-language-server
+      nodejs_latest
+      openssl
+      pavucontrol
+      pkg-config
+      plasma5Packages.kdeconnect-kde
+      poppler_utils
+      postgresql
+      procs
+      pulseaudio
+      python3
+      rclone
+      ripgrep
+      sd
+      shellcheck
+      sqlite
+      swww
+      tealdeer
+      tmate
+      tree
+      tree-sitter
+      ungoogled-chromium
+      unzip
+      vlc
+      vscodium
+      wabt
+      weechat
+      wget
+      wireshark
+      xdg-utils
+      (yarn.override {
+        nodejs = nodejs_latest;
+      })
+      zip
+    ];
+
+    xdg.desktopEntries = {
+      youtube-music = {
+        name = "YouTube Music";
+        exec = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --user-data-dir=/home/william/.config/youtube-music --app=https://music.youtube.com";
+      };
+    };
+
+    home.stateVersion = "23.11";
+  };
+
+  # users.extraUsers.guest = {
+  #   isNormalUser = true;
+  #   uid = 1000;
+  # };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
     neovim
   ];
 
@@ -109,7 +340,10 @@ let secrets = import /etc/nixos/secrets.nix; in
   # started in user sessions.
   # programs.bash.enableCompletion = true;
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
 
   programs.zsh = {
     enable = true;
@@ -199,11 +433,9 @@ let secrets = import /etc/nixos/secrets.nix; in
   };
 
   # Enable the OpenSSH daemon.
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-    };
+  services.openssh.enable = true;
+  services.openssh.settings = {
+    PasswordAuthentication = false;
   };
 
   # Open ports in the firewall.
@@ -441,217 +673,12 @@ let secrets = import /etc/nixos/secrets.nix; in
     docker.enable = true;
   };
 
-  users.mutableUsers = false;
-
-  users.defaultUserShell = pkgs.zsh;
-
-  users.users.root.hashedPassword = secrets.users.root.hashedPassword;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.william = {
-    uid = 1000;
-    description = "William Hua";
-    isNormalUser = true;
-    hashedPassword = secrets.users.william.hashedPassword;
-    extraGroups = [
-      "adbusers"
-      "docker"
-      "sway"
-      "video"
-      "wheel"
-    ];
-  };
-
-  home-manager.users.william = let mozilla = import (builtins.fetchGit {
-    url = "https://github.com/mozilla/nixpkgs-mozilla.git";
-    ref = "master";
-  }); in { pkgs, ... }: {
-    nixpkgs.overlays = [
-      mozilla
-      (self: super: {
-        latest.rustChannels.stable.rust = super.latest.rustChannels.stable.rust.override {
-          targets = [
-            "wasm32-unknown-unknown"
-          ];
-
-          extensions = [
-            "clippy-preview"
-            "rust-src"
-            "rustfmt-preview"
-          ];
-        };
-      })
-    ];
-
-    programs.home-manager.enable = true;
-
-    services.syncthing.enable = true;
-
-    programs.neovim.enable = true;
-    programs.neovim.viAlias = true;
-    programs.neovim.vimAlias = true;
-    programs.neovim.plugins = with pkgs.vimPlugins; [
-      cmp-buffer
-      cmp-nvim-lsp
-      cmp-nvim-lsp-signature-help
-      cmp-path
-      cmp_luasnip
-      fzf-vim
-      gitgutter
-      luasnip
-      nvim-cmp
-      nvim-lspconfig
-      nvim-treesitter.withAllGrammars
-      rust-vim
-      telescope-nvim
-      typescript-vim
-      vimwiki
-    ];
-
-    programs.git.enable = true;
-    programs.git.userName = "William Hua";
-    programs.git.userEmail = "william@attente.ca";
-    programs.git.extraConfig = {
-      pull = {
-        rebase = true;
-      };
-
-      push = {
-        useForceIfIncludes = true;
-      };
-
-      merge = {
-        autoStash = true;
-        conflictStyle = "zdiff3";
-        tool = "nvimdiff";
-      };
-
-      rebase = {
-        autoSquash = true;
-        autoStash = true;
-      };
-
-      url = {
-        "ssh://git@github.com/0xsequence" = {
-          insteadOf = "https://github.com/0xsequence";
-        };
-        "ssh://git@github.com/horizon-games" = {
-          insteadOf = "https://github.com/horizon-games";
-        };
-      };
-    };
-
-    programs.git.delta.enable = true;
-    programs.git.lfs.enable = true;
-
-    programs.fzf.enable = true;
-    programs.fzf.enableZshIntegration = true;
-    programs.fzf.defaultCommand = "fd -L 2>/dev/null";
-    programs.fzf.changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
-    programs.fzf.fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
-
-    home.packages = with pkgs; [
-      alacritty
-      ansifilter
-      bandwhich
-      baobab
-      bat
-      binaryen
-      bottom
-      bubblewrap
-      bun
-      d-spy
-      docker-compose
-      du-dust
-      dunst
-      evince
-      eww-wayland
-      fd
-      fdupes
-      file
-      firefox
-      gitg
-      glib
-      gnome.eog
-      gnome.nautilus
-      gnumake
-      gnupg
-      go
-      (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
-      gopls
-      imagemagick
-      inkscape
-      inotify-tools
-      jq
-      keepassxc
-      latest.rustChannels.stable.rust
-      lazydocker
-      ldns
-      libreoffice
-      lldb
-      lm_sensors
-      lsd
-      man-pages
-      mercurial
-      nix-index
-      nodePackages_latest.pnpm
-      nodePackages_latest.typescript-language-server
-      nodejs_latest
-      openssl
-      pavucontrol
-      pkg-config
-      plasma5Packages.kdeconnect-kde
-      poppler_utils
-      postgresql
-      procs
-      pulseaudio
-      python3
-      rclone
-      ripgrep
-      sd
-      shellcheck
-      sqlite
-      swww
-      tealdeer
-      tmate
-      tree
-      tree-sitter
-      ungoogled-chromium
-      unzip
-      vlc
-      vscodium
-      wabt
-      weechat
-      wget
-      wireshark
-      xdg-utils
-      (yarn.override {
-        nodejs = nodejs_latest;
-      })
-      zip
-    ];
-
-    xdg.desktopEntries = {
-      youtube-music = {
-        name = "YouTube Music";
-        exec = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --user-data-dir=/home/william/.config/youtube-music --app=https://music.youtube.com";
-      };
-    };
-
-    home.stateVersion = "18.09";
-  };
-
-  # users.extraUsers.guest = {
-  #   isNormalUser = true;
-  #   uid = 1000;
-  # };
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "18.03"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
 
 }
