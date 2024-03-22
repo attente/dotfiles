@@ -232,7 +232,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       bottom
       bubblewrap
       bun
-      dfeet
+      d-spy
       docker-compose
       du-dust
       dunst
