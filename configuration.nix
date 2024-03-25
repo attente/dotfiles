@@ -203,6 +203,10 @@ let secrets = import /etc/nixos/secrets.nix; in
         autoStash = true;
       };
 
+      advice = {
+        skippedCherryPicks = false;
+      };
+
       url = {
         "ssh://git@github.com/0xsequence" = {
           insteadOf = "https://github.com/0xsequence";
