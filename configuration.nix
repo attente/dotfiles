@@ -126,6 +126,8 @@ let secrets = import /etc/nixos/secrets.nix; in
     extraGroups = [
       "adbusers"
       "docker"
+      "kvm"
+      "libvirtd"
       "networkmanager"
       "sway"
       "video"
@@ -405,6 +407,8 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   programs.adb.enable = true;
 
+  programs.virt-manager.enable = true;
+
   # List services that you want to enable:
 
   services.tlp = {
@@ -675,6 +679,7 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   virtualisation = {
     docker.enable = true;
+    libvirtd.enable = true;
   };
 
   # This value determines the NixOS release from which the default
