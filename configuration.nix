@@ -673,7 +673,9 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   services.flatpak.enable = true;
 
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker.enable = true;
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
