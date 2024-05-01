@@ -309,6 +309,13 @@ let secrets = import /etc/nixos/secrets.nix; in
       zip
     ];
 
+    home.pointerCursor = {
+      package = pkgs.adwaita-icon-theme;
+      name = "Adwaita";
+      size = 64;
+      gtk.enable = true;
+    };
+
     xdg.desktopEntries = {
       youtube-music = {
         name = "YouTube Music";
