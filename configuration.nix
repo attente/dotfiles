@@ -238,6 +238,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       bottom
       bubblewrap
       bun
+      corepack
       d-spy
       docker-compose
       du-dust
@@ -272,7 +273,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       man-pages
       mercurial
       nix-index
-      nodePackages_latest.pnpm
       nodePackages_latest.typescript-language-server
       nodejs_latest
       openssl
