@@ -10,6 +10,8 @@ vim.o.splitright = true
 vim.o.termguicolors = true
 vim.o.updatetime = 100
 
+vim.cmd 'colorscheme tokyonight'
+
 local cmp = require 'cmp'
 local cmp_nvim_lsp = require 'cmp_nvim_lsp'
 local lspconfig = require 'lspconfig'
