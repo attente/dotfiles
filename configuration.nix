@@ -178,6 +178,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       nvim-treesitter.withAllGrammars
       rust-vim
       telescope-nvim
+      tokyonight-nvim
       typescript-vim
       vimwiki
     ];
