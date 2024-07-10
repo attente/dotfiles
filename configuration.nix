@@ -244,6 +244,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       docker-compose
       du-dust
       dunst
+      eog
       evince
       eww
       fd
@@ -252,8 +253,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       firefox
       gitg
       glib
-      gnome.eog
-      gnome.nautilus
       gnumake
       gnupg
       go
@@ -273,6 +272,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       lsd
       man-pages
       mercurial
+      nautilus
       nix-index
       nodePackages_latest.typescript-language-server
       nodejs_latest
