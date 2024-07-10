@@ -311,7 +311,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     ];
 
     home.pointerCursor = {
-      package = pkgs.gnome.adwaita-icon-theme;
+      package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
       size = 64;
       gtk.enable = true;
