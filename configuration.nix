@@ -408,6 +408,7 @@ let secrets = import /etc/nixos/secrets.nix; in
   };
 
   programs.hyprland.enable = true;
+  programs.hyprlock.enable = true;
 
   programs.ssh.startAgent = true;
 
