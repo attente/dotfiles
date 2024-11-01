@@ -11,7 +11,7 @@ family = "Noto Sans Mono"
 [scrolling]
 history = 100000
 
-[shell]
+[terminal.shell]
 args = ["-p", "--command", "zsh"]
 program = "nix-shell"
 
