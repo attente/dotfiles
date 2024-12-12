@@ -102,7 +102,7 @@ let secrets = import /etc/nixos/secrets.nix; in
 
     packages = with pkgs; [
       cantarell-fonts
-      nerdfonts
+      nerd-fonts-noto
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-emoji
