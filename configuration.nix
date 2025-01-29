@@ -354,6 +354,7 @@ let secrets = import /etc/nixos/secrets.nix; in
   environment.shellInit = ''
     export EDITOR=nvim
     export VISUAL=nvim
+    export COREPACK_ENABLE_AUTO_PIN=0
   '';
 
   # Some programs need SUID wrappers, can be configured further or are
