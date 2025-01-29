@@ -21,7 +21,6 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.editor = false;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -50,14 +49,6 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   # Enable networking
   networking.networkmanager.enable = true;
-
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
-  networking.useDHCP = false;
-  networking.interfaces.wlp4s0.useDHCP = true;
-
-  hardware.bluetooth.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Toronto";
@@ -330,13 +321,8 @@ let secrets = import /etc/nixos/secrets.nix; in
       };
     };
 
-    home.stateVersion = "23.11";
+    home.stateVersion = "24.11";
   };
-
-  # users.extraUsers.guest = {
-  #   isNormalUser = true;
-  #   uid = 1000;
-  # };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -359,7 +345,6 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-  # programs.bash.enableCompletion = true;
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
@@ -431,29 +416,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = true;
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
-
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
-
-  # Enable touchpad support.
-  # services.xserver.libinput.enable = true;
-
-  # Enable the KDE Desktop Environment.
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma5.enable = true;
 
   services.gvfs.enable = true;
 
@@ -668,6 +630,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
