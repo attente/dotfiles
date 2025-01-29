@@ -129,7 +129,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       "kvm"
       "libvirtd"
       "networkmanager"
-      "sway"
       "video"
       "wheel"
     ];
@@ -258,6 +257,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       go
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       gopls
+      grim
       hypridle
       imagemagick
       inkscape
@@ -286,10 +286,12 @@ let secrets = import /etc/nixos/secrets.nix; in
       procs
       pulseaudio
       python3
+      qt5.qtwayland
       rclone
       ripgrep
       sd
       shellcheck
+      slurp
       sqlite
       swww
       tealdeer
@@ -302,8 +304,11 @@ let secrets = import /etc/nixos/secrets.nix; in
       vscodium
       wabt
       weechat
+      wf-recorder
       wget
       wireshark
+      wl-clipboard
+      wofi
       xdg-utils
       (yarn.override {
         nodejs = nodejs_latest;
@@ -370,42 +375,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       enable = true;
       theme = "robbyrussell";
     };
-  };
-
-  programs.sway = {
-    enable = true;
-
-    extraPackages = with pkgs; [
-      grim
-      qt5.qtwayland
-      (redshift.overrideAttrs (oldAttrs: {
-        src = fetchFromGitHub {
-          owner = "minus7";
-          repo = "redshift";
-          rev = "7da875d34854a6a34612d5ce4bd8718c32bec804";
-          sha256 = "0nbkcw3avmzjg1jr1g9yfpm80kzisy55idl09b6wvzv2sz27n957";
-          fetchSubmodules = true;
-        };
-      }))
-      slurp
-      swaybg
-      swayidle
-      swaylock
-      (waybar.override {
-        pulseSupport = true;
-      })
-      wf-recorder
-      wl-clipboard
-      wofi
-      xwayland
-    ];
-
-    extraSessionCommands = ''
-      export XDG_CURRENT_DESKTOP=sway
-      export XDG_SESSION_TYPE=wayland
-      export GDK_BACKEND=wayland
-      export QT_QPA_PLATFORM=wayland
-    '';
   };
 
   programs.hyprland.enable = true;
