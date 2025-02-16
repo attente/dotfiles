@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# Usage: ./edit-encrypted.sh <encrypted-file.gpg>
+#
+# This script:
+#   1. Reads a single file argument (the encrypted file).
+#   2. Prompts the user for a passphrase once (without echo).
+#   3. If the file exists, tries to decrypt it to a temporary file.
+#      - If decryption fails, the script aborts with an error.
+#   4. If the file does not exist, it starts with an empty buffer.
+#   5. Opens the temporary buffer in the editor ($EDITOR, or vi).
+#   6. If the editor exits successfully, encrypts/updates the original file with AES-256.
+
+# Ensure exactly one argument is provided
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <encrypted-file>"
+  exit 1
+fi
+
+ENCRYPTED_FILE="$1"
+
+###############################################################################
+# Prompt for passphrase
+###############################################################################
+echo -n "Enter passphrase: "
+# Disable terminal echo
+stty -echo
+trap 'stty echo' EXIT  # Ensure echo is re-enabled if script is interrupted
+IFS= read -r PASSPHRASE
+# Re-enable echo
+stty echo
+trap - EXIT
+echo
+
+###############################################################################
+# Create a temporary file to hold decrypted data (or empty data if file missing)
+###############################################################################
+TMPFILE="$(mktemp /tmp/decrypted.XXXXXX)"
+# Remove the temporary file on exit or interrupt signals
+trap 'rm -f "$TMPFILE"' 0 1 2 3 15
+
+###############################################################################
+# Decrypt if file exists. Otherwise, start empty.
+###############################################################################
+if [ -f "$ENCRYPTED_FILE" ]; then
+  echo "$PASSPHRASE" | \
+    gpg --batch --yes --quiet --passphrase-fd 0 \
+        --decrypt "$ENCRYPTED_FILE" > "$TMPFILE" 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to decrypt '$ENCRYPTED_FILE'." >&2
+    exit 1
+  fi
+else
+  echo "File '$ENCRYPTED_FILE' does not exist. Starting with empty contents."
+  : > "$TMPFILE"
+fi
+
+###############################################################################
+# Open editor
+###############################################################################
+# Determine the editor (default to vi if EDITOR is not set)
+if [ -z "$EDITOR" ]; then
+  EDITOR=vi
+fi
+
+"$EDITOR" "$TMPFILE"
+EDIT_STATUS="$?"
+
+# Only re-encrypt if the editor exited successfully (exit code 0)
+if [ "$EDIT_STATUS" -ne 0 ]; then
+  echo "Editor exited with status $EDIT_STATUS. Aborting encryption."
+  exit 1
+fi
+
+###############################################################################
+# Encrypt the (possibly updated) file using AES-256
+###############################################################################
+echo "$PASSPHRASE" | \
+  gpg --batch --yes --quiet --passphrase-fd 0 \
+      --symmetric --cipher-algo AES256 \
+      --output "$ENCRYPTED_FILE" "$TMPFILE"
+
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to encrypt '$TMPFILE' to '$ENCRYPTED_FILE'." >&2
+  exit 1
+fi
+
+echo "Successfully updated and encrypted '$ENCRYPTED_FILE'."
+exit 0
