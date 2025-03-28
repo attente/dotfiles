@@ -10,6 +10,8 @@ vim.o.splitright = true
 vim.o.termguicolors = true
 vim.o.updatetime = 100
 
+vim.opt.clipboard:append("unnamedplus")
+
 vim.cmd 'colorscheme tokyonight'
 
 local cmp = require 'cmp'
