@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# 1. Search for *every* line in the current directory (recursively) with rg
+#    -H          Always show file names
+#    --no-heading  Never print file headings
+#    -n          Show line numbers
+#    ''          Empty pattern, matches every line
+#    .           Current directory
+#
+# 2. Pipe the results to fzf for interactive selection.
+#    If the user cancels the selection, fzf exits non-zero, so we can just exit.
+selected="$(rg -H --no-heading -n '' . | fzf --no-mouse --height=22)" || exit 0
+
+# If nothing was selected (i.e., user pressed ESC in fzf), also exit.
+[ -z "$selected" ] && exit 0
+
+# The output from rg is in the form:  FILENAME:LINE:TEXT
+# We can extract FILENAME and LINE using sd (regex-based find/replace).
+file="$(echo "$selected" | sd '^([^:]+):(\d+):.*' '$1')"
+line="$(echo "$selected" | sd '^([^:]+):(\d+):.*' '$2')"
+
+# Finally, open the file at the selected line in vi.
+vi +"$line" "$file"
