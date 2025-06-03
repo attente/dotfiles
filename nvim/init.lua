@@ -20,6 +20,7 @@ local lspconfig = require 'lspconfig'
 local luasnip = require 'luasnip'
 local nvim_treesitter = require 'nvim-treesitter.configs'
 local telescope = require 'telescope.builtin'
+local treesitter_context = require 'treesitter-context'
 
 -- nvim-cmp is a completion plugin
 -- cmp-nvim-lsp is an nvim-cmp source for neovim's native lsp client
@@ -28,6 +29,7 @@ local telescope = require 'telescope.builtin'
 -- nvim-lspconfig is a repo of predefined lsp configs
 -- nvim-treesitter is an interface to the tree-sitter parser
 -- telescope is a fuzzy finder over lists
+-- treesitter-context is a context plugin
 
 cmp.setup {
   mapping = cmp.mapping.preset.insert {
@@ -92,4 +94,10 @@ nvim_treesitter.setup {
   indent = {
     enable = true,
   },
+}
+
+treesitter_context.setup {
+  multiwindow = true,
+  mode = 'topline',
+  trim_scope = 'inner',
 }

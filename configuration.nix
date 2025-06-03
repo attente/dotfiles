@@ -165,6 +165,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       luasnip
       nvim-cmp
       nvim-lspconfig
+      nvim-treesitter-context
       nvim-treesitter.withAllGrammars
       rust-vim
       telescope-nvim
