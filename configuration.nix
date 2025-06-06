@@ -295,6 +295,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       vlc
       vscodium
       wabt
+      walker
       weechat
       wf-recorder
       wget
