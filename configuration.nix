@@ -301,7 +301,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       wget
       wireshark
       wl-clipboard
-      wofi
       xdg-utils
       (yarn.override {
         nodejs = nodejs_latest;
