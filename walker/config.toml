@@ -13,8 +13,8 @@ force_keyboard_focus = false
 [keys]
 accept_typeahead = ["tab"]
 trigger_labels = "lalt"
-next = ["down"]
-prev = ["up"]
+next = ["ctrl n"]
+prev = ["ctrl p"]
 close = ["esc"]
 remove_from_history = ["shift backspace"]
 resume_query = ["ctrl r"]
@@ -78,12 +78,56 @@ weight = 5
 placeholder = "Bookmarks"
 name = "bookmarks"
 icon = "bookmark"
-switcher_only = true
 
 [[builtins.bookmarks.entries]]
-label = "Walker"
-url = "https://github.com/abenz1267/walker"
-keywords = ["walker", "github"]
+label = "Migadu"
+url = "https://webmail.migadu.com"
+keywords = ["mail"]
+
+[[builtins.bookmarks.entries]]
+label = "Gmail"
+url = "https://mail.google.com"
+keywords = ["mail"]
+
+[[builtins.bookmarks.entries]]
+label = "Telegram"
+url = "https://web.telegram.org"
+keywords = ["telegram"]
+
+[[builtins.bookmarks.entries]]
+label = "Messenger"
+url = "https://www.messenger.com"
+keywords = ["messenger"]
+
+[[builtins.bookmarks.entries]]
+label = "Discord"
+url = "https://discord.com/channels/@me"
+keywords = ["discord"]
+
+[[builtins.bookmarks.entries]]
+label = "Slack"
+url = "https://app.slack.com/client/T02TYAKD4MQ"
+keywords = ["slack"]
+
+[[builtins.bookmarks.entries]]
+label = "Calendar"
+url = "https://calendar.google.com"
+keywords = ["calendar"]
+
+[[builtins.bookmarks.entries]]
+label = "Weather"
+url = "https://www.weather.gc.ca/en/forecast/hourly/index.html?coords=43.655,-79.383"
+keywords = ["weather"]
+
+[[builtins.bookmarks.entries]]
+label = "ChatGPT"
+url = "https://chatgpt.com"
+keywords = ["chatgpt", "openai"]
+
+[[builtins.bookmarks.entries]]
+label = "YouTube"
+url = "https://youtube.com"
+keywords = ["youtube"]
 
 [builtins.xdph_picker]
 hidden = true
@@ -167,7 +211,7 @@ history = true
 typeahead = true
 
 [builtins.finder]
-use_fd = false
+use_fd = true
 fd_flags = "--ignore-vcs --type file"
 weight = 5
 icon = "file"
@@ -190,7 +234,7 @@ typeahead = true
 history = true
 generic_entry = false
 refresh = true
-use_fd = false
+use_fd = true
 
 [builtins.ssh]
 weight = 5
@@ -215,23 +259,12 @@ name = "websearch"
 placeholder = "Websearch"
 
 [[builtins.websearch.entries]]
-name = "Google"
-url = "https://www.google.com/search?q=%TERM%"
-
-[[builtins.websearch.entries]]
 name = "DuckDuckGo"
 url = "https://duckduckgo.com/?q=%TERM%"
-switcher_only = true
 
 [[builtins.websearch.entries]]
-name = "Ecosia"
-url = "https://www.ecosia.org/search?q=%TERM%"
-switcher_only = true
-
-[[builtins.websearch.entries]]
-name = "Yandex"
-url = "https://yandex.com/search/?text=%TERM%"
-switcher_only = true
+name = "YouTube"
+url = "https://www.youtube.com/results?search_query=%TERM%"
 
 [builtins.dmenu]
 hidden = true
