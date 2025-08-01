@@ -306,9 +306,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       wireshark
       wl-clipboard
       xdg-utils
-      (yarn.override {
-        nodejs = nodejs_latest;
-      })
       zip
     ];
 
