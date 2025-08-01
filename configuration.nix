@@ -197,6 +197,10 @@ let secrets = import /etc/nixos/secrets.nix; in
         autoStash = true;
       };
 
+      log = {
+        abbrevCommit = true;
+      };
+
       advice = {
         skippedCherryPicks = false;
       };
