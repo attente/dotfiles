@@ -234,6 +234,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       bottom
       bubblewrap
       bun
+      codex
       corepack
       d-spy
       docker-compose
