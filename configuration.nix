@@ -391,10 +391,10 @@ let secrets = import /etc/nixos/secrets.nix; in
 
   services.fwupd.enable = true;
 
-  services.logind.extraConfig = ''
-    RuntimeDirectoryInodesMax=1000000000
-    RuntimeDirectorySize=25%
-  '';
+  services.logind.settings.Login = {
+    RuntimeDirectoryInodesMax = "1000000000";
+    RuntimeDirectorySize = "25%";
+  };
 
   services.avahi = {
     enable = true;
