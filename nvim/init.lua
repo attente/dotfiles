@@ -16,7 +16,6 @@ vim.cmd 'colorscheme tokyonight'
 
 local cmp = require 'cmp'
 local cmp_nvim_lsp = require 'cmp_nvim_lsp'
-local lspconfig = require 'lspconfig'
 local luasnip = require 'luasnip'
 local nvim_treesitter = require 'nvim-treesitter.configs'
 local telescope = require 'telescope.builtin'
@@ -72,20 +71,14 @@ local on_attach = function (client, buffer)
   vim.keymap.set('n', '<space>f', function () vim.lsp.buf.format { async = true } end, options)
 end
 
-lspconfig.gopls.setup {
+vim.lsp.config('*', {
   capabilities = capabilities,
   on_attach = on_attach,
-}
+})
 
-lspconfig.rust_analyzer.setup {
-  capabilities = capabilities,
-  on_attach = on_attach,
-}
-
-lspconfig.ts_ls.setup {
-  capabilities = capabilities,
-  on_attach = on_attach,
-}
+vim.lsp.enable('gopls')
+vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('ts_ls')
 
 nvim_treesitter.setup {
   highlight = {
