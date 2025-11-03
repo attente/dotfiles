@@ -237,6 +237,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       codex
       corepack
       d-spy
+      devenv
       docker-compose
       du-dust
       dunst
