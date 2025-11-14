@@ -279,7 +279,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       openssl
       pavucontrol
       pkg-config
-      poppler_utils
+      poppler-utils
       postgresql
       procs
       pulseaudio
