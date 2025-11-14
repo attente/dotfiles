@@ -198,7 +198,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       };
 
       log = {
-        abbrevCommit = true;
+        abbrevCommit = false;
       };
 
       advice = {
