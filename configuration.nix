@@ -96,8 +96,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       nerd-fonts.noto
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
-      noto-fonts-extra
+      noto-fonts-monochrome-emoji
       roboto
     ];
   };
