@@ -239,8 +239,8 @@ let secrets = import /etc/nixos/secrets.nix; in
       d-spy
       devenv
       docker-compose
-      du-dust
       dunst
+      dust
       eog
       evince
       eww
