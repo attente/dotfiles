@@ -1,0 +1,16 @@
+#!/bin/sh
+
+dunstify -u critical -t 0 -a codex "$PWD" "$(echo "$1" | jq '."last-assistant-message"')"
+
+echo '===' $(date) - "$PWD" '===' >> ~/.codex_history
+echo >> ~/.codex_history
+echo "$1" | jq -r '."input-messages"[-1]' >> ~/.codex_history
+echo >> ~/.codex_history
+echo '=== Response ===' >> ~/.codex_history
+echo >> ~/.codex_history
+echo "$1" | jq -r '."last-assistant-message"' >> ~/.codex_history
+echo >> ~/.codex_history
+echo '===' $(date) - "$PWD" '===' >> ~/.codex_history
+echo >> ~/.codex_history
+echo >> ~/.codex_history
+echo >> ~/.codex_history
