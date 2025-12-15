@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dunstify -u critical -t 0 -a codex "$PWD" "$(echo "$1" | jq '."last-assistant-message"')"

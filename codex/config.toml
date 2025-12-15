@@ -1,0 +1,3 @@
+model = "gpt-5.1-codex-max"
+model_reasoning_effort = "xhigh"
+notify = ["/home/william/.william/etc/bin/codex-notify"]
