@@ -15,5 +15,30 @@ if [ -n "${commands[fzf-share]}" ]; then
   bindkey "^I" $fzf_default_completion
 fi
 
+if [ -n "${commands[rg]}" ] && [ -n "${commands[fzf]}" ]; then
+  function __rg_fzf_edit_widget() {
+    emulate -L zsh
+    setopt localoptions pipefail no_aliases
+
+    local selection file line editor rg_cmd
+    rg_cmd="rg --vimgrep --color=always --smart-case --hidden --glob '!.git/*'"
+    selection=$(
+      fzf --ansi --phony --query "" --prompt "rg> " \
+        --bind "start:reload:${rg_cmd} -- {q} || true" \
+        --bind "change:reload:${rg_cmd} -- {q} || true"
+    ) || return
+
+    file="${selection%%:*}"
+    line="${selection#*:}"
+    line="${line%%:*}"
+    editor="${EDITOR:-nvim}"
+    BUFFER="${editor} +${line} ${(q)file}"
+    CURSOR=${#BUFFER}
+  }
+
+  zle -N __rg_fzf_edit_widget
+  bindkey "^F" __rg_fzf_edit_widget
+fi
+
 export PATH="/home/william/.william/etc/bin:/home/william/.cargo/bin:/home/william/go/bin:/home/william/.npm/bin:$PATH"
 export GOPATH="/home/william/go"
