@@ -234,7 +234,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       bubblewrap
       bun
       codex
-      corepack
       d-spy
       devenv
       docker-compose
@@ -278,6 +277,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       openssl
       pavucontrol
       pkg-config
+      pnpm
       poppler-utils
       postgresql
       procs
