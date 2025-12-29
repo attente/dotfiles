@@ -344,6 +344,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     export EDITOR=nvim
     export VISUAL=nvim
     export COREPACK_ENABLE_AUTO_PIN=0
+    export CODEX_HOME=~/.config/codex
   '';
 
   # Some programs need SUID wrappers, can be configured further or are
