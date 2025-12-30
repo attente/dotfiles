@@ -628,6 +628,11 @@ let secrets = import /etc/nixos/secrets.nix; in
     libvirtd.enable = true;
   };
 
+  services.ollama = with pkgs; {
+    enable = true;
+    package = ollama-rocm;
+  };
+
   services.trezord.enable = true;
 
   # This value determines the NixOS release from which the default
