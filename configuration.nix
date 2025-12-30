@@ -119,6 +119,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       "kvm"
       "libvirtd"
       "networkmanager"
+      "render"
       "video"
       "wheel"
     ];
@@ -626,6 +627,12 @@ let secrets = import /etc/nixos/secrets.nix; in
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
+  };
+
+  services.ollama = with pkgs; {
+    enable = true;
+    package = ollama-rocm;
+    rocmOverrideGfx = "10.3.0";
   };
 
   services.trezord.enable = true;
