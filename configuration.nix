@@ -173,49 +173,59 @@ let secrets = import /etc/nixos/secrets.nix; in
       vimwiki
     ];
 
-    programs.git.enable = true;
-    programs.git.userName = "William Hua";
-    programs.git.userEmail = "william@attente.ca";
-    programs.git.extraConfig = {
-      pull = {
-        rebase = true;
-      };
+    programs.git = {
+      enable = true;
 
-      push = {
-        useForceIfIncludes = true;
-      };
-
-      merge = {
-        autoStash = true;
-        conflictStyle = "zdiff3";
-        tool = "nvimdiff";
-      };
-
-      rebase = {
-        autoSquash = true;
-        autoStash = true;
-      };
-
-      log = {
-        abbrevCommit = false;
-      };
-
-      advice = {
-        skippedCherryPicks = false;
-      };
-
-      url = {
-        "ssh://git@github.com/0xsequence" = {
-          insteadOf = "https://github.com/0xsequence";
+      settings = {
+        user = {
+          name = "William Hua";
+          email = "william@attente.ca";
         };
-        "ssh://git@github.com/horizon-games" = {
-          insteadOf = "https://github.com/horizon-games";
+
+        pull = {
+          rebase = true;
+        };
+
+        push = {
+          useForceIfIncludes = true;
+        };
+
+        merge = {
+          autoStash = true;
+          conflictStyle = "zdiff3";
+          tool = "nvimdiff";
+        };
+
+        rebase = {
+          autoSquash = true;
+          autoStash = true;
+        };
+
+        log = {
+          abbrevCommit = false;
+        };
+
+        advice = {
+          skippedCherryPicks = false;
+        };
+
+        url = {
+          "ssh://git@github.com/0xsequence" = {
+            insteadOf = "https://github.com/0xsequence";
+          };
+          "ssh://git@github.com/horizon-games" = {
+            insteadOf = "https://github.com/horizon-games";
+          };
         };
       };
+
+      lfs.enable = true;
     };
 
-    programs.git.delta.enable = true;
-    programs.git.lfs.enable = true;
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+    };
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
