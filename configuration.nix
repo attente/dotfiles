@@ -114,7 +114,6 @@ let secrets = import /etc/nixos/secrets.nix; in
     description = "William Hua";
     hashedPassword = secrets.users.william.hashedPassword;
     extraGroups = [
-      "adbusers"
       "docker"
       "kvm"
       "libvirtd"
@@ -383,8 +382,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   programs.ssh.startAgent = true;
 
   programs.light.enable = true;
-
-  programs.adb.enable = true;
 
   programs.virt-manager.enable = true;
 
