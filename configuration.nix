@@ -164,7 +164,8 @@ let secrets = import /etc/nixos/secrets.nix; in
       nvim-cmp
       nvim-lspconfig
       nvim-treesitter-context
-      nvim-treesitter.withAllGrammars
+      nvim-treesitter-legacy.withAllGrammars
+      plenary-nvim
       rust-vim
       telescope-nvim
       tokyonight-nvim
