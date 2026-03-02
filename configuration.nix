@@ -312,6 +312,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       vscodium
       wabt
       walker
+      waypipe
       weechat
       wf-recorder
       wget
