@@ -160,7 +160,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       cmp-path
       cmp_luasnip
       fzf-vim
-      gitgutter
       luasnip
       nvim-cmp
       nvim-lspconfig
@@ -171,6 +170,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       telescope-nvim
       tokyonight-nvim
       typescript-vim
+      vim-gitgutter
       vimwiki
     ];
 
