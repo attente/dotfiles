@@ -419,6 +419,10 @@ let secrets = import /etc/nixos/secrets.nix; in
     };
   };
 
+  services.tailscale.enable = true;
+  services.resolved.enable = true;
+  networking.networkmanager.dns = "systemd-resolved";
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings = {
