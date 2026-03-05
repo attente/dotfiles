@@ -2,9 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-let secrets = import /etc/nixos/secrets.nix; in
+{ config, pkgs, inputs, ... }:
 
-{ config, pkgs, ... }:
+let
+  home-manager = inputs.home-manager;
+  secrets = import ./secrets.nix;
+in
 
 {
   nix.settings = {
@@ -15,8 +18,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-
-      <home-manager/nixos>
     ];
 
   # Bootloader.
@@ -125,27 +126,7 @@ let secrets = import /etc/nixos/secrets.nix; in
     packages = with pkgs; [];
   };
 
-  home-manager.users.william = let mozilla = import (builtins.fetchGit {
-    url = "https://github.com/mozilla/nixpkgs-mozilla.git";
-    ref = "master";
-  }); in { pkgs, ... }: {
-    nixpkgs.overlays = [
-      mozilla
-      (self: super: {
-        latest.rustChannels.stable.rust = super.latest.rustChannels.stable.rust.override {
-          targets = [
-            "wasm32-unknown-unknown"
-          ];
-
-          extensions = [
-            "clippy-preview"
-            "rust-src"
-            "rustfmt-preview"
-          ];
-        };
-      })
-    ];
-
+  home-manager.users.william = {
     programs.home-manager.enable = true;
 
     services.syncthing.enable = true;
@@ -272,7 +253,6 @@ let secrets = import /etc/nixos/secrets.nix; in
       jq
       kdePackages.kdeconnect-kde
       keepassxc
-      latest.rustChannels.stable.rust
       lazydocker
       ldns
       libreoffice
@@ -336,7 +316,7 @@ let secrets = import /etc/nixos/secrets.nix; in
       };
     };
 
-    home.stateVersion = "24.11";
+    home.stateVersion = "25.11";
   };
 
   # List packages installed in system profile. To search, run:
@@ -642,6 +622,8 @@ let secrets = import /etc/nixos/secrets.nix; in
     libvirtd.enable = true;
   };
 
+  services.elephant.enable = true;
+
   services.ollama = with pkgs; {
     enable = true;
     package = ollama-rocm;
@@ -656,6 +638,6 @@ let secrets = import /etc/nixos/secrets.nix; in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
 }
