@@ -223,6 +223,7 @@ in
       bat
       binaryen
       bottom
+      brightnessctl
       bubblewrap
       bun
       codex
@@ -363,8 +364,6 @@ in
   programs.hyprlock.enable = true;
 
   programs.ssh.startAgent = true;
-
-  programs.light.enable = true;
 
   programs.virt-manager.enable = true;
 
