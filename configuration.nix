@@ -211,11 +211,13 @@ in
       enableGitIntegration = true;
     };
 
-    programs.fzf.enable = true;
-    programs.fzf.enableZshIntegration = true;
-    programs.fzf.defaultCommand = "fd -L 2>/dev/null";
-    programs.fzf.changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
-    programs.fzf.fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
+    programs.fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      defaultCommand = "fd -L 2>/dev/null";
+      changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
+      fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
+    };
 
     home.packages = with pkgs; [
       alacritty
