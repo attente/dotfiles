@@ -131,29 +131,31 @@ in
 
     services.syncthing.enable = true;
 
-    programs.neovim.enable = true;
-    programs.neovim.viAlias = true;
-    programs.neovim.vimAlias = true;
-    programs.neovim.plugins = with pkgs.vimPlugins; [
-      cmp-buffer
-      cmp-nvim-lsp
-      cmp-nvim-lsp-signature-help
-      cmp-path
-      cmp_luasnip
-      fzf-vim
-      luasnip
-      nvim-cmp
-      nvim-lspconfig
-      nvim-treesitter-context
-      nvim-treesitter-legacy.withAllGrammars
-      plenary-nvim
-      rust-vim
-      telescope-nvim
-      tokyonight-nvim
-      typescript-vim
-      vim-gitgutter
-      vimwiki
-    ];
+    programs.neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      plugins = with pkgs.vimPlugins; [
+        cmp-buffer
+        cmp-nvim-lsp
+        cmp-nvim-lsp-signature-help
+        cmp-path
+        cmp_luasnip
+        fzf-vim
+        luasnip
+        nvim-cmp
+        nvim-lspconfig
+        nvim-treesitter-context
+        nvim-treesitter-legacy.withAllGrammars
+        plenary-nvim
+        rust-vim
+        telescope-nvim
+        tokyonight-nvim
+        typescript-vim
+        vim-gitgutter
+        vimwiki
+      ];
+    };
 
     programs.git = {
       enable = true;
