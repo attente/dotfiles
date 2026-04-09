@@ -319,6 +319,15 @@ in
       fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
     };
 
+    programs.opencode = {
+      enable = true;
+      enableMcpIntegration = true;
+      settings = {
+        model = "deepseek/deepseek-v4-flash";
+        autoupdate = false;
+      };
+    };
+
     home.packages = with pkgs; [
       alacritty
       ansifilter
