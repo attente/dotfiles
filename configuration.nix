@@ -319,6 +319,11 @@ in
       fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
     };
 
+    programs.opencode = {
+      enable = true;
+      enableMcpIntegration = true;
+    };
+
     home.packages = with pkgs; [
       alacritty
       ansifilter
