@@ -347,6 +347,7 @@ in
       eww
       fd
       fdupes
+      ffmpeg
       file
       firefox
       gitg
