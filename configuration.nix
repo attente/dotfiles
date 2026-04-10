@@ -411,6 +411,7 @@ in
       weechat
       wf-recorder
       wget
+      (whisper-cpp.override { rocmSupport = true; })
       wireshark
       wl-clipboard
       xdg-utils
