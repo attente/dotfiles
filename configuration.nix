@@ -540,6 +540,16 @@ in
     rocmOverrideGfx = "10.3.0";
   };
 
+  services.hermes-agent = {
+    enable = true;
+    environmentFiles = [ "/var/lib/hermes/env" ];
+    addToSystemPackages = true;
+    container = {
+      enable = true;
+      hostUsers = [ "william" ];
+    };
+  };
+
   services.trezord.enable = true;
 
   # This value determines the NixOS release from which the default
