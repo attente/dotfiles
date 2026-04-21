@@ -120,8 +120,6 @@ in
   home-manager.users.william = {
     programs.home-manager.enable = true;
 
-    services.syncthing.enable = true;
-
     programs.neovim = {
       enable = true;
       viAlias = true;
