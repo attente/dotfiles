@@ -105,6 +105,10 @@ in
     isNormalUser = true;
     description = "William Hua";
     hashedPassword = secrets.users.william.hashedPassword;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJDbwYv/HQpTJJ/OoqLDCOIl/8/OB6PquYTQ1t8I8z4 william@helium"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILL5GUQhsPlfsxHbpWnJ4XrLuzD1zchWKzfBO7kIxn0P platinum"
+    ];
     extraGroups = [
       "docker"
       "kvm"
