@@ -532,7 +532,18 @@ in
   services.flatpak.enable = true;
 
   virtualisation = {
+    containers = {
+      enable = true;
+      containersConf.settings.containers.default_network = "bridge";
+    };
+
     docker.enable = true;
+
+    podman = {
+      enable = true;
+      dockerCompat = false;
+    };
+
     libvirtd.enable = true;
   };
 
@@ -542,6 +553,36 @@ in
     enable = true;
     package = ollama-rocm;
     rocmOverrideGfx = "10.3.0";
+  };
+
+  services.hermes-agent = {
+    enable = true;
+    addToSystemPackages = true;
+    environmentFiles = [ "/var/lib/hermes/env" ];
+    createUser = false;
+    user = "william";
+    group = "users";
+    container = {
+      enable = true;
+      backend = "podman";
+      hostUsers = [ "william" ];
+      extraVolumes = [
+        "/run/user/1000:/run/user/1000:ro"
+        "/run/user/1000/podman/podman.sock:/var/run/docker.sock"
+        "/home/william/.config/git/config:/home/hermes/.config/git/config"
+        "/home/william/.config/gh:/home/hermes/.config/gh"
+        "/home/william/.config/codex:/home/hermes/.codex"
+        "/home/william/.claude.json:/home/hermes/.claude.json"
+        "/home/william/.claude:/home/hermes/.claude"
+      ];
+      extraOptions = [
+      ];
+    };
+    settings = {
+      model.default = "deepseek/deepseek-v4-flash";
+      privacy.redact_pii = true;
+      worktree = true;
+    };
   };
 
   services.trezord.enable = true;
