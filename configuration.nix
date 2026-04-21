@@ -74,15 +74,6 @@ in
     LC_TIME = "en_CA.UTF-8";
   };
 
-  i18n.inputMethod = {
-    enabled = "fcitx5";
-
-    fcitx5.addons = with pkgs; [
-      fcitx5-gtk
-      fcitx5-mozc
-    ];
-  };
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
