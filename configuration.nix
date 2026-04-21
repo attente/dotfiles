@@ -287,6 +287,9 @@ in
         };
 
         url = {
+          "ssh://git@github.com/0xPolygon" = {
+            insteadOf = "https://github.com/0xPolygon";
+          };
           "ssh://git@github.com/0xsequence" = {
             insteadOf = "https://github.com/0xsequence";
           };
