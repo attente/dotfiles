@@ -368,7 +368,7 @@ in
       mercurial
       nautilus
       nix-index
-      nodejs_latest
+      nodejs_20
       openssl
       pavucontrol
       pkg-config
