@@ -259,6 +259,12 @@ in
           email = "william@attente.ca";
         };
 
+        gpg = {
+          ssh = {
+            defaultKeyCommand = "ssh-add -L";
+          };
+        };
+
         pull = {
           rebase = true;
         };
@@ -300,6 +306,8 @@ in
       };
 
       lfs.enable = true;
+
+      signing.format = "ssh";
     };
 
     programs.delta = {
