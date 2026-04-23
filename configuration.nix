@@ -141,7 +141,7 @@ in
         nvim-cmp
         nvim-lspconfig
         nvim-treesitter-context
-        nvim-treesitter-legacy.withAllGrammars
+        nvim-treesitter.withAllGrammars
         plenary-nvim
         rust-vim
         telescope-nvim
@@ -170,7 +170,7 @@ in
         local cmp = require 'cmp'
         local cmp_nvim_lsp = require 'cmp_nvim_lsp'
         local luasnip = require 'luasnip'
-        local nvim_treesitter = require 'nvim-treesitter.configs'
+        local nvim_treesitter = require 'nvim-treesitter'
         local telescope = require 'telescope.builtin'
         local treesitter_context = require 'treesitter-context'
 
@@ -233,14 +233,20 @@ in
         vim.lsp.enable('rust_analyzer')
         vim.lsp.enable('ts_ls')
 
-        nvim_treesitter.setup {
-          highlight = {
-            enable = true,
-          },
-          indent = {
-            enable = true,
-          },
-        }
+        nvim_treesitter.setup {}
+
+        local treesitter_group = vim.api.nvim_create_augroup('treesitter', { clear = true })
+
+        vim.api.nvim_create_autocmd('FileType', {
+          group = treesitter_group,
+          pattern = '*',
+          callback = function(args)
+            local ok = pcall(vim.treesitter.start, args.buf)
+            if ok then
+              vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+          end,
+        })
 
         treesitter_context.setup {
           multiwindow = true,
