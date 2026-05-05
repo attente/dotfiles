@@ -387,6 +387,7 @@ in
       lsd
       man-pages
       mercurial
+      mosh
       nautilus
       nix-index
       nodejs_20
