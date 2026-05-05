@@ -408,6 +408,7 @@ in
       sqlite
       tealdeer
       tmate
+      tmux
       tree
       tree-sitter
       typescript-language-server
