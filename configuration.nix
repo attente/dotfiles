@@ -430,6 +430,7 @@ in
       wireshark
       wl-clipboard
       xdg-utils
+      yq-go
       zip
     ];
 
