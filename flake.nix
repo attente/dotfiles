@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    hermes-agent.url = "github:NousResearch/hermes-agent/6fb69229caba4bd5699228e520de4956b3458187";
+    hermes-agent.url = "github:NousResearch/hermes-agent/498bfc7bc12a937621b4215312049b1000726df3";
     hermes-agent.inputs.nixpkgs.follows = "nixpkgs";
   };
 
