@@ -57,8 +57,9 @@ in
   time.timeZone = "America/Toronto";
 
   console = {
-    font = "Lat2-Terminus16";
     keyMap = "us";
+    font = "cozette12x26";
+    packages = [ pkgs.cozette ];
   };
 
   # Select internationalisation properties.
