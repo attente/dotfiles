@@ -399,6 +399,7 @@ in
       openssl
       pavucontrol
       pkg-config
+      plex-desktop
       pnpm
       poppler-utils
       postgresql
