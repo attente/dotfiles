@@ -369,6 +369,7 @@ in
       ffmpeg
       file
       firefox
+      gcc
       gh
       gitg
       glib
