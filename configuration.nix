@@ -397,7 +397,7 @@ in
       mosh
       nautilus
       nix-index
-      nodejs_20
+      nodejs_latest
       openssl
       pavucontrol
       pkg-config
