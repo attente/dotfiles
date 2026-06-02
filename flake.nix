@@ -2,7 +2,7 @@
   description = "A very basic flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=0eec7df66269d595db0b0bf5b379f6952833be62";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hermes-agent.url = "github:NousResearch/hermes-agent/498bfc7bc12a937621b4215312049b1000726df3";
