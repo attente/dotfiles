@@ -582,6 +582,7 @@ in
   services.hermes-agent = {
     enable = true;
     addToSystemPackages = true;
+    extraDependencyGroups = [ "messaging" ];
     environmentFiles = [ "/var/lib/hermes/env" ];
     createUser = false;
     user = "william";
@@ -606,6 +607,15 @@ in
       model.default = "deepseek/deepseek-v4-flash";
       privacy.redact_pii = true;
       worktree = true;
+      telegram = {
+        unauthorized_dm_behavior = "ignore";
+        allowed_chats = [ "__no_groups__" ];
+        guest_mode = false;
+        require_mention = true;
+        exclusive_bot_mentions = true;
+        disable_topic_auto_rename = true;
+        reactions = true;
+      };
     };
   };
 
