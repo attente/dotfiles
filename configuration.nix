@@ -350,6 +350,7 @@ in
       baobab
       bat
       binaryen
+      biome
       bottom
       brightnessctl
       bubblewrap
