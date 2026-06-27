@@ -603,11 +603,14 @@ in
         "/home/william/hermes:/data/workspace"
       ];
       extraOptions = [
-        "--label=forced-refresh=refresh-3" # bump to force refresh
+        "--label=forced-refresh=refresh-4" # bump to force refresh
       ];
     };
     settings = {
-      model.default = "deepseek/deepseek-v4-flash";
+      model = {
+        provider = "openrouter";
+        default = "deepseek/deepseek-v4-flash";
+      };
       privacy.redact_pii = true;
       approvals = {
         mode = "off";
