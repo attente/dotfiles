@@ -600,6 +600,7 @@ in
         "/home/william/.config/codex:/home/hermes/.codex"
         "/home/william/.claude.json:/home/hermes/.claude.json"
         "/home/william/.claude:/home/hermes/.claude"
+        "/home/william/hermes:/data/workspace"
       ];
       extraOptions = [
       ];
@@ -608,6 +609,10 @@ in
       model.default = "deepseek/deepseek-v4-flash";
       privacy.redact_pii = true;
       worktree = true;
+      terminal = {
+        cwd = "/data/workspace";
+        shell = "zsh";
+      };
       telegram = {
         unauthorized_dm_behavior = "ignore";
         allowed_chats = [ "__no_groups__" ];
