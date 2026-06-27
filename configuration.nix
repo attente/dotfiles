@@ -607,7 +607,10 @@ in
       ];
     };
     settings = {
-      model.default = "deepseek/deepseek-v4-flash";
+      model = {
+        provider = "openai-codex";
+        default = "gpt-5.5-codex";
+      };
       privacy.redact_pii = true;
       approvals = {
         mode = "off";
