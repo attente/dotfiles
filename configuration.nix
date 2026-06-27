@@ -87,7 +87,7 @@ in
     enableDefaultPackages = true;
 
     packages = with pkgs; [
-      cantarell-fonts
+      pkgs-stable.cantarell-fonts
       nerd-fonts.noto
       noto-fonts
       noto-fonts-cjk-sans
