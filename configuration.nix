@@ -603,6 +603,7 @@ in
         "/home/william/hermes:/data/workspace"
       ];
       extraOptions = [
+        "--label=forced-refresh=refresh-1" # bump to force refresh
       ];
     };
     settings = {
