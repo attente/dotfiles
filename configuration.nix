@@ -603,12 +603,18 @@ in
         "/home/william/hermes:/data/workspace"
       ];
       extraOptions = [
-        "--label=forced-refresh=refresh-1" # bump to force refresh
+        "--label=forced-refresh=refresh-2" # bump to force refresh
       ];
     };
     settings = {
       model.default = "deepseek/deepseek-v4-flash";
       privacy.redact_pii = true;
+      approvals = {
+        mode = "off";
+        cron_mode = "approve";
+        mcp_reload_confirm = false;
+        destructive_slash_confirm = false;
+      };
       worktree = true;
       terminal = {
         cwd = "/data/workspace";
