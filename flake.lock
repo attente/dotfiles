@@ -65,6 +65,22 @@
         "type": "github"
       }
     },
+    "kolide-nix-agent": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781011409,
+        "narHash": "sha256-7snHaF2V0stM+KWKawR7BDjB8eRIWyDBwhQ0QICHB1U=",
+        "owner": "kolide",
+        "repo": "nix-agent",
+        "rev": "0c254006ff10e2cf2930b7c2f44c78db4c7602b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kolide",
+        "repo": "nix-agent",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1775036866,
@@ -77,6 +93,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-kernel": {
+      "locked": {
+        "lastModified": 1778029429,
+        "narHash": "sha256-ZDaEIJh4Er/mydxacNxhb3rMTooj1X0VjXeON+W75vg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f021c83afaf95e480cd11385fea7bf1751b08741",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -226,7 +258,9 @@
       "inputs": {
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
+        "kolide-nix-agent": "kolide-nix-agent",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-kernel": "nixpkgs-kernel",
         "nixpkgs-stable": "nixpkgs-stable"
       }
     },
