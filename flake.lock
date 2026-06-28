@@ -68,16 +68,17 @@
     "kolide-nix-agent": {
       "flake": false,
       "locked": {
-        "lastModified": 1781011409,
-        "narHash": "sha256-7snHaF2V0stM+KWKawR7BDjB8eRIWyDBwhQ0QICHB1U=",
+        "lastModified": 1779379151,
+        "narHash": "sha256-fgVMsz8lBQht7sHGCR+rWM/kEMpFNYhWHESg1tbac3E=",
         "owner": "kolide",
         "repo": "nix-agent",
-        "rev": "0c254006ff10e2cf2930b7c2f44c78db4c7602b9",
+        "rev": "284a398537f71e202037954928cf96c4aef29fe7",
         "type": "github"
       },
       "original": {
         "owner": "kolide",
         "repo": "nix-agent",
+        "rev": "284a398537f71e202037954928cf96c4aef29fe7",
         "type": "github"
       }
     },
