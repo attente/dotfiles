@@ -9,7 +9,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hermes-agent.url = "github:NousResearch/hermes-agent/2bd1977d8fad185c9b4be47884f7e87f1add0ce3";
     kolide-nix-agent = {
-      url = "github:kolide/nix-agent/284a398537f71e202037954928cf96c4aef29fe7";
+      url = "github:kolide/nix-agent/0c254006ff10e2cf2930b7c2f44c78db4c7602b9";
       flake = false;
     };
   };
