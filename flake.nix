@@ -25,19 +25,25 @@
         inherit system;
         config.allowUnfree = true;
       };
-      mkNixosConfiguration = module: nixpkgs.lib.nixosSystem {
+      mkNixosConfiguration = { module, extraModules ? [ ] }: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs pkgs-stable pkgs-kernel; };
         modules = [
           home-manager.nixosModules.home-manager
-          hermes-agent.nixosModules.default
           module
-        ];
+        ] ++ extraModules;
       };
     in {
       nixosConfigurations = {
-        oxygen = mkNixosConfiguration ./configuration.nix;
-        phosphorus = mkNixosConfiguration ./phosphorus;
+        oxygen = mkNixosConfiguration {
+          module = ./configuration.nix;
+          extraModules = [
+            hermes-agent.nixosModules.default
+          ];
+        };
+        phosphorus = mkNixosConfiguration {
+          module = ./phosphorus;
+        };
       };
     };
 }
