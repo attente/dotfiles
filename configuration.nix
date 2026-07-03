@@ -150,7 +150,6 @@ in
         rust-vim
         telescope-nvim
         tokyonight-nvim
-        typescript-vim
         vim-gitgutter
         vimwiki
       ];
