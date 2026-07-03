@@ -344,8 +344,8 @@ in
       enable = true;
       enableZshIntegration = true;
       defaultCommand = "fd -L 2>/dev/null";
-      changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
-      fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
+      changeDirWidget.command = "fd -L -t d 2>/dev/null";
+      fileWidget.command = "fd -L -t f -t l 2>/dev/null";
     };
 
     programs.tmux = {
