@@ -325,12 +325,84 @@ in
       enableGitIntegration = true;
     };
 
+    programs.mercurial = {
+      enable = true;
+      userName = "William Hua";
+      userEmail = "william@attente.ca";
+      extraConfig.extensions = {
+        purge = "";
+        share = "";
+      };
+    };
+
+    programs.npm = {
+      enable = true;
+      package = pkgs.nodejs_latest;
+      settings.prefix = "/home/william/.npm";
+    };
+
     programs.fzf = {
       enable = true;
       enableZshIntegration = true;
       defaultCommand = "fd -L 2>/dev/null";
       changeDirWidgetCommand = "fd -L -t d 2>/dev/null";
       fileWidgetCommand = "fd -L -t f -t l 2>/dev/null";
+    };
+
+    programs.tmux = {
+      enable = true;
+      prefix = "C-a";
+      keyMode = "vi";
+      baseIndex = 1;
+      mouse = false;
+      extraConfig = ''
+        set-option -ga terminal-overrides ",xterm-256color:Tc"
+        set -as terminal-features 'xterm*:extkeys'
+      '';
+    };
+
+    programs.zsh = {
+      enable = true;
+      enableCompletion = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+        extraConfig = ''
+          DISABLE_MAGIC_FUNCTIONS=true
+        '';
+      };
+      initContent = ''
+        if [ -n "''${commands[fzf]}" ]; then
+          bindkey "^I" $fzf_default_completion
+        fi
+
+        if [ -n "''${commands[rg]}" ] && [ -n "''${commands[fzf]}" ]; then
+          function __rg_fzf_edit_widget() {
+            emulate -L zsh
+            setopt localoptions pipefail no_aliases
+
+            local selection file line editor rg_cmd
+            rg_cmd="rg --vimgrep --color=always --smart-case --hidden --glob '!.git/*'"
+            selection=$(
+              fzf --ansi --phony --query "" --prompt "rg> " \
+                --bind "start:reload:''${rg_cmd} -- {q} || true" \
+                --bind "change:reload:''${rg_cmd} -- {q} || true"
+            ) || return
+
+            file="''${selection%%:*}"
+            line="''${selection#*:}"
+            line="''${line%%:*}"
+            editor="''${EDITOR:-nvim}"
+            BUFFER="''${editor} +''${line} ''${(q)file}"
+            CURSOR=''${#BUFFER}
+          }
+
+          zle -N __rg_fzf_edit_widget
+          bindkey "^F" __rg_fzf_edit_widget
+        fi
+      '';
     };
 
     programs.opencode = {
@@ -342,8 +414,397 @@ in
       };
     };
 
+    programs.alacritty = {
+      enable = true;
+      settings = builtins.fromTOML (builtins.readFile ./alacritty/alacritty.toml);
+    };
+
+    programs.eww = {
+      enable = true;
+      yuckConfig = builtins.readFile ./eww/eww.yuck;
+      scssConfig = builtins.readFile ./eww/eww.scss;
+    };
+
+    programs.hyprlock = {
+      enable = true;
+      package = null;
+      settings = {
+        general.ignore_empty_input = true;
+
+        label = [
+          {
+            text = "cmd[update:1000] date +'%A, %B %e, %Y' | sd '  ' ' '";
+            text_align = "center";
+            font_size = 32;
+            font_family = "TeX Gyre Pagella";
+            position = "0, 400";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 3;
+            shadow_size = 10;
+          }
+          {
+            text = "cmd[update:1000] date +'%l:%M:%S %P'";
+            text_align = "center";
+            font_size = 96;
+            font_family = "TeX Gyre Pagella";
+            position = "0, 200";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 3;
+            shadow_size = 10;
+          }
+          {
+            text = "$ATTEMPTS";
+            text_align = "center";
+            font_size = 16;
+            font_family = "TeX Gyre Pagella";
+            position = "-100, 100";
+            halign = "right";
+            valign = "bottom";
+            shadow_passes = 3;
+            shadow_size = 10;
+          }
+        ];
+
+        "input-field" = [
+          {
+            monitor = "";
+            fade_on_empty = false;
+            placeholder_text = "🔒";
+            fail_text = "❌";
+            outline_thickness = 8;
+            capslock_color = "rgb(255, 0, 0)";
+            position = "0, -100";
+            shadow_passes = 5;
+            shadow_size = 1;
+            shadow_color = "rgb(128, 128, 128)";
+          }
+        ];
+
+        background = [
+          {
+            path = "screenshot";
+            blur_passes = 4;
+            blur_size = 4;
+          }
+        ];
+      };
+    };
+
+    programs.wofi = {
+      enable = true;
+      settings = {
+        allow_images = true;
+        allow_markup = true;
+        insensitive = true;
+        parse_search = true;
+        prompt = "";
+        term = "alacritty";
+      };
+      style = ./wofi/style.css;
+    };
+
+    services.dunst = {
+      enable = true;
+      iconTheme = {
+        package = pkgs.adwaita-icon-theme;
+        name = "Adwaita";
+        size = "64x64";
+      };
+      settings = {
+        global = {
+          monitor = 0;
+          follow = "keyboard";
+          width = 400;
+          height = 200;
+          origin = "top-center";
+          offset = "0x32";
+          scale = 0;
+          notification_limit = 4;
+          progress_bar = true;
+          progress_bar_height = 10;
+          progress_bar_frame_width = 1;
+          progress_bar_min_width = 150;
+          progress_bar_max_width = 300;
+          progress_bar_corner_radius = 0;
+          icon_corner_radius = 32;
+          indicate_hidden = true;
+          transparency = 0;
+          separator_height = 2;
+          padding = 8;
+          horizontal_padding = 8;
+          text_icon_padding = 0;
+          frame_width = 0;
+          frame_color = "#aaaaaa";
+          gap_size = 8;
+          separator_color = "frame";
+          sort = true;
+          font = "Sans 10";
+          line_height = 0;
+          markup = "full";
+          format = "<b>%s</b>\\n%b";
+          alignment = "left";
+          vertical_alignment = "center";
+          show_age_threshold = 60;
+          ellipsize = "middle";
+          ignore_newline = false;
+          stack_duplicates = true;
+          hide_duplicate_count = false;
+          show_indicators = true;
+          enable_recursive_icon_lookup = true;
+          icon_theme = "Adwaita";
+          icon_position = "left";
+          min_icon_size = 64;
+          max_icon_size = 64;
+          sticky_history = true;
+          history_length = 20;
+          dmenu = "${pkgs.wofi}/bin/wofi --dmenu --prompt dunst:";
+          browser = "${pkgs.xdg-utils}/bin/xdg-open";
+          always_run_script = true;
+          title = "Dunst";
+          class = "Dunst";
+          corner_radius = 8;
+          ignore_dbusclose = false;
+          force_xwayland = false;
+          force_xinerama = false;
+          mouse_left_click = "do_action, close_current";
+          mouse_middle_click = "none";
+          mouse_right_click = "close_current";
+        };
+
+        experimental.per_monitor_dpi = false;
+
+        urgency_low = {
+          background = "#222222e0";
+          foreground = "#888888e0";
+          timeout = 10;
+        };
+
+        urgency_normal = {
+          background = "#285577e0";
+          foreground = "#ffffffe0";
+          timeout = 10;
+        };
+
+        urgency_critical = {
+          background = "#900000e0";
+          foreground = "#ffffff";
+          frame_color = "#ff0000e0";
+          timeout = 0;
+        };
+      };
+    };
+
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "hyprlock --grace 5";
+          before_sleep_cmd = "hyprlock --immediate --no-fade-in";
+          ignore_dbus_inhibit = false;
+          ignore_systemd_inhibit = false;
+        };
+
+        listener = [
+          {
+            timeout = 300;
+            on-timeout = "hyprlock --grace 5";
+          }
+          {
+            timeout = 600;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
+          }
+        ];
+      };
+    };
+
+    services.walker = {
+      enable = true;
+      systemd.enable = true;
+      settings = builtins.fromTOML (builtins.readFile ./walker/config.toml);
+    };
+
+    wayland.windowManager.hyprland = {
+      enable = true;
+      package = null;
+      portalPackage = null;
+      configType = "hyprlang";
+      settings = {
+        monitor = ",preferred,auto,2";
+        "$mainMod" = "SUPER";
+
+        exec-once = [
+          "awww-daemon && awww img ~/.william/wallpapers/default.jpg"
+          "eww open status-0 && eww open status-1"
+          "elephant"
+          "fcitx5"
+        ];
+
+        env = "XCURSOR_SIZE,24";
+
+        input = {
+          kb_layout = "us";
+          kb_variant = "";
+          kb_model = "";
+          kb_options = "";
+          kb_rules = "";
+          follow_mouse = 1;
+          touchpad.natural_scroll = true;
+          sensitivity = 0;
+        };
+
+        general = {
+          gaps_in = 4;
+          gaps_out = 8;
+          border_size = 1;
+          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+          "col.inactive_border" = "rgba(595959aa)";
+          layout = "dwindle";
+        };
+
+        decoration = {
+          rounding = 4;
+          blur = {
+            enabled = true;
+            size = 3;
+            passes = 1;
+          };
+          shadow = {
+            enabled = true;
+            range = 4;
+            render_power = 3;
+            color = "rgba(1a1a1aee)";
+          };
+        };
+
+        animations = {
+          enabled = true;
+          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+          animation = [
+            "windows, 1, 7, myBezier"
+            "windowsOut, 1, 7, default, popin 80%"
+            "border, 1, 10, default"
+            "borderangle, 1, 8, default"
+            "fade, 1, 7, default"
+            "workspaces, 1, 6, default"
+          ];
+        };
+
+        dwindle = {
+          force_split = 2;
+          preserve_split = true;
+        };
+
+        master.new_status = "master";
+        binds.movefocus_cycles_fullscreen = false;
+
+        device = {
+          name = "epic-mouse-v1";
+          sensitivity = -0.5;
+        };
+
+        workspace = "name:special, gapsout:40, gapsin:20";
+
+        bind = [
+          "$mainMod, Q, exec, alacritty"
+          "$mainMod, C, killactive,"
+          "$mainMod, M, exit,"
+          "$mainMod, E, exec, waypipe --no-gpu ssh phosphorus 'chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime'"
+          "$mainMod, V, togglefloating,"
+          "$mainMod, R, exec, walker"
+          "$mainMod, P, pseudo,"
+          "$mainMod, S, layoutmsg, togglesplit"
+          "$mainMod, F, fullscreen, 0"
+          "$mainMod, escape, exec, loginctl lock-session"
+          "$mainMod SHIFT, escape, exec, loginctl lock-session && sleep 0.1 && systemctl suspend"
+          "CTRL ALT, delete, exec, reboot"
+          ", XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
+          ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -10%"
+          ", XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +10%"
+          ", XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl set-source-volume @DEFAULT_SOURCE@ 60%"
+          ", XF86MonBrightnessDown, exec, brightnessctl set 25%-"
+          ", XF86MonBrightnessUp, exec, brightnessctl set +25%"
+          '', print, exec, grim -g "`hyprctl activewindow -j | jq -r '"\(.at[0]-4),\(.at[1]-4) \(.size[0]+8)x\(.size[1]+8)"'`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"''
+          ''CTRL, print, exec, grim -g "`slurp`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"''
+          "$mainMod, W, exec, chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"
+          "$mainMod, left, movefocus, l"
+          "$mainMod, right, movefocus, r"
+          "$mainMod, up, movefocus, u"
+          "$mainMod, down, movefocus, d"
+          "$mainMod SHIFT, left, movewindow, l"
+          "$mainMod SHIFT, right, movewindow, r"
+          "$mainMod SHIFT, up, movewindow, u"
+          "$mainMod SHIFT, down, movewindow, d"
+          "$mainMod, H, movefocus, l"
+          "$mainMod, L, movefocus, r"
+          "$mainMod, K, movefocus, u"
+          "$mainMod, J, movefocus, d"
+          "$mainMod SHIFT, H, movewindow, l"
+          "$mainMod SHIFT, L, movewindow, r"
+          "$mainMod SHIFT, K, movewindow, u"
+          "$mainMod SHIFT, J, movewindow, d"
+          "$mainMod, 1, workspace, 1"
+          "$mainMod, 2, workspace, 2"
+          "$mainMod, 3, workspace, 3"
+          "$mainMod, 4, workspace, 4"
+          "$mainMod, 5, workspace, 5"
+          "$mainMod, 6, workspace, 6"
+          "$mainMod, 7, workspace, 7"
+          "$mainMod, 8, workspace, 8"
+          "$mainMod, 9, workspace, 9"
+          "$mainMod, 0, workspace, 10"
+          "$mainMod, minus, togglespecialworkspace"
+          "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
+          "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
+          "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
+          "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
+          "$mainMod SHIFT, 5, movetoworkspacesilent, 5"
+          "$mainMod SHIFT, 6, movetoworkspacesilent, 6"
+          "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
+          "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
+          "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
+          "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
+          "$mainMod SHIFT, minus, movetoworkspacesilent, special"
+          "$mainMod, mouse_down, workspace, e+1"
+          "$mainMod, mouse_up, workspace, e-1"
+        ];
+
+        bindm = [
+          "$mainMod, mouse:272, movewindow"
+          "$mainMod, mouse:273, resizewindow"
+        ];
+      };
+    };
+
+    gtk = {
+      enable = true;
+      colorScheme = "dark";
+    };
+
+    xdg.configFile = {
+      "eww/scripts/package.json".source = ./eww/scripts/package.json;
+      "eww/scripts/bun.lockb".source = ./eww/scripts/bun.lockb;
+      "eww/scripts/volume.sh".source = ./eww/scripts/volume.sh;
+      "eww/scripts/workspaces.ts".source = ./eww/scripts/workspaces.ts;
+      "walker/themes/default.css".source = ./walker/themes/default.css;
+      "walker/themes/default.toml".source = ./walker/themes/default.toml;
+      "walker/themes/default_window.toml".source = ./walker/themes/default_window.toml;
+    };
+
+    home.sessionPath = [
+      "/home/william/.william/etc/bin"
+      "/home/william/.cargo/bin"
+      "/home/william/go/bin"
+      "/home/william/.npm/bin"
+    ];
+
+    home.sessionVariables = {
+      GOPATH = "/home/william/go";
+    };
+
     home.packages = with pkgs; [
-      alacritty
       ansifilter
       awww
       bandwhich
@@ -360,11 +821,9 @@ in
       d-spy
       devenv
       docker-compose
-      dunst
       dust
       eog
       evince
-      eww
       fd
       fdupes
       ffmpeg
@@ -393,11 +852,9 @@ in
       lm_sensors
       lsd
       man-pages
-      mercurial
       mosh
       nautilus
       nix-index
-      nodejs_latest
       openssl
       pavucontrol
       pkg-config
@@ -417,7 +874,6 @@ in
       sqlite
       tealdeer
       tmate
-      tmux
       tree
       tree-sitter
       typescript-language-server
@@ -426,7 +882,6 @@ in
       vlc
       vscodium
       wabt
-      walker
       waypipe
       weechat
       wf-recorder
@@ -484,17 +939,7 @@ in
   #   enableSSHSupport = true;
   # };
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestions.enable = true;
-    syntaxHighlighting.enable = true;
-    shellInit = "DISABLE_MAGIC_FUNCTIONS=true";
-    ohMyZsh = {
-      enable = true;
-      theme = "robbyrussell";
-    };
-  };
+  programs.zsh.enable = true;
 
   programs.hyprland.enable = true;
   programs.hyprlock.enable = true;
