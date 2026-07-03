@@ -251,6 +251,18 @@ in
           end,
         })
 
+        local filetype_group = vim.api.nvim_create_augroup('filetype-options', { clear = true })
+
+        vim.api.nvim_create_autocmd('FileType', {
+          group = filetype_group,
+          pattern = 'go',
+          callback = function(args)
+            vim.bo[args.buf].expandtab = false
+            vim.bo[args.buf].softtabstop = 8
+            vim.bo[args.buf].shiftwidth = 8
+          end,
+        })
+
         treesitter_context.setup {
           multiwindow = true,
           mode = 'topline',
