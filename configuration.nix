@@ -422,6 +422,10 @@ in
       enable = true;
       yuckConfig = builtins.readFile ./eww/eww.yuck;
       scssConfig = builtins.readFile ./eww/eww.scss;
+      systemd = {
+        enable = true;
+        target = "hyprland-session.target";
+      };
     };
 
     programs.hyprlock = {
@@ -625,6 +629,41 @@ in
       settings = builtins.fromTOML (builtins.readFile ./walker/config.toml);
     };
 
+    systemd.user.services.eww-status = {
+      Unit = {
+        Description = "Open Eww status windows";
+        Requires = [ "eww.service" ];
+        After = [ "eww.service" ];
+        PartOf = [ "hyprland-session.target" ];
+      };
+
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "eww-open-status" ''
+          set -eu
+
+          open_window() {
+            local window="$1"
+
+            for _ in 1 2 3 4 5 6 7 8 9 10 11 12; do
+              if ${pkgs.eww}/bin/eww open "$window" >/dev/null 2>&1; then
+                return 0
+              fi
+              ${pkgs.coreutils}/bin/sleep 0.25
+            done
+
+            ${pkgs.eww}/bin/eww open "$window"
+          }
+
+          open_window status-0
+          open_window status-1
+        '';
+      };
+
+      Install.WantedBy = [ "hyprland-session.target" ];
+    };
+
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;
@@ -636,7 +675,6 @@ in
 
         exec-once = [
           "awww-daemon && awww img ~/.william/wallpapers/default.jpg"
-          "eww open status-0 && eww open status-1"
           "elephant"
           "fcitx5"
         ];
