@@ -821,6 +821,7 @@ in
     };
 
     xdg.configFile = {
+      "gtk-4.0/settings.ini".force = true;
       "eww/scripts/package.json".source = ./eww/scripts/package.json;
       "eww/scripts/bun.lockb".source = ./eww/scripts/bun.lockb;
       "eww/scripts/volume.sh".source = ./eww/scripts/volume.sh;
