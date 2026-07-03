@@ -436,7 +436,7 @@ in
 
         label = [
           {
-            text = "cmd[update:1000] date +'%A, %B %e, %Y' | sd '  ' ' '";
+            text = "cmd[update:1000] date +'%A, %B %-d, %Y'";
             text_align = "center";
             font_size = 32;
             font_family = "TeX Gyre Pagella";
