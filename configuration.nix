@@ -848,6 +848,7 @@ in
       "/home/william/.cargo/bin"
       "/home/william/go/bin"
       "/home/william/.npm/bin"
+      "/home/william/.local/share/pnpm/bin"
     ];
 
     home.sessionVariables = {
