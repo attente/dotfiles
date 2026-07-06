@@ -1,5 +1,41 @@
 {
   "nodes": {
+    "falcon-sensor": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780530337,
+        "narHash": "sha256-mIT2Bb5HeKPMIraiwboi8wzEGUpPMVyn9pa5q/HFlX8=",
+        "owner": "vtechev",
+        "repo": "crowdstrike-falcon-nix",
+        "rev": "a1fd0b68ebcfc069895930ac74295d8f4ffa19b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vtechev",
+        "repo": "crowdstrike-falcon-nix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -62,6 +98,28 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "kolide-launcher": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781011409,
+        "narHash": "sha256-7snHaF2V0stM+KWKawR7BDjB8eRIWyDBwhQ0QICHB1U=",
+        "owner": "kolide",
+        "repo": "nix-agent",
+        "rev": "0c254006ff10e2cf2930b7c2f44c78db4c7602b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kolide",
+        "ref": "main",
+        "repo": "nix-agent",
         "type": "github"
       }
     },
@@ -224,8 +282,10 @@
     },
     "root": {
       "inputs": {
+        "falcon-sensor": "falcon-sensor",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
+        "kolide-launcher": "kolide-launcher",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable"
       }
