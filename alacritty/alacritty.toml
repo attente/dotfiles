@@ -11,9 +11,5 @@ family = "Noto Sans Mono"
 [scrolling]
 history = 100000
 
-[terminal.shell]
-args = ["-p", "--command", "zsh"]
-program = "nix-shell"
-
 [window]
 opacity = 0.9
