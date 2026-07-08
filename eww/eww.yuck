@@ -76,6 +76,12 @@
 (defwidget title [monitor]
   (label
     :class "title"
+    :halign "fill"
+    :hexpand true
+    :xalign 0.5
+    :justify "center"
+    :truncate true
+    :show-truncated true
     :text "${replace("${jq(workspace-list, ".workspaces[${jq(workspace-list, ".monitors[${monitor}]")-1}].lastwindowtitle")}", "^\"|\"$", "")}"))
 
 (defwidget volume []
