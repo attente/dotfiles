@@ -401,12 +401,6 @@ in
       };
     };
 
-    programs.npm = {
-      enable = true;
-      package = pkgs.nodejs_latest;
-      settings.prefix = "/home/william/.npm";
-    };
-
     programs.fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -908,7 +902,20 @@ in
 
     home.sessionVariables = {
       GOPATH = "/home/william/go";
+      NPM_CONFIG_PREFIX = "/home/william/.npm";
+      NPM_CONFIG_USERCONFIG = "/home/william/.config/npm/npmrc";
+      PNPM_HOME = "/home/william/.local/share/pnpm";
     };
+
+    home.activation.ensureMutableNodeConfig = home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/.config/npm" "$HOME/.local/share/pnpm/bin"
+      $DRY_RUN_CMD touch "$HOME/.config/npm/npmrc"
+      $DRY_RUN_CMD chmod 600 "$HOME/.config/npm/npmrc"
+
+      if [ -e "$HOME/.config/pnpm/auth.ini" ]; then
+        $DRY_RUN_CMD chmod 600 "$HOME/.config/pnpm/auth.ini"
+      fi
+    '';
 
     home.packages = with pkgs; [
       ansifilter
@@ -961,6 +968,7 @@ in
       mosh
       nautilus
       nix-index
+      nodejs_latest
       openssl
       pavucontrol
       pkg-config
