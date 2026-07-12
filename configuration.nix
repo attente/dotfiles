@@ -7,6 +7,21 @@
 let
   home-manager = inputs.home-manager;
   secrets = import ./secrets.nix;
+  homeSessionPath = [
+    "/home/william/.william/etc/bin"
+    "/home/william/.cargo/bin"
+    "/home/william/go/bin"
+    "/home/william/.npm/bin"
+    "/home/william/.local/share/pnpm/bin"
+  ];
+  launcherRuntimePath = [
+    "/home/william/.william/etc/bin"
+    "/home/william/.local/share/pnpm/bin"
+    "/run/wrappers/bin"
+    "/var/lib/flatpak/exports/bin"
+    "/home/william/.nix-profile/bin"
+    "/run/current-system/sw/bin"
+  ];
   falconSensorLocalOverlay = final: prev: {
     falcon-sensor-unwrapped = final.stdenv.mkDerivation {
       pname = "falcon-sensor-unwrapped";
@@ -736,7 +751,6 @@ in
 
         exec-once = [
           "awww-daemon && awww img ~/.william/wallpapers/default.jpg"
-          "elephant"
           "fcitx5"
         ];
 
@@ -892,13 +906,7 @@ in
       "walker/themes/default_window.toml".source = ./walker/themes/default_window.toml;
     };
 
-    home.sessionPath = [
-      "/home/william/.william/etc/bin"
-      "/home/william/.cargo/bin"
-      "/home/william/go/bin"
-      "/home/william/.npm/bin"
-      "/home/william/.local/share/pnpm/bin"
-    ];
+    home.sessionPath = homeSessionPath;
 
     home.sessionVariables = {
       GOPATH = "/home/william/go";
@@ -1183,6 +1191,9 @@ in
   };
 
   services.elephant.enable = true;
+
+  systemd.user.services.elephant.environment.PATH =
+    lib.mkForce (lib.concatStringsSep ":" launcherRuntimePath);
 
   services.ollama = with pkgs; {
     enable = true;
