@@ -745,6 +745,14 @@ in
       package = null;
       portalPackage = null;
       configType = "hyprlang";
+      systemd.variables = [
+        "DISPLAY"
+        "HYPRLAND_INSTANCE_SIGNATURE"
+        "SSH_AUTH_SOCK"
+        "WAYLAND_DISPLAY"
+        "XDG_CURRENT_DESKTOP"
+        "XDG_SESSION_TYPE"
+      ];
       settings = {
         monitor = ",preferred,auto,2";
         "$mainMod" = "SUPER";
