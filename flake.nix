@@ -63,7 +63,6 @@
               system.stateVersion = "26.05";
               home-manager.users.william.home.stateVersion = "26.05";
               boot.kernelPackages = nixpkgs.legacyPackages.${system}.linuxPackages_6_18;
-              home-manager.users.william.services.hypridle.settings.general.after_sleep_cmd = "hyprlock --immediate --no-fade-in";
               services.tlp.settings = {
                 START_CHARGE_THRESH_BAT0 = 40;
                 STOP_CHARGE_THRESH_BAT0 = 50;

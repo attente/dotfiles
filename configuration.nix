@@ -22,6 +22,12 @@ let
     "/home/william/.nix-profile/bin"
     "/run/current-system/sw/bin"
   ];
+  lockSessionCommand = "${pkgs.systemd}/bin/loginctl lock-session";
+  suspendCommand = "${pkgs.systemd}/bin/systemctl suspend";
+  lockNowCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --no-fade-in";
+  lockIdleCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 5";
+  displayOffCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
+  displayOnCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on && ${pkgs.brightnessctl}/bin/brightnessctl -r";
   falconSensorLocalOverlay = final: prev: {
     falcon-sensor-unwrapped = final.stdenv.mkDerivation {
       pname = "falcon-sensor-unwrapped";
@@ -679,8 +685,10 @@ in
       enable = true;
       settings = {
         general = {
-          lock_cmd = "hyprlock --grace 5";
-          before_sleep_cmd = "hyprlock --immediate --no-fade-in";
+          lock_cmd = lockNowCommand;
+          before_sleep_cmd = lockSessionCommand;
+          after_sleep_cmd = displayOnCommand;
+          inhibit_sleep = 3;
           ignore_dbus_inhibit = false;
           ignore_systemd_inhibit = false;
         };
@@ -688,12 +696,12 @@ in
         listener = [
           {
             timeout = 300;
-            on-timeout = "hyprlock --grace 5";
+            on-timeout = lockIdleCommand;
           }
           {
             timeout = 600;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
+            on-timeout = displayOffCommand;
+            on-resume = displayOnCommand;
           }
         ];
       };
@@ -837,8 +845,8 @@ in
           "$mainMod, P, pseudo,"
           "$mainMod, S, layoutmsg, togglesplit"
           "$mainMod, F, fullscreen, 0"
-          "$mainMod, escape, exec, loginctl lock-session"
-          "$mainMod SHIFT, escape, exec, loginctl lock-session && sleep 0.1 && systemctl suspend"
+          "$mainMod, escape, exec, ${lockSessionCommand}"
+          "$mainMod SHIFT, escape, exec, ${suspendCommand}"
           "CTRL ALT, delete, exec, reboot"
           ", XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
           ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -10%"
