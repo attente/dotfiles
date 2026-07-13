@@ -359,6 +359,7 @@ in
         gpg = {
           ssh = {
             defaultKeyCommand = "ssh-add -L";
+            allowedSignersFile = "/home/william/.config/git/allowed_signers";
           };
         };
 
@@ -920,6 +921,9 @@ in
       "walker/themes/default.css".source = ./walker/themes/default.css;
       "walker/themes/default.toml".source = ./walker/themes/default.toml;
       "walker/themes/default_window.toml".source = ./walker/themes/default_window.toml;
+      "git/allowed_signers".text = ''
+        william@attente.ca namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJDbwYv/HQpTJJ/OoqLDCOIl/8/OB6PquYTQ1t8I8z4 william@helium
+      '';
     };
 
     home.sessionPath = homeSessionPath;
