@@ -22,7 +22,6 @@ let
     "/home/william/.nix-profile/bin"
     "/run/current-system/sw/bin"
   ];
-  lockSessionCommand = "${pkgs.systemd}/bin/loginctl lock-session";
   suspendCommand = "${pkgs.systemd}/bin/systemctl suspend";
   lockNowCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --no-fade-in";
   lockIdleCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 5";
@@ -686,7 +685,7 @@ in
       settings = {
         general = {
           lock_cmd = lockNowCommand;
-          before_sleep_cmd = lockSessionCommand;
+          before_sleep_cmd = lockNowCommand;
           after_sleep_cmd = displayOnCommand;
           inhibit_sleep = 3;
           ignore_dbus_inhibit = false;
@@ -845,7 +844,7 @@ in
           "$mainMod, P, pseudo,"
           "$mainMod, S, layoutmsg, togglesplit"
           "$mainMod, F, fullscreen, 0"
-          "$mainMod, escape, exec, ${lockSessionCommand}"
+          "$mainMod, escape, exec, ${lockNowCommand}"
           "$mainMod SHIFT, escape, exec, ${suspendCommand}"
           "CTRL ALT, delete, exec, reboot"
           ", XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
