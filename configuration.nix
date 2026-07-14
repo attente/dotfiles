@@ -440,6 +440,8 @@ in
       extraConfig = ''
         set-option -ga terminal-overrides ",xterm-256color:Tc"
         set -as terminal-features 'xterm*:extkeys'
+        set-option -g automatic-rename on
+        set-option -g automatic-rename-format "#{?#{==:#{pane_current_path},#{HOME}},~,#{b:pane_current_path}}#{?#{==:#{pane_current_command},zsh},,:#{pane_current_command}}"
       '';
     };
 
@@ -456,6 +458,23 @@ in
         '';
       };
       initContent = ''
+        autoload -Uz add-zsh-hook
+
+        function __tmux_update_current_path() {
+          [ -n "$TMUX" ] || return 0
+          [ "$__tmux_current_path" != "$PWD" ] || return 0
+          __tmux_current_path="$PWD"
+
+          printf '\033]7;file://%s%s\033\\' "''${HOSTNAME:-$(hostname)}" "$(${pkgs.vte}/libexec/vte-urlencode-cwd)"
+
+          if [ -n "''${commands[tmux]}" ]; then
+            tmux refresh-client -S >/dev/null 2>&1 || true
+          fi
+        }
+
+        add-zsh-hook precmd __tmux_update_current_path
+        add-zsh-hook chpwd __tmux_update_current_path
+
         if [ -n "''${commands[fzf]}" ]; then
           bindkey "^I" $fzf_default_completion
         fi
