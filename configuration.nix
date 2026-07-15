@@ -762,6 +762,7 @@ in
 
           open_window status-0
           open_window status-1
+          open_window status-2
         '';
       };
 

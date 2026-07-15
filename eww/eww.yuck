@@ -35,6 +35,16 @@
   (status
     :monitor 1))
 
+(defwindow status-2
+  :monitor 2
+  :geometry
+    (geometry
+      :width "100%"
+      :anchor "top center")
+  :exclusive true
+  (status
+    :monitor 2))
+
 (defwidget status [monitor]
   (centerbox
     :class "status"
