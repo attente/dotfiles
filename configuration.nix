@@ -1030,6 +1030,7 @@ in
       qt5.qtwayland
       rclone
       ripgrep
+      rtk
       sd
       shellcheck
       slurp
