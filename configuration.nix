@@ -28,64 +28,6 @@ let
   lockIdleCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 5";
   displayOffCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
   displayOnCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on && ${pkgs.brightnessctl}/bin/brightnessctl -r";
-  falconSensorLocalOverlay = final: prev: {
-    falcon-sensor-unwrapped = final.stdenv.mkDerivation {
-      pname = "falcon-sensor-unwrapped";
-      version = "7.31.0-18410";
-
-      src = /etc/nixos/falcon-sensor_7.31.0-18410_amd64.deb;
-
-      nativeBuildInputs = with final; [
-        autoPatchelfHook
-        dpkg
-      ];
-
-      buildInputs = with final; [
-        libnl
-        openssl
-        zlib
-      ];
-
-      sourceRoot = ".";
-      unpackCmd = ''
-        dpkg-deb -x "$src" .
-      '';
-      installPhase = ''
-        cp -r ./ $out/
-      '';
-
-      meta = with final.lib; {
-        mainProgram = "falconctl";
-        description = "Crowdstrike Falcon Sensor";
-        homepage = "https://www.crowdstrike.com/";
-        license = licenses.unfree;
-        platforms = [ "x86_64-linux" ];
-        sourceProvenance = with sourceTypes; [ binaryNativeCode ];
-      };
-    };
-    falcon-sensor =
-      let
-        falconBuild = final.lib.last (final.lib.splitString "-" final.falcon-sensor-unwrapped.version);
-        falconFHSWrapper = mainProgram: final.buildFHSEnv {
-          name = mainProgram;
-          targetPkgs = pkgs: with pkgs; [
-            libnl
-            openssl
-            zlib
-          ];
-          runScript = "/opt/CrowdStrike/${mainProgram}${falconBuild}";
-        };
-      in
-      final.symlinkJoin {
-        pname = "falcon-sensor";
-        version = final.falcon-sensor-unwrapped.version;
-        paths = [
-          (falconFHSWrapper "falconctl")
-          (falconFHSWrapper "falcond")
-          (falconFHSWrapper "falcon-kernel-check")
-        ];
-      };
-  };
 in
 
 {
@@ -95,22 +37,6 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = lib.mkIf config.services.falcon-sensor.enable (lib.mkAfter [ falconSensorLocalOverlay ]);
-
-  programs.nix-ld = lib.mkIf config.services.kolide-launcher.enable {
-    enable = true;
-    libraries = with pkgs; [
-      libnl
-    ];
-  };
-
-  systemd.services.kolide-launcher.environment = lib.mkIf config.services.kolide-launcher.enable {
-    NIX_LD = "/run/current-system/sw/share/nix-ld/lib/ld.so";
-    NIX_LD_LIBRARY_PATH = "/run/current-system/sw/share/nix-ld/lib";
-  };
-
-  imports =
-    [ ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -1140,60 +1066,7 @@ in
 
   services.tailscale.enable = true;
   services.resolved.enable = true;
-  services.falcon-sensor.cid = lib.mkIf config.services.falcon-sensor.enable "";
   networking.networkmanager.dns = "systemd-resolved";
-
-  systemd.services.falcon-sensor.serviceConfig.EnvironmentFile = lib.mkIf config.services.falcon-sensor.enable "/etc/falcon-sensor.env";
-  systemd.services.falcon-sensor.serviceConfig.ExecStartPre = lib.mkIf config.services.falcon-sensor.enable (lib.mkForce [
-    (pkgs.writeShellScript "falcon-sensor-prestart" ''
-      set -euo pipefail
-      : "''${FALCON_CID:?missing FALCON_CID in /etc/falcon-sensor.env}"
-
-      mkdir -p /opt/CrowdStrike
-
-      for source_path in ${pkgs.falcon-sensor-unwrapped}/opt/CrowdStrike/*; do
-        name="$(basename "$source_path")"
-        target_path="/opt/CrowdStrike/$name"
-
-        if [ -L "$target_path" ] || [ ! -e "$target_path" ]; then
-          rm -f "$target_path"
-          cp -a --no-preserve=ownership "$source_path" "$target_path"
-        elif [ -f "$source_path" ]; then
-          cp -a --no-preserve=ownership "$source_path" "$target_path"
-        elif [ -d "$source_path" ]; then
-          mkdir -p "$target_path"
-          cp -a --no-preserve=ownership "$source_path"/. "$target_path"/
-        fi
-      done
-
-      chown -R root:root /opt/CrowdStrike
-      chmod 0770 /opt/CrowdStrike
-
-      # Expose Nix FHS wrappers at the vendor-standard paths; the wrappers
-      # execute the versioned binaries in /opt to avoid recursing into themselves.
-      ln -sfn ${pkgs.falcon-sensor}/bin/falconctl /opt/CrowdStrike/falconctl
-      ln -sfn ${pkgs.falcon-sensor}/bin/falcond /opt/CrowdStrike/falcond
-      ln -sfn ${pkgs.falcon-sensor}/bin/falcon-kernel-check /opt/CrowdStrike/falcon-kernel-check
-
-      mkdir -p /var/log
-      rm -f /var/log/falconctl.log
-      : > /var/log/falconctl.log
-      chown root:root /var/log/falconctl.log
-      chmod 0600 /var/log/falconctl.log
-
-      FALCONCTL="${pkgs.falcon-sensor}/bin/falconctl"
-
-      echo "Configuring Falcon CID..."
-      "$FALCONCTL" -s --cid="$FALCON_CID" -f
-      "$FALCONCTL" -g --cid || true
-    '')
-  ]);
-
-  systemd.tmpfiles.settings."10-falcon-sensor-local"."/var/log/falconctl.log".f = lib.mkIf config.services.falcon-sensor.enable {
-    user = "root";
-    group = "root";
-    mode = "0600";
-  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
