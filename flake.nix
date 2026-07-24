@@ -58,8 +58,8 @@
               home-manager.users.william.home.stateVersion = "26.05";
               boot.kernelPackages = nixpkgs.legacyPackages.${system}.linuxPackages_latest;
               services.tlp.settings = {
-                START_CHARGE_THRESH_BAT0 = 40;
-                STOP_CHARGE_THRESH_BAT0 = 50;
+                START_CHARGE_THRESH_BAT0 = 80;
+                STOP_CHARGE_THRESH_BAT0 = 90;
               };
             }
           ];
