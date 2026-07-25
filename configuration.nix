@@ -56,7 +56,7 @@ in
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/Toronto";
+  time.timeZone = "Asia/Tokyo";
 
   console = {
     keyMap = "us";
