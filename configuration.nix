@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, lib, pkgs, pkgs-stable, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   home-manager = inputs.home-manager;
@@ -89,7 +89,7 @@ in
     enableDefaultPackages = true;
 
     packages = with pkgs; [
-      pkgs-stable.cantarell-fonts
+      cantarell-fonts
       nerd-fonts.noto
       noto-fonts
       noto-fonts-cjk-sans
