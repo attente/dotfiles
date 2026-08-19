@@ -945,6 +945,7 @@ in
       nodejs_latest
       openssl
       pavucontrol
+      pi-coding-agent
       pkg-config
       plex-desktop
       pnpm
