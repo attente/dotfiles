@@ -441,6 +441,11 @@ in
       };
     };
 
+    programs.direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     programs.alacritty = {
       enable = true;
       settings = builtins.fromTOML (builtins.readFile ./alacritty/alacritty.toml);
