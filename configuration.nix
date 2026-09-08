@@ -969,6 +969,7 @@ in
       shellcheck
       slurp
       sqlite
+      subversion
       tealdeer
       tmate
       tree
