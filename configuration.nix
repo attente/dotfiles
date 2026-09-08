@@ -916,6 +916,7 @@ in
       dust
       eog
       evince
+      exiftool
       fd
       fdupes
       ffmpeg
