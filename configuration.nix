@@ -950,6 +950,7 @@ in
       nix-index
       nodejs_latest
       openssl
+      pandoc
       pavucontrol
       pi-coding-agent
       pkg-config
