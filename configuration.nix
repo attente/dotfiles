@@ -971,7 +971,6 @@ in
       sqlite
       subversion
       tealdeer
-      tmate
       tree
       tree-sitter
       typescript-language-server
