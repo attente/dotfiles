@@ -902,7 +902,6 @@ in
       bandwhich
       baobab
       bat
-      binaryen
       biome
       bottom
       brightnessctl
