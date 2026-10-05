@@ -704,7 +704,7 @@ in
       enable = true;
       package = null;
       portalPackage = null;
-      configType = "hyprlang";
+      configType = "lua";
       systemd.variables = [
         "DISPLAY"
         "HYPRLAND_INSTANCE_SIGNATURE"
@@ -713,149 +713,232 @@ in
         "XDG_CURRENT_DESKTOP"
         "XDG_SESSION_TYPE"
       ];
-      settings = {
-        monitor = ",preferred,auto,2";
-        "$mainMod" = "SUPER";
-
-        exec-once = [
-          "awww-daemon && awww img ~/.william/wallpapers/default.jpg"
-          "fcitx5"
-        ];
-
-        env = "XCURSOR_SIZE,24";
-
-        input = {
-          kb_layout = "us";
-          kb_variant = "";
-          kb_model = "";
-          kb_options = "";
-          kb_rules = "";
-          follow_mouse = 1;
-          touchpad.natural_scroll = true;
-          sensitivity = 0;
-        };
-
-        general = {
-          gaps_in = 4;
-          gaps_out = 8;
-          border_size = 1;
-          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-          "col.inactive_border" = "rgba(595959aa)";
-          layout = "dwindle";
-        };
-
-        decoration = {
-          rounding = 4;
-          blur = {
-            enabled = true;
-            size = 3;
-            passes = 1;
+      settings =
+        let
+          lua = lib.generators.mkLuaInline;
+          bind = keys: dispatcher: {
+            _args = [
+              (lua keys)
+              (lua dispatcher)
+            ];
           };
-          shadow = {
-            enabled = true;
-            range = 4;
-            render_power = 3;
-            color = "rgba(1a1a1aee)";
+          bindOpts = keys: dispatcher: opts: {
+            _args = [
+              (lua keys)
+              (lua dispatcher)
+              opts
+            ];
           };
-        };
+          workspaceBinds = lib.concatMap (n: [
+            (bind ''mainMod .. " + ${toString (lib.mod n 10)}"'' "hl.dsp.focus({ workspace = ${toString n} })")
+            (bind ''mainMod .. " + SHIFT + ${toString (lib.mod n 10)}"'' "hl.dsp.window.move({ workspace = ${toString n}, follow = false })")
+          ]) (lib.range 1 10);
+        in
+        {
+          mainMod = { _var = "SUPER"; };
 
-        animations = {
-          enabled = true;
-          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-          animation = [
-            "windows, 1, 7, myBezier"
-            "windowsOut, 1, 7, default, popin 80%"
-            "border, 1, 10, default"
-            "borderangle, 1, 8, default"
-            "fade, 1, 7, default"
-            "workspaces, 1, 6, default"
+          config = {
+            general = {
+              gaps_in = 4;
+              gaps_out = 8;
+              border_size = 1;
+              col = {
+                active_border = {
+                  colors = [
+                    "rgba(33ccffee)"
+                    "rgba(00ff99ee)"
+                  ];
+                  angle = 45;
+                };
+                inactive_border = "rgba(595959aa)";
+              };
+              layout = "dwindle";
+            };
+
+            decoration = {
+              rounding = 4;
+              blur = {
+                enabled = true;
+                size = 3;
+                passes = 1;
+              };
+              shadow = {
+                enabled = true;
+                range = 4;
+                render_power = 3;
+                color = "rgba(1a1a1aee)";
+              };
+            };
+
+            animations.enabled = true;
+
+            dwindle = {
+              force_split = 2;
+              preserve_split = true;
+            };
+
+            master.new_status = "master";
+
+            binds.movefocus_cycles_fullscreen = false;
+
+            input = {
+              kb_layout = "us";
+              kb_variant = "";
+              kb_model = "";
+              kb_options = "";
+              kb_rules = "";
+              follow_mouse = 1;
+              touchpad.natural_scroll = true;
+              sensitivity = 0;
+            };
+          };
+
+          monitor = {
+            output = "";
+            mode = "preferred";
+            position = "auto";
+            scale = 2;
+          };
+
+          env = {
+            _args = [
+              "XCURSOR_SIZE"
+              "24"
+            ];
+          };
+
+          curve = [
+            {
+              _args = [
+                "myBezier"
+                {
+                  type = "bezier";
+                  points = [
+                    [
+                      0.05
+                      0.9
+                    ]
+                    [
+                      0.1
+                      1.05
+                    ]
+                  ];
+                }
+              ];
+            }
           ];
+
+          animation = [
+            {
+              leaf = "windows";
+              enabled = true;
+              speed = 7;
+              bezier = "myBezier";
+            }
+            {
+              leaf = "windowsOut";
+              enabled = true;
+              speed = 7;
+              bezier = "default";
+              style = "popin 80%";
+            }
+            {
+              leaf = "border";
+              enabled = true;
+              speed = 10;
+              bezier = "default";
+            }
+            {
+              leaf = "borderangle";
+              enabled = true;
+              speed = 8;
+              bezier = "default";
+            }
+            {
+              leaf = "fade";
+              enabled = true;
+              speed = 7;
+              bezier = "default";
+            }
+            {
+              leaf = "workspaces";
+              enabled = true;
+              speed = 6;
+              bezier = "default";
+            }
+          ];
+
+          device = {
+            name = "epic-mouse-v1";
+            sensitivity = -0.5;
+          };
+
+          workspace_rule = {
+            workspace = "name:special";
+            gaps_out = 40;
+            gaps_in = 20;
+          };
+
+          on = {
+            _args = [
+              "hyprland.start"
+              (lua ''
+                function()
+                  hl.exec_cmd("awww-daemon && awww img ~/.william/wallpapers/default.jpg")
+                  hl.exec_cmd("fcitx5")
+                end
+              '')
+            ];
+          };
+
+          bind =
+            [
+              (bind ''mainMod .. " + Q"'' ''hl.dsp.exec_cmd([[alacritty]])'')
+              (bind ''mainMod .. " + C"'' "hl.dsp.window.close()")
+              (bind ''mainMod .. " + M"'' "hl.dsp.exit()")
+              (bind ''mainMod .. " + E"'' ''hl.dsp.exec_cmd([[waypipe --no-gpu ssh phosphorus 'chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime']])'')
+              (bind ''mainMod .. " + V"'' ''hl.dsp.window.float({ action = "toggle" })'')
+              (bind ''mainMod .. " + R"'' ''hl.dsp.exec_cmd([[walker]])'')
+              (bind ''mainMod .. " + P"'' "hl.dsp.window.pseudo()")
+              (bind ''mainMod .. " + S"'' ''hl.dsp.layout("togglesplit")'')
+              (bind ''mainMod .. " + F"'' ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
+              (bind ''mainMod .. " + escape"'' ''hl.dsp.exec_cmd([[${lockSessionCommand}]])'')
+              (bind ''mainMod .. " + SHIFT + escape"'' ''hl.dsp.exec_cmd([[${suspendCommand}]])'')
+              (bind ''"CTRL + ALT + delete"'' ''hl.dsp.exec_cmd([[reboot]])'')
+              (bind ''"XF86AudioMute"'' ''hl.dsp.exec_cmd([[pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%]])'')
+              (bind ''"XF86AudioLowerVolume"'' ''hl.dsp.exec_cmd([[pactl set-sink-volume @DEFAULT_SINK@ -10%]])'')
+              (bind ''"XF86AudioRaiseVolume"'' ''hl.dsp.exec_cmd([[pactl set-sink-volume @DEFAULT_SINK@ +10%]])'')
+              (bind ''"XF86AudioMicMute"'' ''hl.dsp.exec_cmd([[pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl set-source-volume @DEFAULT_SOURCE@ 60%]])'')
+              (bind ''"XF86MonBrightnessDown"'' ''hl.dsp.exec_cmd([[brightnessctl set 25%-]])'')
+              (bind ''"XF86MonBrightnessUp"'' ''hl.dsp.exec_cmd([[brightnessctl set +25%]])'')
+              (bind ''"print"'' ''hl.dsp.exec_cmd([[grim -g "`hyprctl activewindow -j | jq -r '"\(.at[0]-4),\(.at[1]-4) \(.size[0]+8)x\(.size[1]+8)"'`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"]])'')
+              (bind ''"CTRL + print"'' ''hl.dsp.exec_cmd([[grim -g "`slurp`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"]])'')
+              (bind ''mainMod .. " + W"'' ''hl.dsp.exec_cmd([[chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --remote-debugging-port=9222]])'')
+              (bind ''mainMod .. " + left"'' ''hl.dsp.focus({ direction = "left" })'')
+              (bind ''mainMod .. " + right"'' ''hl.dsp.focus({ direction = "right" })'')
+              (bind ''mainMod .. " + up"'' ''hl.dsp.focus({ direction = "up" })'')
+              (bind ''mainMod .. " + down"'' ''hl.dsp.focus({ direction = "down" })'')
+              (bind ''mainMod .. " + SHIFT + left"'' ''hl.dsp.window.move({ direction = "left" })'')
+              (bind ''mainMod .. " + SHIFT + right"'' ''hl.dsp.window.move({ direction = "right" })'')
+              (bind ''mainMod .. " + SHIFT + up"'' ''hl.dsp.window.move({ direction = "up" })'')
+              (bind ''mainMod .. " + SHIFT + down"'' ''hl.dsp.window.move({ direction = "down" })'')
+              (bind ''mainMod .. " + H"'' ''hl.dsp.focus({ direction = "left" })'')
+              (bind ''mainMod .. " + L"'' ''hl.dsp.focus({ direction = "right" })'')
+              (bind ''mainMod .. " + K"'' ''hl.dsp.focus({ direction = "up" })'')
+              (bind ''mainMod .. " + J"'' ''hl.dsp.focus({ direction = "down" })'')
+              (bind ''mainMod .. " + SHIFT + H"'' ''hl.dsp.window.move({ direction = "left" })'')
+              (bind ''mainMod .. " + SHIFT + L"'' ''hl.dsp.window.move({ direction = "right" })'')
+              (bind ''mainMod .. " + SHIFT + K"'' ''hl.dsp.window.move({ direction = "up" })'')
+              (bind ''mainMod .. " + SHIFT + J"'' ''hl.dsp.window.move({ direction = "down" })'')
+              (bind ''mainMod .. " + minus"'' "hl.dsp.workspace.toggle_special()")
+              (bind ''mainMod .. " + SHIFT + minus"'' ''hl.dsp.window.move({ workspace = "special", follow = false })'')
+              (bind ''mainMod .. " + mouse_down"'' ''hl.dsp.focus({ workspace = "e+1" })'')
+              (bind ''mainMod .. " + mouse_up"'' ''hl.dsp.focus({ workspace = "e-1" })'')
+              (bindOpts ''mainMod .. " + mouse:272"'' "hl.dsp.window.drag()" { mouse = true; })
+              (bindOpts ''mainMod .. " + mouse:273"'' "hl.dsp.window.resize()" { mouse = true; })
+            ]
+            ++ workspaceBinds;
         };
-
-        dwindle = {
-          force_split = 2;
-          preserve_split = true;
-        };
-
-        master.new_status = "master";
-        binds.movefocus_cycles_fullscreen = false;
-
-        device = {
-          name = "epic-mouse-v1";
-          sensitivity = -0.5;
-        };
-
-        workspace = "name:special, gapsout:40, gapsin:20";
-
-        bind = [
-          "$mainMod, Q, exec, alacritty"
-          "$mainMod, C, killactive,"
-          "$mainMod, M, exit,"
-          "$mainMod, E, exec, waypipe --no-gpu ssh phosphorus 'chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime'"
-          "$mainMod, V, togglefloating,"
-          "$mainMod, R, exec, walker"
-          "$mainMod, P, pseudo,"
-          "$mainMod, S, layoutmsg, togglesplit"
-          "$mainMod, F, fullscreen, 0"
-          "$mainMod, escape, exec, ${lockSessionCommand}"
-          "$mainMod SHIFT, escape, exec, ${suspendCommand}"
-          "CTRL ALT, delete, exec, reboot"
-          ", XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
-          ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -10%"
-          ", XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +10%"
-          ", XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl set-source-volume @DEFAULT_SOURCE@ 60%"
-          ", XF86MonBrightnessDown, exec, brightnessctl set 25%-"
-          ", XF86MonBrightnessUp, exec, brightnessctl set +25%"
-          '', print, exec, grim -g "`hyprctl activewindow -j | jq -r '"\(.at[0]-4),\(.at[1]-4) \(.size[0]+8)x\(.size[1]+8)"'`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"''
-          ''CTRL, print, exec, grim -g "`slurp`" "/home/william/screenshots/`date --rfc-3339=seconds`.png"''
-          "$mainMod, W, exec, chromium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --remote-debugging-port=9222"
-          "$mainMod, left, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, down, movefocus, d"
-          "$mainMod SHIFT, left, movewindow, l"
-          "$mainMod SHIFT, right, movewindow, r"
-          "$mainMod SHIFT, up, movewindow, u"
-          "$mainMod SHIFT, down, movewindow, d"
-          "$mainMod, H, movefocus, l"
-          "$mainMod, L, movefocus, r"
-          "$mainMod, K, movefocus, u"
-          "$mainMod, J, movefocus, d"
-          "$mainMod SHIFT, H, movewindow, l"
-          "$mainMod SHIFT, L, movewindow, r"
-          "$mainMod SHIFT, K, movewindow, u"
-          "$mainMod SHIFT, J, movewindow, d"
-          "$mainMod, 1, workspace, 1"
-          "$mainMod, 2, workspace, 2"
-          "$mainMod, 3, workspace, 3"
-          "$mainMod, 4, workspace, 4"
-          "$mainMod, 5, workspace, 5"
-          "$mainMod, 6, workspace, 6"
-          "$mainMod, 7, workspace, 7"
-          "$mainMod, 8, workspace, 8"
-          "$mainMod, 9, workspace, 9"
-          "$mainMod, 0, workspace, 10"
-          "$mainMod, minus, togglespecialworkspace"
-          "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
-          "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
-          "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
-          "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
-          "$mainMod SHIFT, 5, movetoworkspacesilent, 5"
-          "$mainMod SHIFT, 6, movetoworkspacesilent, 6"
-          "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
-          "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
-          "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
-          "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
-          "$mainMod SHIFT, minus, movetoworkspacesilent, special"
-          "$mainMod, mouse_down, workspace, e+1"
-          "$mainMod, mouse_up, workspace, e-1"
-        ];
-
-        bindm = [
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
-        ];
-      };
     };
 
     gtk = {
