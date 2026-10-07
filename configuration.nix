@@ -26,8 +26,8 @@ let
   suspendCommand = "${pkgs.systemd}/bin/systemctl suspend";
   lockNowCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 0 --no-fade-in";
   lockIdleCommand = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 5";
-  displayOffCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
-  displayOnCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on && ${pkgs.brightnessctl}/bin/brightnessctl -r";
+  displayOffCommand = "${pkgs.hyprland}/bin/hyprctl eval \"return hl.dispatch(hl.dsp.dpms({ state = 'off' }))\"";
+  displayOnCommand = "${pkgs.hyprland}/bin/hyprctl eval \"return hl.dispatch(hl.dsp.dpms({ state = 'on' }))\" && ${pkgs.brightnessctl}/bin/brightnessctl -r";
 in
 
 {
