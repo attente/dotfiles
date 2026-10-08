@@ -367,6 +367,7 @@ in
         set-option -ga terminal-overrides ",xterm-256color:Tc"
         set -as terminal-features 'xterm*:extkeys'
         set-option -g extended-keys on
+        set-option -g extended-keys-format csi-u
         set-option -g automatic-rename on
         set-option -g automatic-rename-format "#{?#{==:#{pane_current_path},#{HOME}},~,#{b:pane_current_path}}#{?#{==:#{pane_current_command},zsh},,:#{pane_current_command}}"
       '';
