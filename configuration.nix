@@ -1180,7 +1180,28 @@ in
 
   services.pcscd.enable = true;
 
-  services.flatpak.enable = true;
+  # Sandboxed apps. Steam runs inside a bubblewrap sandbox and talks to the
+  # host through XDG portals (hyprland + gtk portals are already active).
+  services.flatpak = {
+    enable = true;
+
+    remotes = [ { name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo"; } ];
+
+    packages = [
+      "com.valvesoftware.Steam"
+    ];
+
+    update.onActivation = true;
+  };
+
+  # udev rules for Steam hardware (controllers, Steam Input, HTC Vive).
+  hardware.steam-hardware.enable = true;
+
+  # Host-side GameMode daemon; the Steam flatpak talks to it over D-Bus per game.
+  programs.gamemode = {
+    enable = true;
+    enableRenice = true;
+  };
 
   virtualisation = {
     containers = {

@@ -6,10 +6,11 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     hermes-agent.url = "github:NousResearch/hermes-agent/2bd1977d8fad185c9b4be47884f7e87f1add0ce3";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, hermes-agent, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nix-flatpak, hermes-agent, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs-stable = import nixpkgs-stable {
@@ -18,6 +19,7 @@
       };
       commonModules = [
         home-manager.nixosModules.home-manager
+        nix-flatpak.nixosModules.nix-flatpak
         hermes-agent.nixosModules.default
         ./configuration.nix
       ];
