@@ -1,0 +1,60 @@
+#!/bin/sh
+# Toggle voice typing: the first press records from the default input, the
+# second press transcribes with whisper.cpp and types the result into whatever
+# window currently has focus.
+
+set -eu
+
+MODEL="${VOICE_TYPING_MODEL:-/home/william/whisper/ggml-base.en.bin}"
+STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/voice-typing"
+PID_FILE="$STATE_DIR/record.pid"
+WAV_FILE="$STATE_DIR/recording.wav"
+MUTE_FILE="$STATE_DIR/source-muted"
+
+notify() {
+  notify-send -a "Voice Typing" -t 1500 -i "$1" "$2" || true
+}
+
+mkdir -p "$STATE_DIR"
+
+if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+  rec_pid="$(cat "$PID_FILE")"
+  rm -f "$PID_FILE"
+
+  # SIGINT lets pw-record finalize the WAV header before we read it.
+  kill -INT "$rec_pid" 2>/dev/null || true
+  for _ in $(seq 1 50); do
+    kill -0 "$rec_pid" 2>/dev/null || break
+    sleep 0.1
+  done
+  kill -KILL "$rec_pid" 2>/dev/null || true
+
+  # Restore the microphone's previous mute state now that recording has ended.
+  if [ -f "$MUTE_FILE" ]; then
+    if [ "$(cat "$MUTE_FILE")" = "yes" ]; then
+      pactl set-source-mute @DEFAULT_SOURCE@ 1 2>/dev/null || true
+    fi
+    rm -f "$MUTE_FILE"
+  fi
+
+  text="$(whisper-cli -m "$MODEL" -f "$WAV_FILE" -nt -np -sns 2>/dev/null \
+    | tr '\n' ' ' \
+    | sed -e 's/  */ /g' -e 's/^ //' -e 's/ $//')" || text=""
+  rm -f "$WAV_FILE"
+
+  if [ -n "$text" ]; then
+    wtype -d 5 -- "$text"
+  else
+    notify dialog-warning "no speech detected"
+  fi
+else
+  rm -f "$WAV_FILE"
+  # Remember whether the default input was muted so it can be restored later,
+  # then force the microphone on so pw-record captures actual audio.
+  pactl get-source-mute @DEFAULT_SOURCE@ 2>/dev/null \
+    | awk '{print $2}' > "$MUTE_FILE" || true
+  pactl set-source-mute @DEFAULT_SOURCE@ 0 2>/dev/null || true
+  pw-record "$WAV_FILE" &
+  echo $! > "$PID_FILE"
+  notify audio-input-microphone "recording... press super+space again to stop"
+fi

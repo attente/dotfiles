@@ -904,6 +904,7 @@ in
               (bind ''mainMod .. " + P"'' "hl.dsp.window.pseudo()")
               (bind ''mainMod .. " + S"'' ''hl.dsp.layout("togglesplit")'')
               (bind ''mainMod .. " + F"'' ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
+              (bind ''mainMod .. " + space"'' ''hl.dsp.exec_cmd([[voice-typing]])'')
               (bind ''mainMod .. " + escape"'' ''hl.dsp.exec_cmd([[${lockSessionCommand}]])'')
               (bind ''mainMod .. " + SHIFT + escape"'' ''hl.dsp.exec_cmd([[${suspendCommand}]])'')
               (bind ''"CTRL + ALT + delete"'' ''hl.dsp.exec_cmd([[reboot]])'')
@@ -1024,6 +1025,7 @@ in
       keepassxc
       lazydocker
       ldns
+      libnotify
       libreoffice
       lldb
       lm_sensors
@@ -1070,6 +1072,7 @@ in
       (whisper-cpp.override { rocmSupport = true; })
       wireshark
       wl-clipboard
+      wtype
       xdg-utils
       yq-go
       zip
