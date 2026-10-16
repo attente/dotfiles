@@ -1177,8 +1177,9 @@ in
 
   services.pcscd.enable = true;
 
-  # Sandboxed apps. Steam runs inside a bubblewrap sandbox and talks to the
-  # host through XDG portals (hyprland + gtk portals are already active).
+  # Sandboxed apps. Steam and the EA App (via Bottles) run inside a bubblewrap
+  # sandbox and talk to the host through XDG portals (hyprland + gtk portals are
+  # already active).
   services.flatpak = {
     enable = true;
 
@@ -1186,6 +1187,8 @@ in
 
     packages = [
       "com.valvesoftware.Steam"
+      "com.usebottles.bottles"
+      "com.github.tchx84.Flatseal"
     ];
 
     update.onActivation = true;
