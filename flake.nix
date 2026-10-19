@@ -28,7 +28,10 @@
           specialArgs = { inherit inputs pkgs-stable; };
           modules = commonModules ++ [
             {
-              imports = [ ./oxygen/hardware-configuration.nix ];
+              imports = [
+                ./oxygen/hardware-configuration.nix
+                ./oxygen/pido-telegram.nix
+              ];
               networking.hostName = "oxygen";
               system.stateVersion = "25.11";
               home-manager.users.william.home.stateVersion = "25.11";
