@@ -2,17 +2,17 @@
 # Run pi from the device memory directory.
 #
 # Usage:
-#   pido [-p|--print] [--] [prompt...]
+#   pido [-p|--print] [-c|--continue] [--] [prompt...]
 #
-# All arguments after the optional print flag are forwarded to pi as the
-# prompt. If no prompt is given, pi starts interactively in the memory
-# directory.
+# All arguments after the optional flags are forwarded to pi as the prompt.
+# If no prompt is given, pi starts interactively in the memory directory.
 
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 memory_dir=$script_dir/../pi/memory
 print_mode=false
+continue_mode=false
 
 while [ "$#" -gt 0 ]; do
   case $1 in
@@ -20,8 +20,12 @@ while [ "$#" -gt 0 ]; do
       print_mode=true
       shift
       ;;
+    -c|--continue)
+      continue_mode=true
+      shift
+      ;;
     -h|--help)
-      printf '%s\n' 'Usage: pido [-p|--print] [--] [prompt...]'
+      printf '%s\n' 'Usage: pido [-p|--print] [-c|--continue] [--] [prompt...]'
       exit 0
       ;;
     --)
@@ -41,8 +45,12 @@ fi
 
 cd "$memory_dir"
 
-if [ "$print_mode" = true ]; then
+if [ "$print_mode" = true ] && [ "$continue_mode" = true ]; then
+  exec pi --print --continue -- "$@"
+elif [ "$print_mode" = true ]; then
   exec pi --print -- "$@"
+elif [ "$continue_mode" = true ]; then
+  exec pi --continue -- "$@"
 else
   exec pi -- "$@"
 fi
