@@ -1,0 +1,48 @@
+#!/bin/sh
+# Run pi from the device memory directory.
+#
+# Usage:
+#   pido [-p|--print] [--] [prompt...]
+#
+# All arguments after the optional print flag are forwarded to pi as the
+# prompt. If no prompt is given, pi starts interactively in the memory
+# directory.
+
+set -eu
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+memory_dir=$script_dir/../pi/memory
+print_mode=false
+
+while [ "$#" -gt 0 ]; do
+  case $1 in
+    -p|--print)
+      print_mode=true
+      shift
+      ;;
+    -h|--help)
+      printf '%s\n' 'Usage: pido [-p|--print] [--] [prompt...]'
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ ! -d "$memory_dir" ]; then
+  printf 'pido: memory directory not found: %s\n' "$memory_dir" >&2
+  exit 1
+fi
+
+cd "$memory_dir"
+
+if [ "$print_mode" = true ]; then
+  exec pi --print -- "$@"
+else
+  exec pi -- "$@"
+fi
