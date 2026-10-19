@@ -1,0 +1,88 @@
+#!/bin/sh
+# Push-to-talk dictation for Hyprland.
+#
+# "dictate start" unmutes the default source and begins recording.
+# "dictate stop" ends the recording, restores the original mute state, runs
+# speech recognition, and types the result into the focused window.
+#
+# DICTATE_MODEL may point to a different whisper.cpp model.
+
+set -eu
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/dictate-$(id -u)"
+audio_file="$state_dir/audio.wav"
+pid_file="$state_dir/recorder.pid"
+source_file="$state_dir/source"
+mute_file="$state_dir/mute"
+model="${DICTATE_MODEL:-/home/william/whisper/ggml-base.en.bin}"
+
+start() {
+  mkdir -p "$state_dir"
+
+  if [ -f "$pid_file" ]; then
+    pid=$(cat "$pid_file")
+    if kill -0 "$pid" 2>/dev/null; then
+      exit 0
+    fi
+    rm -f "$pid_file"
+  fi
+
+  source_name=$(pactl get-default-source)
+  printf '%s\n' "$source_name" > "$source_file"
+  pactl get-source-mute "$source_name" | awk '{ print $2 }' > "$mute_file"
+
+  pactl set-source-mute "$source_name" 0
+  pw-record \
+    --target "$source_name" \
+    --rate 16000 \
+    --channels 1 \
+    --format s16 \
+    --container wav \
+    "$audio_file" >/dev/null 2>&1 &
+  printf '%s\n' "$!" > "$pid_file"
+}
+
+stop() {
+  [ -f "$pid_file" ] || exit 0
+
+  pid=$(cat "$pid_file")
+  rm -f "$pid_file"
+
+  # SIGINT lets pw-record finalize the WAV container.
+  kill -INT "$pid" 2>/dev/null || true
+  i=0
+  while kill -0 "$pid" 2>/dev/null && [ "$i" -lt 50 ]; do
+    sleep 0.05
+    i=$((i + 1))
+  done
+  kill -TERM "$pid" 2>/dev/null || true
+
+  source_name=$(cat "$source_file")
+  case "$(cat "$mute_file")" in
+    yes) pactl set-source-mute "$source_name" 1 ;;
+    *)   pactl set-source-mute "$source_name" 0 ;;
+  esac
+
+  if [ ! -s "$audio_file" ]; then
+    rm -f "$audio_file" "$source_file" "$mute_file"
+    exit 0
+  fi
+
+  text=$(whisper-cli -m "$model" -f "$audio_file" -l en -nt -np 2>/dev/null \
+    | tr '\n' ' ' \
+    | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+  rm -f "$audio_file" "$source_file" "$mute_file"
+
+  [ -n "$text" ] || exit 0
+  printf '%s' "$text" | wtype -
+}
+
+case "${1:-}" in
+  start) start ;;
+  stop) stop ;;
+  *)
+    echo "usage: $0 start|stop" >&2
+    exit 2
+    ;;
+esac

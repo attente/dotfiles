@@ -903,6 +903,8 @@ in
               (bind ''mainMod .. " + R"'' ''hl.dsp.exec_cmd([[walker]])'')
               (bind ''mainMod .. " + P"'' "hl.dsp.window.pseudo()")
               (bind ''mainMod .. " + S"'' ''hl.dsp.layout("togglesplit")'')
+              (bind ''mainMod .. " + space"'' ''hl.dsp.exec_cmd([[dictate start]])'')
+              (bindOpts ''mainMod .. " + space"'' ''hl.dsp.exec_cmd([[dictate stop]])'' { release = true; })
               (bind ''mainMod .. " + F"'' ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
               (bind ''mainMod .. " + escape"'' ''hl.dsp.exec_cmd([[${lockSessionCommand}]])'')
               (bind ''mainMod .. " + SHIFT + escape"'' ''hl.dsp.exec_cmd([[${suspendCommand}]])'')
@@ -1070,6 +1072,7 @@ in
       (whisper-cpp.override { rocmSupport = true; })
       wireshark
       wl-clipboard
+      wtype
       xdg-utils
       yq-go
       zip
