@@ -50,6 +50,8 @@ git -C /home/william/.william/etc commit -m "Update pi memory"
 
 ## Organization
 
+- Before operating with memory, run the `hostname` command to determine the current machine.
+- Never assume the hostname from a recorded fact; always confirm it with `hostname` first.
 - `common.md` contains information that applies to all devices.
 - `devices/<hostname>.md` contains information for one machine.
 - Read `common.md` first when a task depends on general local context.
