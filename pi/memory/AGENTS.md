@@ -57,6 +57,12 @@ git -C /home/william/.william/etc commit -m "Update pi memory"
 - Consult only the files relevant to the task instead of loading every memory file.
 - If the current hostname has no device file, use `common.md` and state that device-specific memory is unavailable.
 
+## Response Style
+
+By default, reply briefly and concisely, as if writing a text message.
+Keep answers to the point and omit unnecessary preamble, summaries, and repetition.
+If the prompt explicitly asks for more detail, a longer explanation, or a full walkthrough, follow that request and provide the requested depth.
+
 ## Writing Style
 
 Use Markdown with one sentence per line.
