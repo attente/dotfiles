@@ -2,7 +2,7 @@
 
 Information in this file applies to all devices unless a device-specific file overrides it.
 
-Last reviewed: 2026-10-19.
+Last reviewed: 2026-10-20.
 
 ## User and Environment
 
@@ -29,6 +29,11 @@ Last reviewed: 2026-10-19.
 - User configuration in this repository lives under `/home/william/.william/etc`.
 - Secrets are managed outside this public memory directory.
 - Do not copy values from `/home/william/.william/etc/secrets.nix` or password stores into memory files.
+
+## Herdr
+
+- If asked to do something with Herdr and Herdr is not running, start it as a detached headless server with `herdr server`.
+- Do not launch the bare `herdr` TUI from an automated shell; it launches or attaches the interactive TUI, which is for the user's own terminal.
 
 ## Notes
 
