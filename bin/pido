@@ -45,6 +45,8 @@ fi
 
 cd "$memory_dir"
 
+export HERDR_ENV=1
+
 if [ "$print_mode" = true ] && [ "$continue_mode" = true ]; then
   exec pi --print --continue -- "$@"
 elif [ "$print_mode" = true ]; then
