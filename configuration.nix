@@ -434,15 +434,6 @@ in
       '';
     };
 
-    programs.opencode = {
-      enable = true;
-      enableMcpIntegration = true;
-      settings = {
-        model = "deepseek/deepseek-v4-flash";
-        autoupdate = false;
-      };
-    };
-
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
