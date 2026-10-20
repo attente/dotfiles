@@ -996,7 +996,6 @@ in
       brightnessctl
       bubblewrap
       bun
-      claude-code
       codex
       d-spy
       devenv
