@@ -1054,7 +1054,6 @@ in
       ungoogled-chromium
       unzip
       vlc
-      vscodium
       wabt
       waypipe
       weechat
