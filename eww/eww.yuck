@@ -80,7 +80,7 @@
     :valign "center"
     :width 30
     :height 30
-    :onclick "hyprctl --batch 'dispatch moveworkspacetomonitor ${item.id} ${monitor} ; dispatch workspace ${item.id}'"
+    :onclick "hyprctl --batch 'dispatch hl.dsp.workspace.move({ workspace = ${item.id}, monitor = \"current\" }); dispatch hl.dsp.focus({ workspace = ${item.id} })'"
     {item.id}))
 
 (defwidget title [monitor]
