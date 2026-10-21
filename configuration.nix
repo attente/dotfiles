@@ -1120,6 +1120,18 @@ in
 
   programs.virt-manager.enable = true;
 
+  # AppImage support. `appimage-run foo.AppImage` always works (it extracts the
+  # image into a FUSE-free FHS sandbox); enabling binfmt additionally lets the
+  # kernel execute AppImages directly, so `./foo.AppImage` just works too.
+  # AppImages needing extra libraries can be covered with:
+  #   package = pkgs.appimage-run.override {
+  #     extraPkgs = p: [ p.ffmpeg p.imagemagick ];
+  #   };
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
   # List services that you want to enable:
 
   services.tlp = {
