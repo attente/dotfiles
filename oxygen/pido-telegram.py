@@ -6,6 +6,10 @@ forwards -p and, unless the conversation was reset with /new, -c. The pido
 output is sent back to the same chat. /stop cancels the active run and clears
 queued messages. Markdown in the pido output is rendered for Telegram, so
 headings, bold and italic text, lists, links, and code blocks appear formatted.
+A reply that ends with suggested follow-up actions gets one inline button per
+action, and pressing one runs that action as the next prompt. The actions come
+from a followups code block requested by FOLLOW_UP_INSTRUCTION, or from a list
+under a heading such as "Next steps". That block is removed from the message.
 """
 
 from __future__ import annotations
@@ -15,17 +19,27 @@ import html
 import logging
 import os
 import re
+import secrets
 import signal
+from collections import OrderedDict
 from dataclasses import dataclass
 from typing import NoReturn
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
-from telegram import Chat, Message, Update
+from telegram import (
+    CallbackQuery,
+    Chat,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    Update,
+)
 from telegram.constants import ChatAction, ParseMode
 from telegram.error import BadRequest
 from telegram.ext import (
     Application,
+    CallbackQueryHandler,
     CommandHandler,
     ContextTypes,
     MessageHandler,
@@ -47,6 +61,36 @@ TAG_NAME_PATTERN = re.compile(r"<\s*/?\s*([A-Za-z0-9-]+)")
 LANGUAGE_PATTERN = re.compile(r"[A-Za-z0-9_+#.-]+")
 ANSI_PATTERN = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 VOID_TAGS = frozenset({"br"})
+FOLLOW_UP_FENCE_LANGUAGES = frozenset({"followups", "follow-ups", "actions"})
+FOLLOW_UP_HEADING_PATTERN = re.compile(
+    r"^(next steps?|next actions?|follow[- ]?ups?|suggested actions?"
+    r"|possible actions?|recommended actions?|what next|next move)\b",
+    re.IGNORECASE,
+)
+TASK_MARKER_PATTERN = re.compile(r"^\[[ xX]\]\s*")
+FOLLOW_UP_FENCE_PATTERN = re.compile(
+    r"^(?P<fence>`{3,})[ \t]*(?:followups|follow-ups|actions)[^\n]*\n"
+    r"(?P<body>.*?)^(?P=fence)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
+BLANK_LINES_PATTERN = re.compile(r"\n[ \t]*(?:\n[ \t]*)+")
+MAX_FOLLOW_UPS = 8
+ACTION_LABEL_LIMIT = 40
+ACTION_PROMPT_LIMIT = 500
+ACTION_DATA_PREFIX = "act:"
+MAX_PENDING_ACTIONS = 256
+
+# Appended to pi's system prompt so follow-up suggestions arrive in a shape the
+# bot can turn into buttons. The block is optional and stripped before display.
+FOLLOW_UP_INSTRUCTION = (
+    "When, and only when, your reply suggests concrete next actions the "
+    "user might take, end it with a single fenced code block tagged "
+    "followups: one concise, self-contained imperative action per line, "
+    "at most five lines. That block is shown to the user as one "
+    "tap-to-run button per line, so phrase each line as a message they "
+    "could send back to you. Omit the block entirely when there are no "
+    "such actions, and never mention or explain it."
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -57,12 +101,15 @@ logger = logging.getLogger("pido-telegram")
 
 @dataclass(slots=True)
 class QueueItem:
-    """A queued message or /new marker."""
+    """A queued message, follow-up shortcut, or /new marker."""
 
     update_id: int
     chat_id: int
     message: Message
     prompt: str | None
+
+
+pending_actions: OrderedDict[tuple[int, str], str] = OrderedDict()
 
 
 prompt_queue: asyncio.Queue[QueueItem] = asyncio.Queue()
@@ -415,6 +462,124 @@ def html_to_plain(text: str) -> str:
     """Strip Telegram HTML markup for a plain-text fallback."""
     return html.unescape(TAG_PATTERN.sub("", text))
 
+
+def extract_follow_ups(text: str) -> list[str]:
+    """Return follow-up actions listed under a suggestion heading."""
+    tokens = MARKDOWN.parse(ANSI_PATTERN.sub("", text))
+    actions: list[str] = []
+    active = False
+    awaiting_heading = False
+    list_depth = 0
+    item_parts: list[str] | None = None
+    item_taken = False
+
+    def flush_item() -> None:
+        nonlocal item_parts
+        if item_parts is None:
+            return
+        item = " ".join(part for part in item_parts if part.strip())
+        item = TASK_MARKER_PATTERN.sub("", item).strip()
+        if item:
+            actions.append(item)
+        item_parts = None
+
+    for token in tokens:
+        kind = token.type
+        if kind == "heading_open":
+            flush_item()
+            awaiting_heading = True
+        elif kind == "inline" and awaiting_heading:
+            heading = inline_plain_text(token.children or []).strip()
+            active = bool(FOLLOW_UP_HEADING_PATTERN.match(heading))
+            awaiting_heading = False
+        elif kind in ("bullet_list_open", "ordered_list_open"):
+            list_depth += 1
+        elif kind in ("bullet_list_close", "ordered_list_close"):
+            flush_item()
+            list_depth = max(list_depth - 1, 0)
+        elif kind == "list_item_open" and active and list_depth == 1:
+            item_parts = []
+            item_taken = False
+        elif kind == "inline" and item_parts is not None and not item_taken:
+            item_parts.append(inline_plain_text(token.children or []))
+            item_taken = True
+        elif kind == "list_item_close" and active and list_depth == 1:
+            flush_item()
+        elif kind == "fence":
+            language = token.info.strip().split(" ", 1)[0].lower()
+            if language in FOLLOW_UP_FENCE_LANGUAGES:
+                for line in token.content.splitlines():
+                    line = line.strip().lstrip("-* ").strip()
+                    if line:
+                        actions.append(line)
+
+    unique = list(dict.fromkeys(actions))
+    return unique[:MAX_FOLLOW_UPS]
+
+
+def split_follow_ups(text: str) -> tuple[str, list[str]]:
+    """Remove follow-up fence blocks and return the actions they list."""
+    actions: list[str] = []
+    removed = False
+
+    def take(match: re.Match[str]) -> str:
+        nonlocal removed
+        removed = True
+        for line in match.group("body").splitlines():
+            line = line.strip().lstrip("-* ").strip()
+            if line:
+                actions.append(line)
+        return ""
+
+    cleaned = FOLLOW_UP_FENCE_PATTERN.sub(take, text)
+    if removed:
+        cleaned = BLANK_LINES_PATTERN.sub("\n\n", cleaned)
+    if not actions:
+        actions = extract_follow_ups(cleaned)
+    unique = list(dict.fromkeys(actions))
+    return cleaned.strip(), unique[:MAX_FOLLOW_UPS]
+
+
+def action_label(prompt: str) -> str:
+    """Build a short button label from a follow-up action."""
+    label = " ".join(prompt.split())
+    if len(label) <= ACTION_LABEL_LIMIT:
+        return label
+    return label[: ACTION_LABEL_LIMIT - 3].rstrip() + "..."
+
+
+def remember_action(chat_id: int, prompt: str) -> str:
+    """Store a follow-up prompt and return its short callback token."""
+    token = secrets.token_hex(4)
+    pending_actions[(chat_id, token)] = prompt[:ACTION_PROMPT_LIMIT]
+    while len(pending_actions) > MAX_PENDING_ACTIONS:
+        pending_actions.popitem(last=False)
+    return token
+
+
+def take_action(chat_id: int, token: str) -> str | None:
+    """Consume a stored follow-up prompt."""
+    return pending_actions.pop((chat_id, token), None)
+
+
+def follow_up_keyboard(
+    chat_id: int, prompts: list[str]
+) -> InlineKeyboardMarkup:
+    """Build one button per follow-up action."""
+    rows = [
+        [
+            InlineKeyboardButton(
+                action_label(prompt),
+                callback_data=(
+                    ACTION_DATA_PREFIX + remember_action(chat_id, prompt)
+                ),
+            )
+        ]
+        for prompt in prompts
+    ]
+    return InlineKeyboardMarkup(rows)
+
+
 def format_result(returncode: int, stdout: str, stderr: str) -> str:
     """Build the text sent back to Telegram after a pido run."""
     output = stdout.strip()
@@ -456,7 +621,7 @@ async def terminate_process(process: asyncio.subprocess.Process) -> None:
 
 async def run_pido(prompt: str, continue_session: bool) -> tuple[int, str, str]:
     """Run pido with the given prompt and return its exit status and output."""
-    args = [PIDO_PATH, "-p"]
+    args = [PIDO_PATH, "-p", "-s", FOLLOW_UP_INSTRUCTION]
     if continue_session:
         args.append("-c")
     args.extend(["--", prompt])
@@ -508,31 +673,47 @@ async def send_chunk(
     text: str,
     parse_mode: str | None,
     first: bool,
+    reply_markup: InlineKeyboardMarkup | None = None,
 ) -> None:
     """Send one chunk, replying to the prompt for the first one."""
     if first:
-        await message.reply_text(text, parse_mode=parse_mode)
+        await message.reply_text(
+            text, parse_mode=parse_mode, reply_markup=reply_markup
+        )
     else:
-        await chat.send_message(text, parse_mode=parse_mode)
+        await chat.send_message(
+            text, parse_mode=parse_mode, reply_markup=reply_markup
+        )
 
 
 async def reply_with_result(message: Message, text: str) -> None:
     """Send a result as formatted HTML, split where Telegram requires it."""
-    chunks = split_html(markdown_to_telegram_html(text))
+    visible, follow_ups = split_follow_ups(text)
+    chunks = split_html(markdown_to_telegram_html(visible))
     if not chunks:
-        plain = html_to_plain(text)[:REPLY_CHUNK_LIMIT]
-        chunks = [plain or "pido produced no output."]
+        if follow_ups:
+            chunks = ["Suggested follow-ups:"]
+        else:
+            plain = html_to_plain(visible)[:REPLY_CHUNK_LIMIT]
+            chunks = [plain or "pido produced no output."]
+    keyboard = (
+        follow_up_keyboard(message.chat_id, follow_ups) if follow_ups else None
+    )
     for index, chunk in enumerate(chunks):
         first = index == 0
+        last = index == len(chunks) - 1
+        markup = keyboard if last else None
         try:
             await send_chunk(
-                message, message.chat, chunk, ParseMode.HTML, first
+                message, message.chat, chunk, ParseMode.HTML, first, markup
             )
         except BadRequest:
             logger.warning("Telegram rejected HTML output, sending plain text")
             plain = html_to_plain(chunk)[:REPLY_CHUNK_LIMIT]
-            await send_chunk(message, message.chat, plain, None, first)
-        if index < len(chunks) - 1:
+            await send_chunk(
+                message, message.chat, plain, None, first, markup
+            )
+        if not last:
             await asyncio.sleep(0.5)
 
 
@@ -691,8 +872,54 @@ async def start_command(
     await message.reply_text(
         "Send a text message to run pido. Use /new before a message to start "
         "a new session instead of continuing the previous one. Use /stop to "
-        "cancel the current run and clear queued messages."
+        "cancel the current run and clear queued messages. When a reply ends "
+        "with suggested follow-ups, tap a button under it to run that action."
     )
+
+
+async def answer_callback(
+    query: CallbackQuery, text: str | None = None
+) -> None:
+    """Answer a callback query, ignoring expired queries."""
+    try:
+        await query.answer(text)
+    except BadRequest:
+        logger.debug("could not answer callback query", exc_info=True)
+
+
+async def action_callback(
+    update: Update, _context: ContextTypes.DEFAULT_TYPE
+) -> None:
+    """Run the follow-up action behind a pressed shortcut button."""
+    query = update.callback_query
+    if query is None:
+        return
+
+    message = query.message
+    if not is_allowed(update) or message is None:
+        await answer_callback(query, "Not authorized.")
+        return
+
+    data = query.data or ""
+    prompt = None
+    if data.startswith(ACTION_DATA_PREFIX):
+        prompt = take_action(message.chat_id, data[len(ACTION_DATA_PREFIX) :])
+
+    try:
+        await query.edit_message_reply_markup(reply_markup=None)
+    except BadRequest:
+        logger.debug("could not clear shortcut buttons", exc_info=True)
+
+    if prompt is None:
+        await answer_callback(query, "This shortcut has expired.")
+        return
+
+    await answer_callback(query)
+    chosen = await message.reply_text(prompt)
+    await prompt_queue.put(
+        QueueItem(update.update_id, message.chat_id, chosen, prompt)
+    )
+    ensure_worker()
 
 
 async def post_init(_application: Application) -> None:
@@ -731,13 +958,14 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("new", new_command))
     application.add_handler(CommandHandler("stop", stop_command))
+    application.add_handler(CallbackQueryHandler(action_callback))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     )
 
     logger.info("starting pido Telegram bot for user %s", ALLOWED_USER_ID)
     application.run_polling(
-        allowed_updates=[Update.MESSAGE],
+        allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY],
         drop_pending_updates=True,
     )
 

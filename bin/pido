@@ -2,9 +2,11 @@
 # Run pi from the device memory directory.
 #
 # Usage:
-#   pido [-p|--print] [-c|--continue] [--] [prompt...]
+#   pido [-p|--print] [-c|--continue] [-s|--system-prompt <text|path>]
+#        [--] [prompt...]
 #
 # All arguments after the optional flags are forwarded to pi as the prompt.
+# A system prompt given with -s is appended to pi's default system prompt.
 # If no prompt is given, pi starts interactively in the memory directory.
 
 set -eu
@@ -13,6 +15,7 @@ script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 memory_dir=$script_dir/../pi/memory
 print_mode=false
 continue_mode=false
+system_prompt=""
 
 while [ "$#" -gt 0 ]; do
   case $1 in
@@ -24,8 +27,18 @@ while [ "$#" -gt 0 ]; do
       continue_mode=true
       shift
       ;;
+    -s|--system-prompt)
+      if [ "$#" -lt 2 ]; then
+        printf 'pido: %s needs text or a file path\n' "$1" >&2
+        exit 2
+      fi
+      system_prompt=$2
+      shift 2
+      ;;
     -h|--help)
-      printf '%s\n' 'Usage: pido [-p|--print] [-c|--continue] [--] [prompt...]'
+      printf '%s\n' \
+        'Usage: pido [-p|--print] [-c|--continue]' \
+        '            [-s|--system-prompt <text|path>] [--] [prompt...]'
       exit 0
       ;;
     --)
@@ -47,12 +60,18 @@ cd "$memory_dir"
 
 export HERDR_ENV=1
 
-if [ "$print_mode" = true ] && [ "$continue_mode" = true ]; then
-  exec pi --print --continue -- "$@"
-elif [ "$print_mode" = true ]; then
-  exec pi --print -- "$@"
-elif [ "$continue_mode" = true ]; then
-  exec pi --continue -- "$@"
+if [ -n "$system_prompt" ]; then
+  set -- --append-system-prompt "$system_prompt" -- "$@"
 else
-  exec pi -- "$@"
+  set -- -- "$@"
+fi
+
+if [ "$print_mode" = true ] && [ "$continue_mode" = true ]; then
+  exec pi --print --continue "$@"
+elif [ "$print_mode" = true ]; then
+  exec pi --print "$@"
+elif [ "$continue_mode" = true ]; then
+  exec pi --continue "$@"
+else
+  exec pi "$@"
 fi
