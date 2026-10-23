@@ -2,7 +2,9 @@
 
 let
   home = "/home/william";
-  python = pkgs.python3.withPackages (ps: [ ps.python-telegram-bot ]);
+  python = pkgs.python3.withPackages (
+    ps: [ ps.python-telegram-bot ps.markdown-it-py ]
+  );
   botScript = pkgs.writeText "pido-telegram-bot.py"
     (builtins.readFile ./pido-telegram.py);
   runtimePath = lib.concatStringsSep ":" [

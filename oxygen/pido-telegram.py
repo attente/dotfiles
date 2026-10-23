@@ -4,20 +4,26 @@
 Send a text message to run pido with that message as the prompt. The bot
 forwards -p and, unless the conversation was reset with /new, -c. The pido
 output is sent back to the same chat. /stop cancels the active run and clears
-queued messages.
+queued messages. Markdown in the pido output is rendered for Telegram, so
+headings, bold and italic text, lists, links, and code blocks appear formatted.
 """
 
 from __future__ import annotations
 
 import asyncio
+import html
 import logging
 import os
+import re
 import signal
 from dataclasses import dataclass
 from typing import NoReturn
 
-from telegram import Message, Update
-from telegram.constants import ChatAction
+from markdown_it import MarkdownIt
+from markdown_it.token import Token
+from telegram import Chat, Message, Update
+from telegram.constants import ChatAction, ParseMode
+from telegram.error import BadRequest
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -31,6 +37,16 @@ ALLOWED_USER_ID = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "").strip()
 PIDO_PATH = os.environ.get("PIDO_PATH", "/home/william/.william/etc/bin/pido")
 PIDO_TIMEOUT_SECONDS = int(os.environ.get("PIDO_TIMEOUT_SECONDS", "3600"))
 REPLY_CHUNK_LIMIT = 4000
+# Telegram caps a message at 4096 characters of parsed text. Tags and escaping
+# inflate the raw HTML, so chunks are cut well below the cap.
+HTML_CHUNK_LIMIT = 3500
+
+MARKDOWN = MarkdownIt("commonmark").enable(["table", "strikethrough"])
+TAG_PATTERN = re.compile(r"<[^>]*>")
+TAG_NAME_PATTERN = re.compile(r"<\s*/?\s*([A-Za-z0-9-]+)")
+LANGUAGE_PATTERN = re.compile(r"[A-Za-z0-9_+#.-]+")
+ANSI_PATTERN = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+VOID_TAGS = frozenset({"br"})
 
 logging.basicConfig(
     level=logging.INFO,
@@ -75,27 +91,329 @@ def is_allowed(update: Update) -> bool:
     return allowed
 
 
-def split_message(text: str, limit: int = REPLY_CHUNK_LIMIT) -> list[str]:
-    """Split text into chunks that fit within Telegram's message limit."""
-    chunks: list[str] = []
-    remaining = text
+def escape_text(text: str) -> str:
+    """Escape text for Telegram's HTML parse mode."""
+    return html.escape(text, quote=False)
 
-    while remaining:
-        if len(remaining) <= limit:
-            chunks.append(remaining)
+
+def attribute(token: Token, name: str) -> str:
+    """Read one attribute from a markdown-it token."""
+    attrs = token.attrs
+    if not attrs:
+        return ""
+    if isinstance(attrs, dict):
+        value = attrs.get(name, "")
+    else:
+        value = dict(attrs).get(name, "")
+    return str(value or "")
+
+
+def render_inline(children: list[Token]) -> str:
+    """Render markdown-it inline tokens to the Telegram HTML subset."""
+    parts: list[str] = []
+    for token in children:
+        kind = token.type
+        content = token.content
+        if kind == "text":
+            parts.append(escape_text(content))
+        elif kind == "code_inline":
+            parts.append(f"<code>{escape_text(content)}</code>")
+        elif kind == "strong_open":
+            parts.append("<b>")
+        elif kind == "strong_close":
+            parts.append("</b>")
+        elif kind == "em_open":
+            parts.append("<i>")
+        elif kind == "em_close":
+            parts.append("</i>")
+        elif kind == "s_open":
+            parts.append("<s>")
+        elif kind == "s_close":
+            parts.append("</s>")
+        elif kind == "link_open":
+            href = html.escape(attribute(token, "href"), quote=True)
+            parts.append(f'<a href="{href}">')
+        elif kind == "link_close":
+            parts.append("</a>")
+        elif kind == "image":
+            src = attribute(token, "src")
+            alt = content or src
+            parts.append(
+                f'<a href="{html.escape(src, quote=True)}">'
+                f"{escape_text(alt)}</a>"
+            )
+        elif kind in ("softbreak", "hardbreak"):
+            parts.append("\n")
+        elif kind == "html_inline" or content:
+            parts.append(escape_text(content))
+    return "".join(parts)
+
+
+def inline_plain_text(children: list[Token]) -> str:
+    """Render inline tokens as plain text, for table cell alignment."""
+    return html.unescape(TAG_PATTERN.sub("", render_inline(children)))
+
+
+class TelegramHtmlBuilder:
+    """Accumulate Telegram HTML from a markdown-it block token stream."""
+
+    def __init__(self) -> None:
+        self.buffer = ""
+        self.lists: list[list[int | str]] = []
+        self.item_started = False
+
+    def text(self, value: str) -> None:
+        self.buffer += value
+
+    def block_break(self) -> None:
+        """Ensure the buffer ends with a blank line."""
+        if not self.buffer or self.buffer.endswith("\n\n"):
+            return
+        if self.buffer.endswith("\n"):
+            self.buffer += "\n"
+        else:
+            self.buffer += "\n\n"
+
+
+def read_table(tokens: list[Token], index: int) -> tuple[list[list[str]], int]:
+    """Collect the rows of the table starting at index."""
+    rows: list[list[str]] = []
+    row: list[str] | None = None
+    cursor = index + 1
+    while cursor < len(tokens) and tokens[cursor].type != "table_close":
+        token = tokens[cursor]
+        if token.type == "tr_open":
+            row = []
+        elif token.type == "tr_close":
+            if row is not None:
+                rows.append(row)
+            row = None
+        elif token.type == "inline" and row is not None:
+            row.append(inline_plain_text(token.children or []))
+        cursor += 1
+    return rows, cursor
+
+
+def render_table(rows: list[list[str]]) -> str:
+    """Render a Markdown table as an aligned monospace block."""
+    columns = max((len(row) for row in rows), default=0)
+    if columns == 0:
+        return ""
+    widths = [0] * columns
+    for row in rows:
+        for column, cell in enumerate(row):
+            widths[column] = max(widths[column], len(cell))
+    lines: list[str] = []
+    for row_index, row in enumerate(rows):
+        cells = [
+            (row[column] if column < len(row) else "").ljust(widths[column])
+            for column in range(columns)
+        ]
+        lines.append(" | ".join(cells).rstrip())
+        if row_index == 0 and len(rows) > 1:
+            lines.append("-+-".join("-" * width for width in widths))
+    return f"<pre>{escape_text(chr(10).join(lines))}</pre>"
+
+
+def markdown_to_telegram_html(text: str) -> str:
+    """Convert Markdown to the HTML subset that Telegram accepts."""
+    tokens = MARKDOWN.parse(ANSI_PATTERN.sub("", text))
+    builder = TelegramHtmlBuilder()
+    index = 0
+    total = len(tokens)
+    while index < total:
+        token = tokens[index]
+        kind = token.type
+        if kind == "inline":
+            builder.text(render_inline(token.children or []))
+        elif kind == "paragraph_open":
+            if builder.lists and builder.item_started:
+                builder.item_started = False
+            elif builder.buffer and not builder.buffer.endswith("\n"):
+                builder.text("\n\n")
+        elif kind == "paragraph_close":
+            if builder.lists:
+                if not builder.buffer.endswith("\n"):
+                    builder.text("\n")
+            else:
+                builder.block_break()
+        elif kind == "heading_open":
+            if builder.buffer and not builder.buffer.endswith("\n\n"):
+                builder.block_break()
+            builder.text("<b>")
+        elif kind == "heading_close":
+            builder.text("</b>")
+            builder.block_break()
+        elif kind == "bullet_list_open":
+            builder.lists.append(["bullet", 0])
+        elif kind == "ordered_list_open":
+            start = attribute(token, "start")
+            builder.lists.append(
+                ["ordered", int(start) if start.isdigit() else 1]
+            )
+        elif kind in ("bullet_list_close", "ordered_list_close"):
+            if builder.lists:
+                builder.lists.pop()
+            if not builder.lists:
+                builder.block_break()
+        elif kind == "list_item_open":
+            if builder.buffer and not builder.buffer.endswith("\n"):
+                builder.text("\n")
+            builder.text("  " * max(len(builder.lists) - 1, 0))
+            if builder.lists and builder.lists[-1][0] == "ordered":
+                number = int(builder.lists[-1][1])
+                builder.text(f"{number}. ")
+                builder.lists[-1][1] = number + 1
+            else:
+                builder.text("- ")
+            builder.item_started = True
+        elif kind == "list_item_close":
+            if builder.buffer and not builder.buffer.endswith("\n"):
+                builder.text("\n")
+            builder.item_started = False
+        elif kind == "blockquote_open":
+            builder.block_break()
+            builder.text("<blockquote>")
+        elif kind == "blockquote_close":
+            if not builder.buffer.endswith("\n"):
+                builder.text("\n")
+            builder.text("</blockquote>")
+            builder.block_break()
+        elif kind in ("fence", "code_block"):
+            code = token.content.rstrip("\n")
+            language = ""
+            if kind == "fence":
+                language = token.info.strip().split(" ", 1)[0]
+            if language and LANGUAGE_PATTERN.fullmatch(language):
+                builder.text(
+                    f'<pre><code class="language-{language}">'
+                    f"{escape_text(code)}</code></pre>"
+                )
+            else:
+                builder.text(f"<pre>{escape_text(code)}</pre>")
+            builder.block_break()
+        elif kind == "hr":
+            builder.block_break()
+            builder.text("---")
+            builder.block_break()
+        elif kind == "html_block":
+            escaped = escape_text(token.content.strip())
+            if escaped:
+                builder.text(f"<pre>{escaped}</pre>")
+                builder.block_break()
+        elif kind == "table_open":
+            rows, index = read_table(tokens, index)
+            table = render_table(rows)
+            if table:
+                builder.block_break()
+                builder.text(table)
+                builder.block_break()
+        index += 1
+    return re.sub(
+        r"\n{3,}",
+        "\n\n",
+        re.sub(r"\n+</blockquote>", "\n</blockquote>", builder.buffer),
+    ).replace("<blockquote>\n\n", "<blockquote>").strip()
+
+
+def tag_name(tag: str) -> str:
+    """Return the lowercased element name of an HTML tag."""
+    match = TAG_NAME_PATTERN.match(tag)
+    return match.group(1).lower() if match else ""
+
+
+def open_tag_stack(text: str) -> list[str]:
+    """Return the tags still open at the end of the given HTML."""
+    stack: list[str] = []
+    for match in TAG_PATTERN.finditer(text):
+        tag = match.group(0)
+        name = tag_name(tag)
+        if not name or name in VOID_TAGS:
+            continue
+        if tag.startswith("</"):
+            if stack:
+                stack.pop()
+        elif not tag.endswith("/>"):
+            stack.append(tag)
+    return stack
+
+
+def split_html(text: str, limit: int = HTML_CHUNK_LIMIT) -> list[str]:
+    """Split HTML into balanced chunks without cutting through a tag."""
+    chunks: list[str] = []
+    prefix = ""
+    position = 0
+    while position < len(text):
+        budget = limit - len(prefix)
+        if budget <= 0:
+            prefix = ""
+            budget = limit
+        window_end = position + budget
+        if window_end >= len(text):
+            piece = prefix + text[position:]
+            if piece.strip():
+                chunks.append(piece)
             break
 
-        split_at = remaining.rfind("\n", 0, limit)
-        if split_at < limit // 2:
-            split_at = remaining.rfind(" ", 0, limit)
-        if split_at < limit // 2:
-            split_at = limit
+        newline = -1
+        space = -1
+        cursor = position
+        while cursor < window_end:
+            char = text[cursor]
+            if char == "<":
+                end = text.find(">", cursor)
+                cursor = window_end if end == -1 else end + 1
+                continue
+            if char == "\n":
+                newline = cursor
+            elif char == " ":
+                space = cursor
+            cursor += 1
 
-        chunks.append(remaining[:split_at].rstrip())
-        remaining = remaining[split_at:].lstrip("\n")
+        threshold = position + budget // 2
+        if newline >= threshold:
+            split_at = newline
+        elif space >= threshold:
+            split_at = space
+        else:
+            split_at = cursor
+        if split_at <= position:
+            split_at = window_end
 
-    return [chunk for chunk in chunks if chunk]
+        piece = prefix + text[position:split_at]
+        stack = open_tag_stack(piece)
+        excess = len(piece) + sum(len(tag) + 3 for tag in stack) - limit
+        if excess > 0:
+            # Closing tags are appended after the body, so pull the split back
+            # to the nearest break until the finished chunk fits, never
+            # landing inside a tag.
+            cut = split_at - excess
+            for separator in ("\n", " "):
+                candidate = text.rfind(separator, position, cut)
+                if candidate >= position + budget // 3:
+                    cut = candidate
+                    break
+            while cut > position and text.rfind(
+                "<", position, cut
+            ) > text.rfind(">", position, cut):
+                cut = text.rfind("<", position, cut)
+            if cut > position:
+                split_at = cut
+                piece = prefix + text[position:split_at]
+                stack = open_tag_stack(piece)
+        if piece.strip():
+            closing = "".join(f"</{tag_name(tag)}>" for tag in reversed(stack))
+            chunks.append(piece + closing)
+        prefix = "".join(stack)
+        position = split_at
+        while position < len(text) and text[position] in " \n":
+            position += 1
+    return chunks
 
+
+def html_to_plain(text: str) -> str:
+    """Strip Telegram HTML markup for a plain-text fallback."""
+    return html.unescape(TAG_PATTERN.sub("", text))
 
 def format_result(returncode: int, stdout: str, stderr: str) -> str:
     """Build the text sent back to Telegram after a pido run."""
@@ -184,14 +502,37 @@ async def keep_typing(chat: object) -> None:
         logger.debug("typing indicator failed", exc_info=True)
 
 
-async def reply_with_result(message: object, text: str) -> None:
-    """Send a result, splitting it if Telegram's limit requires it."""
-    chunks = split_message(text)
+async def send_chunk(
+    message: Message,
+    chat: Chat,
+    text: str,
+    parse_mode: str | None,
+    first: bool,
+) -> None:
+    """Send one chunk, replying to the prompt for the first one."""
+    if first:
+        await message.reply_text(text, parse_mode=parse_mode)
+    else:
+        await chat.send_message(text, parse_mode=parse_mode)
+
+
+async def reply_with_result(message: Message, text: str) -> None:
+    """Send a result as formatted HTML, split where Telegram requires it."""
+    chunks = split_html(markdown_to_telegram_html(text))
+    if not chunks:
+        plain = html_to_plain(text)[:REPLY_CHUNK_LIMIT]
+        chunks = [plain or "pido produced no output."]
     for index, chunk in enumerate(chunks):
-        if index == 0:
-            await message.reply_text(chunk)  # type: ignore[attr-defined]
-        else:
-            await message.chat.send_message(chunk)  # type: ignore[attr-defined]
+        first = index == 0
+        try:
+            await send_chunk(
+                message, message.chat, chunk, ParseMode.HTML, first
+            )
+        except BadRequest:
+            logger.warning("Telegram rejected HTML output, sending plain text")
+            plain = html_to_plain(chunk)[:REPLY_CHUNK_LIMIT]
+            await send_chunk(message, message.chat, plain, None, first)
+        if index < len(chunks) - 1:
             await asyncio.sleep(0.5)
 
 
