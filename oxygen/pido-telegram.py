@@ -84,12 +84,15 @@ MAX_PENDING_ACTIONS = 256
 # bot can turn into buttons. The block is optional and stripped before display.
 FOLLOW_UP_INSTRUCTION = (
     "When, and only when, your reply suggests concrete next actions the "
-    "user might take, end it with a single fenced code block tagged "
-    "followups: one concise, self-contained imperative action per line, "
-    "at most five lines. That block is shown to the user as one "
-    "tap-to-run button per line, so phrase each line as a message they "
-    "could send back to you. Omit the block entirely when there are no "
-    "such actions, and never mention or explain it."
+    "user might take, near the end present each action in full as a "
+    "numbered 'Next steps' list, then end with a single fenced code "
+    "block tagged followups: one very short imperative label per line "
+    "(at most five words), at most five lines, one label per listed "
+    "action in the same order. The list is for the user to read; each "
+    "label becomes a tap-to-run button that sends the label back as the "
+    "next prompt, so it must stand alone. Omit both the list and the "
+    "block when there are no such actions, and never mention or explain "
+    "them."
 )
 
 logging.basicConfig(
