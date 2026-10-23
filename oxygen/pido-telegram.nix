@@ -44,6 +44,9 @@ in
       PYTHONUNBUFFERED = "1";
       PIDO_PATH = "${home}/.william/etc/bin/pido";
       PATH = lib.mkForce runtimePath;
+      # Let pido sessions reach the user session's ssh-agent for git pushes.
+      SSH_AUTH_SOCK = "/run/user/%U/ssh-agent";
+      XDG_RUNTIME_DIR = "/run/user/%U";
     };
 
     serviceConfig = {
