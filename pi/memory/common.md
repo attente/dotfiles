@@ -35,6 +35,7 @@ Last reviewed: 2026-10-20.
 - If asked to do something with Herdr and Herdr is not running, start it as a detached headless server with `herdr server`.
 - Do not launch the bare `herdr` TUI from an automated shell; it launches or attaches the interactive TUI, which is for the user's own terminal.
 - For an incoming request, first check Herdr's existing workspaces and agents (for example, `herdr workspace list` and `herdr agent list`) for work related to the request.
+- Prefer delegating project-specific work to an active agent already working in that repository, using `herdr agent prompt <name> ...`; avoid duplicating the work in the caller session when a suitable agent is available.
 - If none is related, create a workspace at the correct project directory and start a pi agent there.
 - Start the Herdr server with `herdr server` first if it is not already running.
 
