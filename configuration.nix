@@ -1017,6 +1017,7 @@ in
       keepassxc
       lazydocker
       ldns
+      libnotify
       libreoffice
       lldb
       lm_sensors
