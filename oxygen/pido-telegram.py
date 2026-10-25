@@ -8,8 +8,9 @@ queued messages. Markdown in the pido output is rendered for Telegram, so
 headings, bold and italic text, lists, links, and code blocks appear formatted.
 A reply that ends with suggested follow-up actions gets one inline button per
 action, and pressing one runs that action as the next prompt. The actions come
-from a followups code block requested by FOLLOW_UP_INSTRUCTION, or from a list
-under a heading such as "Next steps". That block is removed from the message.
+from a followups code block requested by FOLLOW_UP_INSTRUCTION, from a list
+under a heading or intro line such as "Next steps", or from a short label-only
+fence near the end of the reply. That block is removed from the message.
 """
 
 from __future__ import annotations
@@ -68,13 +69,35 @@ FOLLOW_UP_HEADING_PATTERN = re.compile(
     re.IGNORECASE,
 )
 TASK_MARKER_PATTERN = re.compile(r"^\[[ xX]\]\s*")
+# A followups-tagged fence, optionally preceded by a bare "followups:" line.
 FOLLOW_UP_FENCE_PATTERN = re.compile(
+    r"(?:^[ \t]*(?:follow[ \t-]*ups?|actions?)[ \t]*:?[ \t]*\n)?"
     r"^(?P<fence>`{3,})[ \t]*(?:followups|follow-ups|actions)[^\n]*\n"
     r"(?P<body>.*?)^(?P=fence)[ \t]*$",
     re.IGNORECASE | re.MULTILINE | re.DOTALL,
 )
+# A "followups:" or "actions:" line followed by a fence tagged with any
+# language (or none), a common drift when the model forgets the exact tag.
+FOLLOW_UP_LABELLED_FENCE_PATTERN = re.compile(
+    r"^[ \t]*(?:follow[ \t-]*ups?|actions?)[ \t]*:?[ \t]*\n"
+    r"(?P<fence>`{3,})[^\n]*\n"
+    r"(?P<body>.*?)^(?P=fence)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
+# An untagged or text-tagged fence near the end of the reply; only accepted
+# when every body line looks like a short action label and the reply also has
+# a follow-up section, so genuine code blocks are left alone.
+FOLLOW_UP_PLAIN_FENCE_PATTERN = re.compile(
+    r"^(?P<fence>`{3,})[ \t]*(?:text|plain)?[ \t]*\n"
+    r"(?P<body>.*?)^(?P=fence)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
+CODE_CHARS_PATTERN = re.compile(r"[;{}=<>|\\\[\]()]")
 BLANK_LINES_PATTERN = re.compile(r"\n[ \t]*(?:\n[ \t]*)+")
 MAX_FOLLOW_UPS = 8
+PLAIN_FENCE_TAIL_LINES = 12
+LABEL_BLOCK_MAX_LINES = 8
+LABEL_LINE_LIMIT = 80
 ACTION_LABEL_LIMIT = 40
 ACTION_PROMPT_LIMIT = 500
 ACTION_DATA_PREFIX = "act:"
@@ -86,13 +109,16 @@ FOLLOW_UP_INSTRUCTION = (
     "When, and only when, your reply suggests concrete next actions the "
     "user might take, near the end present each action in full as a "
     "numbered 'Next steps' list, then end with a single fenced code "
-    "block tagged followups: one very short imperative label per line "
-    "(at most five words), at most five lines, one label per listed "
-    "action in the same order. The list is for the user to read; each "
-    "label becomes a tap-to-run button that sends the label back as the "
-    "next prompt, so it must stand alone. Omit both the list and the "
-    "block when there are no such actions, and never mention or explain "
-    "them."
+    "block tagged exactly followups: one very short imperative label "
+    "per line (at most five words), at most five lines, one label per "
+    "listed action in the same order. The list is for the user to "
+    "read; each label becomes a tap-to-run button that sends the label "
+    "back as the next prompt, so it must stand alone. The closing fence "
+    "must be the very last line of the reply: write nothing after it, "
+    "tag the fence exactly followups and never text or another language, "
+    "and never repeat the labels in a second block. Omit both the list "
+    "and the block when there are no such actions, and never mention or "
+    "explain them."
 )
 
 logging.basicConfig(
@@ -472,6 +498,8 @@ def extract_follow_ups(text: str) -> list[str]:
     actions: list[str] = []
     active = False
     awaiting_heading = False
+    intro_candidate = False
+    awaiting_list = False
     list_depth = 0
     item_parts: list[str] | None = None
     item_taken = False
@@ -491,11 +519,24 @@ def extract_follow_ups(text: str) -> list[str]:
         if kind == "heading_open":
             flush_item()
             awaiting_heading = True
+            intro_candidate = False
+            awaiting_list = False
         elif kind == "inline" and awaiting_heading:
             heading = inline_plain_text(token.children or []).strip()
             active = bool(FOLLOW_UP_HEADING_PATTERN.match(heading))
             awaiting_heading = False
+        elif kind == "paragraph_open" and list_depth == 0:
+            intro_candidate = True
+        elif kind == "inline" and intro_candidate:
+            intro_candidate = False
+            intro = inline_plain_text(token.children or []).strip()
+            awaiting_list = bool(FOLLOW_UP_HEADING_PATTERN.match(intro))
+        elif kind == "paragraph_close":
+            intro_candidate = False
         elif kind in ("bullet_list_open", "ordered_list_open"):
+            if awaiting_list:
+                active = True
+            awaiting_list = False
             list_depth += 1
         elif kind in ("bullet_list_close", "ordered_list_close"):
             flush_item()
@@ -515,9 +556,42 @@ def extract_follow_ups(text: str) -> list[str]:
                     line = line.strip().lstrip("-* ").strip()
                     if line:
                         actions.append(line)
+        else:
+            awaiting_list = False
+            intro_candidate = False
 
     unique = list(dict.fromkeys(actions))
     return unique[:MAX_FOLLOW_UPS]
+
+
+def fence_body_actions(body: str) -> list[str]:
+    """Return the follow-up labels listed in a fence body."""
+    actions: list[str] = []
+    for line in body.splitlines():
+        line = line.strip().lstrip("-* ").strip()
+        if line:
+            actions.append(line)
+    return actions
+
+
+def looks_like_label_block(body: str) -> bool:
+    """Return True when fence lines all look like short action labels."""
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
+    if not lines or len(lines) > LABEL_BLOCK_MAX_LINES:
+        return False
+    return all(
+        len(line) <= LABEL_LINE_LIMIT and not CODE_CHARS_PATTERN.search(line)
+        for line in lines
+    )
+
+
+def has_follow_up_marker(text: str) -> bool:
+    """Return True when a follow-up section or label line is present."""
+    for line in text.splitlines():
+        stripped = line.strip().lstrip("#").strip().lstrip("*").strip()
+        if FOLLOW_UP_HEADING_PATTERN.match(stripped):
+            return True
+    return False
 
 
 def split_follow_ups(text: str) -> tuple[str, list[str]]:
@@ -525,16 +599,38 @@ def split_follow_ups(text: str) -> tuple[str, list[str]]:
     actions: list[str] = []
     removed = False
 
-    def take(match: re.Match[str]) -> str:
+    def strip_fences(
+        pattern: re.Pattern[str], source: str, labels_only: bool
+    ) -> str:
         nonlocal removed
-        removed = True
-        for line in match.group("body").splitlines():
-            line = line.strip().lstrip("-* ").strip()
-            if line:
-                actions.append(line)
-        return ""
 
-    cleaned = FOLLOW_UP_FENCE_PATTERN.sub(take, text)
+        def take(match: re.Match[str]) -> str:
+            body = match.group("body")
+            if labels_only:
+                if not looks_like_label_block(body):
+                    return match.group(0)
+                tail_lines = [
+                    line
+                    for line in source[match.end():].splitlines()
+                    if line.strip()
+                ]
+                if len(tail_lines) > PLAIN_FENCE_TAIL_LINES:
+                    return match.group(0)
+                if not has_follow_up_marker(source):
+                    return match.group(0)
+            removed = True
+            actions.extend(fence_body_actions(body))
+            return ""
+
+        return pattern.sub(take, source)
+
+    cleaned = strip_fences(FOLLOW_UP_FENCE_PATTERN, text, labels_only=False)
+    cleaned = strip_fences(
+        FOLLOW_UP_LABELLED_FENCE_PATTERN, cleaned, labels_only=False
+    )
+    cleaned = strip_fences(
+        FOLLOW_UP_PLAIN_FENCE_PATTERN, cleaned, labels_only=True
+    )
     if removed:
         cleaned = BLANK_LINES_PATTERN.sub("\n\n", cleaned)
     if not actions:
