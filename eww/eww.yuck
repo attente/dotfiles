@@ -46,9 +46,10 @@
     :monitor 2))
 
 (defwidget status [monitor]
-  (centerbox
+  (box
     :class "status"
     :orientation "horizontal"
+    :space-evenly false
     (workspaces
       :monitor monitor)
     (title
@@ -88,8 +89,8 @@
     :class "title"
     :halign "fill"
     :hexpand true
-    :xalign 0.5
-    :justify "center"
+    :xalign 0
+    :justify "left"
     :truncate true
     :show-truncated true
     :text "${replace("${jq(workspace-list, ".workspaces[${jq(workspace-list, ".monitors[${monitor}]")-1}].lastwindowtitle")}", "^\"|\"$", "")}"))
