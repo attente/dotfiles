@@ -659,6 +659,18 @@ in
       settings = builtins.fromTOML (builtins.readFile ./walker/config.toml);
     };
 
+    systemd.user.services.eww-idle-inhibit = {
+      Unit = {
+        Description = "Inhibit automatic locking and screen-off from Eww";
+        PartOf = [ "eww.service" "hyprland-session.target" ];
+      };
+
+      Service = {
+        Type = "exec";
+        ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=idle --mode=block --who=Eww --why='Prevent automatic lock and screen off' ${pkgs.coreutils}/bin/sleep infinity";
+      };
+    };
+
     systemd.user.services.eww-status = {
       Unit = {
         Description = "Open Eww status windows";

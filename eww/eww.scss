@@ -27,6 +27,15 @@
   font-weight: bolder;
 }
 
+.idle-inhibit {
+  margin-right: 16px;
+  color: #60c080;
+}
+
+.idle-inhibit.active {
+  color: #f07070;
+}
+
 .sink-volume {
   font-weight: bolder;
 }

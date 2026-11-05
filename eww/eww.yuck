@@ -12,6 +12,11 @@
   :interval "1s"
   `cat /sys/class/power_supply/*/status | head -n 1`)
 
+(defpoll idle-inhibited
+  :initial false
+  :interval "1s"
+  `systemctl --user is-active --quiet eww-idle-inhibit.service && echo true || echo false`)
+
 (deflisten volume-level "sh ~/.config/eww/scripts/volume.sh")
 (deflisten workspace-list "bun ~/.config/eww/scripts/workspaces.ts")
 
@@ -57,6 +62,7 @@
     (box
       :halign "end"
       :space-evenly false
+      (idle-inhibit)
       (volume)
       (battery)
       (clock))))
@@ -94,6 +100,16 @@
     :truncate true
     :show-truncated true
     :text "${replace("${jq(workspace-list, ".workspaces[${jq(workspace-list, ".monitors[${monitor}]")-1}].lastwindowtitle")}", "^\"|\"$", "")}"))
+
+(defwidget idle-inhibit []
+  (button
+    :class {idle-inhibited ? "idle-inhibit active" : "idle-inhibit"}
+    :valign "center"
+    :tooltip {idle-inhibited ? "Automatic lock and screen-off inhibited (click to restore)" : "Inhibit automatic lock and screen-off"}
+    :onclick "if systemctl --user is-active --quiet eww-idle-inhibit.service; then systemctl --user stop eww-idle-inhibit.service; else systemctl --user start eww-idle-inhibit.service; fi"
+    (image
+      :icon {idle-inhibited ? "changes-allow-symbolic" : "changes-prevent-symbolic"}
+      :icon-size "button")))
 
 (defwidget volume []
   (box
