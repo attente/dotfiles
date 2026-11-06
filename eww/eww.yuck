@@ -117,25 +117,57 @@
     (eventbox
       :onscroll "echo {} | sed -e 's/down/-10%/' -e 's/up/+10%/' | xargs pactl set-sink-volume @DEFAULT_SINK@"
       (button
-        :class "sink-volume"
+        :class "sink-volume ${jq(volume-level, ".sink.muted") ? "muted" :
+          jq(volume-level, ".sink.volume") >= 90 ? "critical" :
+          jq(volume-level, ".sink.volume") >= 70 ? "high" : "normal"}"
         :halign "end"
         :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle && pactl set-sink-volume @DEFAULT_SINK@ 30%"
-        {jq(volume-level, ".sink.muted") ? "🔈🔇" :
-          "${jq(volume-level, ".sink.volume") <= 10 ? "🔈" :
-             jq(volume-level, ".sink.volume") <= 50 ? "🔉" :
-                                                      "🔊"} ${jq(volume-level, ".sink.volume")}%"}))
+        (box
+          :space-evenly false
+          :spacing 4
+          (image
+            :icon {jq(volume-level, ".sink.muted") ? "audio-volume-muted-symbolic" :
+              jq(volume-level, ".sink.volume") <= 10 ? "audio-volume-low-symbolic" :
+              jq(volume-level, ".sink.volume") <= 50 ? "audio-volume-medium-symbolic" :
+                                                       "audio-volume-high-symbolic"}
+            :icon-size "button")
+          (label
+            :text "${jq(volume-level, ".sink.volume")}%"))))
     (eventbox
       :onscroll "echo {} | sed -e 's/down/-10%/' -e 's/up/+10%/' | xargs pactl set-source-volume @DEFAULT_SOURCE@"
       (button
-        :class "source-volume"
+        :class "source-volume ${jq(volume-level, ".source.muted") ? "muted" :
+          jq(volume-level, ".source.volume") >= 90 ? "critical" :
+          jq(volume-level, ".source.volume") >= 70 ? "high" : "normal"}"
         :halign "end"
         :onclick "pactl set-source-mute @DEFAULT_SOURCE@ toggle && pactl set-source-volume @DEFAULT_SOURCE@ 60%"
-        "🎤 ${jq(volume-level, ".source.muted") ? "🔇" : "${jq(volume-level, ".source.volume")}%"}"))))
+        (box
+          :space-evenly false
+          :spacing 4
+          (image
+            :icon {jq(volume-level, ".source.muted") ? "microphone-sensitivity-muted-symbolic" :
+              jq(volume-level, ".source.volume") <= 10 ? "microphone-sensitivity-low-symbolic" :
+              jq(volume-level, ".source.volume") <= 50 ? "microphone-sensitivity-medium-symbolic" :
+                                                         "microphone-sensitivity-high-symbolic"}
+            :icon-size "button")
+          (label
+            :text "${jq(volume-level, ".source.volume")}%"))))))
 
 (defwidget battery []
-  (label
-    :class "battery"
-    :text "${battery-status == "Discharging" ? "🔋" : "🔌"} ${battery-capacity}%"))
+  (box
+    :class "battery ${battery-capacity <= 10 ? "critical" :
+      battery-capacity <= 30 ? "low" :
+      battery-capacity <= 50 ? "warning" : "good"}"
+    :space-evenly false
+    :spacing 4
+    (image
+      :icon {battery-status == "Full" ? "battery-full-charged-symbolic" :
+        "battery-${battery-capacity <= 10 ? "caution" :
+                   battery-capacity <= 30 ? "low" :
+                   battery-capacity <= 70 ? "good" : "full"}${battery-status == "Charging" ? "-charging" : ""}-symbolic"}
+      :icon-size "button")
+    (label
+      :text "${battery-capacity}%")))
 
 (defwidget clock []
   (box

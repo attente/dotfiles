@@ -25,6 +25,19 @@
 .battery {
   margin-left: 16px;
   font-weight: bolder;
+  color: #60c080;
+}
+
+.battery.warning {
+  color: #e0c060;
+}
+
+.battery.low {
+  color: #e8a060;
+}
+
+.battery.critical {
+  color: #f07070;
 }
 
 .idle-inhibit {
@@ -36,13 +49,29 @@
   color: #f07070;
 }
 
-.sink-volume {
+.sink-volume,
+.source-volume {
   font-weight: bolder;
+  color: #ffffff;
 }
 
 .source-volume {
   margin-left: 8px;
-  font-weight: bolder;
+}
+
+.sink-volume.muted,
+.source-volume.muted {
+  color: #b0b0b0;
+}
+
+.sink-volume.high,
+.source-volume.high {
+  color: #e8a060;
+}
+
+.sink-volume.critical,
+.source-volume.critical {
+  color: #f07070;
 }
 
 .workspace-active {
