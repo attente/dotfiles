@@ -132,6 +132,7 @@
                                                        "audio-volume-high-symbolic"}
             :icon-size "button")
           (label
+            :visible {!jq(volume-level, ".sink.muted")}
             :text "${jq(volume-level, ".sink.volume")}%"))))
     (eventbox
       :onscroll "echo {} | sed -e 's/down/-10%/' -e 's/up/+10%/' | xargs pactl set-source-volume @DEFAULT_SOURCE@"
@@ -151,6 +152,7 @@
                                                          "microphone-sensitivity-high-symbolic"}
             :icon-size "button")
           (label
+            :visible {!jq(volume-level, ".source.muted")}
             :text "${jq(volume-level, ".source.volume")}%"))))))
 
 (defwidget battery []
