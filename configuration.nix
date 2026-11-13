@@ -921,7 +921,7 @@ in
               (bind ''mainMod .. " + S"'' ''hl.dsp.layout("togglesplit")'')
               (bind ''mainMod .. " + space"'' ''hl.dsp.exec_cmd([[dictate start]])'')
               (bindOpts ''mainMod .. " + space"'' ''hl.dsp.exec_cmd([[dictate stop]])'' { release = true; })
-              (bind ''mainMod .. " + F"'' ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
+              (bind ''mainMod .. " + F"'' ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
               (bind ''mainMod .. " + escape"'' ''hl.dsp.exec_cmd([[${lockSessionCommand}]])'')
               (bind ''mainMod .. " + SHIFT + escape"'' ''hl.dsp.exec_cmd([[${suspendCommand}]])'')
               (bind ''"CTRL + ALT + delete"'' ''hl.dsp.exec_cmd([[reboot]])'')
