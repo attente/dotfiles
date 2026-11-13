@@ -40,6 +40,17 @@
   color: #f07070;
 }
 
+.weather {
+  margin-left: 16px;
+  font-weight: bolder;
+}
+
+.weather.rain { color: #45b8e8; }
+.weather.jacket { color: #a5e8f5; }
+.weather.sweater { color: #aaa5ed; }
+.weather.heat { color: #f07070; }
+.weather.sun { color: #f0a050; }
+
 .idle-inhibit {
   margin-right: 16px;
   color: #60c080;

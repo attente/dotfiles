@@ -486,6 +486,17 @@ in
             shadow_size = 10;
           }
           {
+            text = "cmd[update:300000] ${pkgs.python3}/bin/python3 $HOME/.config/eww/scripts/weather.py text";
+            text_align = "center";
+            font_size = 20;
+            font_family = "TeX Gyre Pagella";
+            position = "0, 80";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 3;
+            shadow_size = 10;
+          }
+          {
             text = "$ATTEMPTS";
             text_align = "center";
             font_size = 16;
@@ -960,6 +971,7 @@ in
       "eww/scripts/package.json".source = ./eww/scripts/package.json;
       "eww/scripts/bun.lockb".source = ./eww/scripts/bun.lockb;
       "eww/scripts/volume.sh".source = ./eww/scripts/volume.sh;
+      "eww/scripts/weather.py".source = ./eww/scripts/weather.py;
       "eww/scripts/workspaces.ts".source = ./eww/scripts/workspaces.ts;
       "walker/themes/default.css".source = ./walker/themes/default.css;
       "walker/themes/default.toml".source = ./walker/themes/default.toml;

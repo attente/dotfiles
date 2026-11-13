@@ -17,6 +17,11 @@
   :interval "1s"
   `systemctl --user is-active --quiet eww-idle-inhibit.service && echo true || echo false`)
 
+(defpoll weather
+  :initial `{"text":"Weather loading","temperature":"?","icon":"weather-severe-alert-symbolic","color":"normal","tooltip":"Loading forecast","url":""}`
+  :interval "5m"
+  `python3 ~/.config/eww/scripts/weather.py`)
+
 (deflisten volume-level "sh ~/.config/eww/scripts/volume.sh")
 (deflisten workspace-list "bun ~/.config/eww/scripts/workspaces.ts")
 
@@ -65,6 +70,7 @@
       (idle-inhibit)
       (volume)
       (battery)
+      (weather-indicator)
       (clock))))
 
 (defwidget workspaces [monitor]
@@ -100,6 +106,17 @@
     :truncate true
     :show-truncated true
     :text "${replace("${jq(workspace-list, ".workspaces[${jq(workspace-list, ".monitors[${monitor}]")-1}].lastwindowtitle")}", "^\"|\"$", "")}"))
+
+(defwidget weather-indicator []
+  (button
+    :class "weather ${replace(jq(weather, ".color"), "^\"|\"$", "")}"
+    :tooltip {replace(jq(weather, ".tooltip"), "^\"|\"$", "")}
+    :onclick "python3 ~/.config/eww/scripts/weather.py open >> ~/.cache/eww-weather-open.log 2>&1 </dev/null &"
+    (box
+      :space-evenly false
+      :spacing 4
+      (image :icon {replace(jq(weather, ".icon"), "^\"|\"$", "")} :icon-size "button")
+      (label :text {replace(jq(weather, ".temperature"), "^\"|\"$", "")}))))
 
 (defwidget idle-inhibit []
   (button
