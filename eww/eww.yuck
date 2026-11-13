@@ -1,8 +1,9 @@
 (defpoll time-zone
   :initial "America/Toronto"
   :interval "1m"
-  :run-while false
   `timedatectl -p Timezone show | cut -d = -f 2`)
+
+(defvar clock-show-utc false)
 
 (defpoll battery-capacity
   :interval "1s"
@@ -122,7 +123,6 @@
   (button
     :class {idle-inhibited ? "idle-inhibit active" : "idle-inhibit"}
     :valign "center"
-    :tooltip {idle-inhibited ? "Automatic lock and screen-off inhibited (click to restore)" : "Inhibit automatic lock and screen-off"}
     :onclick "if systemctl --user is-active --quiet eww-idle-inhibit.service; then systemctl --user stop eww-idle-inhibit.service; else systemctl --user start eww-idle-inhibit.service; fi"
     (image
       :icon {idle-inhibited ? "changes-allow-symbolic" : "changes-prevent-symbolic"}
@@ -189,20 +189,22 @@
       :text "${battery-capacity}%")))
 
 (defwidget clock []
-  (box
-    :space-evenly false
-    (label
-      :class "clock-date"
-      :halign "end"
-      :justify "right"
-      :text "${formattime(EWW_TIME, "%a %b %-d", time-zone)}")
-    (label
-      :class "clock-time"
-      :halign "end"
-      :justify "right"
-      :text "${formattime(EWW_TIME, "%-I:%M:%S %p", time-zone)}")
-    (label
-      :class "clock-time"
-      :halign "end"
-      :justify "right"
-      :text "(${formattime(EWW_TIME, "%H:%M:%S", "UTC")} UTC)")))
+  (button
+    :onclick "eww update clock-show-utc=${!clock-show-utc}"
+    :tooltip {clock-show-utc ?
+      "${formattime(EWW_TIME, "%a %b %-d %-I:%M:%S %p", time-zone)}" :
+      "${formattime(EWW_TIME, "%a %b %-d %H:%M:%S", "UTC")} UTC"}
+    (box
+      :space-evenly false
+      (label
+        :class "clock-date"
+        :halign "end"
+        :justify "right"
+        :text {clock-show-utc ? formattime(EWW_TIME, "%a %b %-d", "UTC") :
+          formattime(EWW_TIME, "%a %b %-d", time-zone)})
+      (label
+        :class "clock-time"
+        :halign "end"
+        :justify "right"
+        :text {clock-show-utc ? "${formattime(EWW_TIME, "%H:%M:%S", "UTC")} UTC" :
+          formattime(EWW_TIME, "%-I:%M:%S %p", time-zone)}))))

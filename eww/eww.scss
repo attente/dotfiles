@@ -2,6 +2,18 @@
   all: unset;
 }
 
+tooltip {
+  background-color: #202020;
+  border: 1px solid #a0a0a0;
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+tooltip label {
+  color: #ffffff;
+  font-weight: bold;
+}
+
 .status {
   background-color: rgba(0, 0, 0, 0.4);
   padding: 4px 16px;
