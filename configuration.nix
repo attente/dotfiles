@@ -891,11 +891,20 @@ in
             sensitivity = -0.5;
           };
 
-          workspace_rule = {
-            workspace = "name:special";
-            gaps_out = 40;
-            gaps_in = 20;
-          };
+          workspace_rule = [
+            {
+              workspace = "name:special";
+              gaps_out = 40;
+              gaps_in = 20;
+            }
+            {
+              workspace = "f[1]";
+              gaps_out = 0;
+              gaps_in = 0;
+              no_border = true;
+              no_rounding = true;
+            }
+          ];
 
           on = {
             _args = [
