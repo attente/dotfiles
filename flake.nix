@@ -7,6 +7,10 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,6 +28,7 @@
       commonModules = [
         home-manager.nixosModules.home-manager
         nix-flatpak.nixosModules.nix-flatpak
+        inputs.nix-index-database.nixosModules.nix-index
         ./configuration.nix
       ];
     in {

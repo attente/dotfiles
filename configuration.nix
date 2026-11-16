@@ -1070,7 +1070,6 @@ in
       man-pages
       mosh
       nautilus
-      nix-index
       nodejs_latest
       openssl
       pandoc
@@ -1156,6 +1155,12 @@ in
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+
+  programs.command-not-found.enable = false;
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.zsh.enable = true;
 
