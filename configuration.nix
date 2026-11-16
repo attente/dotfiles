@@ -1064,6 +1064,7 @@ in
       ldns
       libnotify
       libreoffice
+      linode-cli
       lldb
       lm_sensors
       lsd
