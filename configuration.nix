@@ -108,6 +108,7 @@ in
   users.users.william = {
     uid = 1000;
     isNormalUser = true;
+    linger = true;
     description = "William Hua";
     hashedPassword = secrets.users.william.hashedPassword;
     shell = pkgs.zsh;
@@ -128,7 +129,18 @@ in
   };
 
   home-manager.users.william = {
+    imports = [ inputs.hermes-agent.homeManagerModules.default ];
+
     programs.home-manager.enable = true;
+    programs.hermes-agent.enable = true;
+
+    services.hermes-agent = {
+      enable = true;
+      gateway.enable = true;
+      workingDirectory = "/home/william/.hermes/workspace";
+      settings.model.default = "openrouter/auto";
+      environmentFiles = [ "/home/william/.config/hermes/env" ];
+    };
 
     programs.neovim = {
       enable = true;
