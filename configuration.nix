@@ -294,6 +294,14 @@ in
           email = "william@attente.ca";
         };
 
+        # Every repository on this machine uses the pre-push guard in this repo,
+        # which scans the commits a push would publish and refuses if it finds a
+        # secret. Per-repository hooks still work: git only uses this path when the
+        # repository has not set its own core.hooksPath.
+        core = {
+          hooksPath = "/home/william/.config/git/hooks";
+        };
+
         gpg = {
           ssh = {
             defaultKeyCommand = "ssh-add -L";
@@ -1047,6 +1055,7 @@ in
       gcc
       gh
       gitg
+      gitleaks
       glib
       gnumake
       gnupg
@@ -1113,6 +1122,14 @@ in
       yq-go
       zip
     ];
+
+    # The pre-push secret guard, kept in this repository so it is versioned with
+    # everything else. core.hooksPath in the git settings above points at this
+    # directory, so every repository on the machine gets it.
+    home.file.".config/git/hooks/pre-push" = {
+      source = ./git-hooks/pre-push;
+      executable = true;
+    };
 
     home.pointerCursor = {
       enable = true;

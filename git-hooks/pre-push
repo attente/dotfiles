@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# pre-push: refuse a push that would publish a secret.
+#
+# Scans only the commits this push would actually add, as read from stdin by git.
+# A new branch is scanned for everything it carries that no remote already has, so
+# a rebase or a fresh branch cannot slip history past the check.
+#
+# Fails closed: if gitleaks is missing the push is refused rather than let through
+# unscanned, because a silent guard is worse than no guard.
+
+set -uo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-push: gitleaks is not installed; refusing to push unscanned" >&2
+  echo "  install it, or bypass with: git push --no-verify" >&2
+  exit 1
+fi
+
+zero=0000000000000000000000000000000000000000
+failed=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  # A deletion carries no commits to scan.
+  [ "$local_sha" = "$zero" ] && continue
+
+  if [ "$remote_sha" = "$zero" ]; then
+    # New remote branch: everything reachable here that no remote has yet.
+    log_opts="$local_sha --not --remotes"
+  else
+    log_opts="$remote_sha..$local_sha"
+  fi
+
+  commits=$(git rev-list --count $log_opts 2>/dev/null || echo 0)
+  [ "$commits" = "0" ] && continue
+
+  if ! output=$(gitleaks git --log-opts="$log_opts" --redact --no-banner -v 2>&1); then
+    failed=1
+    printf 'pre-push: gitleaks found something in %s (%s commit(s))\n\n' "$local_ref" "$commits" >&2
+    printf '%s\n' "$output" >&2
+  fi
+done
+
+if [ "$failed" -ne 0 ]; then
+  cat >&2 <<'MESSAGE'
+
+Push refused by the pre-push secret scan.
+Read the findings above: either remove the secret from the commits, or, if it is
+a false positive, allow it in a .gitleaks.toml in the repository root.
+To push anyway, keeping the commits as they are: git push --no-verify
+MESSAGE
+  exit 1
+fi
+
+exit 0
