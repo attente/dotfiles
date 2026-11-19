@@ -1103,6 +1103,9 @@ in
       sqlite
       subversion
       tealdeer
+      temporal
+      temporal-cli
+      temporal-ui-server
       tree
       tree-sitter
       typescript-language-server
