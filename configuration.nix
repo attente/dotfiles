@@ -139,6 +139,11 @@ in
       gateway.enable = true;
       workingDirectory = "/home/william/.hermes/workspace";
       settings.model.default = "openrouter/auto";
+      settings.delegation = {
+        provider = "openrouter";
+        model = "deepseek/deepseek-v4.1-flash-1017";
+        reasoning_effort = "high";
+      };
       environmentFiles = [ "/home/william/.config/hermes/env" ];
     };
 
