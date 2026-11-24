@@ -138,7 +138,13 @@ in
       enable = true;
       gateway.enable = true;
       workingDirectory = "/home/william/.hermes/workspace";
-      settings.model.default = "openrouter/auto";
+      settings.model = {
+        provider = "openrouter";
+        default = "deepseek/deepseek-v4.1-flash-1017";
+        # Clear the stored Codex endpoint so requests use the OpenRouter API.
+        base_url = "";
+      };
+      settings.agent.reasoning_effort = "high";
       settings.delegation = {
         provider = "openrouter";
         model = "deepseek/deepseek-v4.1-flash-1017";
